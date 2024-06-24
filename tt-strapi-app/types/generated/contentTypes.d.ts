@@ -368,6 +368,7 @@ export interface ApiSafarisSafaris extends Schema.CollectionType {
     singularName: 'safaris';
     pluralName: 'safarises';
     displayName: 'safaris';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -376,6 +377,11 @@ export interface ApiSafarisSafaris extends Schema.CollectionType {
     safariName: Attribute.String;
     safariPrice: Attribute.Integer;
     safariDescription: Attribute.String;
+    safariMainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    safariImages: Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
