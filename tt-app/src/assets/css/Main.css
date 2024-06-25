@@ -1,0 +1,9 @@
+.page-background {
+    height: 100vh; /* Adjust as needed (100vh sets the height to 100% of the viewport height) */
+    width: 100%; /* Set width to 100% of the parent container or viewport */
+    background-size: cover; /* Ensure the image covers the entire div */
+    background-position: center; /* Center the background image */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+
+
+}
