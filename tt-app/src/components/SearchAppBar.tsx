@@ -9,14 +9,13 @@ import InputBase from '@mui/material/InputBase';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import logoImage from '../assets/img/tazania101Logo.jpeg';
-import {Button, List } from 'reactstrap';
-import {Divider, ListItem, ListItemButton, ListItemText} from '@mui/material';
+import { Link } from "react-router-dom";
+
 
 const Logo = styled('img')({
     maxHeight: 40,
 })
 
-const navItems = ['Home', 'About', 'Contact'];
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -65,21 +64,42 @@ export default function SearchAppBar() {
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="fixed" sx={{ backgroundColor: 'transparent', boxShadow: 'none', maxHeight: 50 }}>
                 <Toolbar>
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        sx={{ mr: 2 }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-
-                    <Box sx={{ flexGrow: 500, textAlign: 'center' }}>
-                        <Logo src={logoImage} alt="Logo" />
-                    </Box>
-
+                    {/*<IconButton*/}
+                    {/*    size="large"*/}
+                    {/*    edge="start"*/}
+                    {/*    color="inherit"*/}
+                    {/*    aria-label="open drawer"*/}
+                    {/*    sx={{ mr: 2 }}*/}
+                    {/*>*/}
+                    {/*    <MenuIcon />*/}
+                    {/*</IconButton>*/}
+                    <Link to="/" onClick={window.location.reload} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <Box sx={{ flexGrow: 1, textAlign: 'left' }}>
+                            <Logo src={logoImage} alt="Logo" />
+                        </Box>
+                    </Link>
                     <Box sx={{ display:'flex', flexGrow: 1, textAlign: 'right' }}>
+                        <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <Typography
+                                variant="h6"
+                                noWrap
+                                component="a"
+                                href="#app-bar-with-responsive-menu"
+                                sx={{
+                                    mr: 2,
+                                    display: { xs: 'none', md: 'flex' },
+                                    fontFamily: 'monospace',
+                                    fontWeight: 400,
+                                    color: 'inherit',
+                                    textDecoration: 'none',
+                                    marginLeft: '3rem',
+                                    textShadow: '3px 3px 6px rgba(0,0,0,5)',
+                                }}
+                                >
+                                Home
+                            </Typography>
+                        </Link>
+
                         <Typography
                             variant="h6"
                             noWrap
@@ -92,7 +112,8 @@ export default function SearchAppBar() {
                                 fontWeight: 400,
                                 color: 'inherit',
                                 textDecoration: 'none',
-                                marginRight: '3rem',
+                                marginLeft: '2rem',
+                                textShadow: '3px 3px 6px rgba(0,0,0,5)'
                             }}
                         >
                             Make A Request
@@ -109,6 +130,9 @@ export default function SearchAppBar() {
                                 fontWeight: 400,
                                 color: 'inherit',
                                 textDecoration: 'none',
+                                marginLeft: '2rem',
+                                textShadow: '3px 3px 6px rgba(0,0,0,5)',
+
                             }}
                         >
                             Contact
