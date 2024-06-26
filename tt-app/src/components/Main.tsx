@@ -10,22 +10,24 @@ const sections = [
     { id: 'safari', title: 'Safari', image: 'griff.png', content: 'Safari Content' },
     { id: 'climbing', title: 'Climbing', image: 'climbing.png',  content: 'Climbing Content' },
     { id: 'dayTrip', title: 'Daytrip', image: 'dayTrip.png',  content: 'Daytrip Content' },
-    { id: 'aboutUs', title: 'About Us', image: 'request.png',  content: 'About Us Content' },
 ];
-// const backgroundImage = "daniel-olahh.jpg"
 
 const backgroundImage = "animal.png"
 
+
 const Container = styled(Box)({
     display: 'flex',
-    height: '100vh',
-    width: '100%',
+    height: '87%',
+    width: '50%',
     flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.5)'
 });
 
 const SectionContainer = styled(Box)(({ theme }) => ({
     display: 'flex',
-    height: '92.7%',
+    height: '94.6vh',
     width: '100%',
     marginTop: '64px',
     cursor: 'pointer',
@@ -38,7 +40,7 @@ const SectionContainer = styled(Box)(({ theme }) => ({
 
 const Section = styled(Box)<{ isSelected: boolean }>(({ isSelected }) => ({
     flex: 1,
-    height: isSelected ? '7%' : '100%',
+    height: isSelected ? '8%' : '100%',
     position: 'relative',
     transition: 'height 0.3s ease-in-out',
     overflow: 'hidden',
@@ -46,16 +48,6 @@ const Section = styled(Box)<{ isSelected: boolean }>(({ isSelected }) => ({
         opacity: 0.8,
     },
 
-}));
-
-const SectionContent = styled(Box)<{ isVisible: boolean }>(({ isVisible }) => ({
-    backgroundColor: 'white',
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    height: isVisible ? '86.5%' : '0',
-    transition: 'height 0.3s ease-in-out',
-    zIndex: 1,
 }));
 const Background = styled(Box)({
     position: 'fixed',
@@ -104,54 +96,65 @@ const Main = () => {
                     data-parallax={true}
                     ref={pageHeader}
                 />
-            <Container>
-                {sections.map((section) => (
-                    <SectionContainer key={section.id}>
-                        <Section
-                            isSelected={selectedSection !== null}
-                            onClick={() => handleSectionClick(section.id)}
-                            sx={{
-                                backgroundImage: `url(${require(`../assets/img/${section.image}`)})`,
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center',
-                                '&::before': {
-                                    content: '""',
-                                    position: 'absolute',
-                                    top: '-10px',
-                                    left: '-10px',
-                                    right: '-10px',
-                                    bottom: '-10px',
-                                    background: `url(${require(`../assets/img/${section.image}`)}) no-repeat center center / cover`,
-                                    filter: (selectedSection !== null) ? 'blur(3px)' : 'none',
-                                    transition: 'filter 0.3s ease-in-out',
-                                },
-                            }}
-                        >
-                            {(selectedSection !== null) && (
-                                <Typography variant="h4"
-                                sx={{ color: 'white', position: 'absolute', bottom: '10px', left: '10px', textShadow: '3px 3px 6px rgba(0,0,0,5)' }}>
-                            {section.title}
-                                </Typography>
-                            )}
-                            {(selectedSection === null) && (
-                                <Typography variant="h1"
-                                sx={{ color: 'white', position: 'absolute', bottom: '10px', left: '10px', textShadow: '3px 3px 6px rgba(0,0,0,5)' }}>
-                            {section.title}
-                                </Typography>
-                            )}
+            <Box className="parent-container">
+                <Container>
+                    {sections.map((section) => (
+                        <SectionContainer key={section.id}>
+                            <Section
+                                isSelected={selectedSection !== null}
+                                onClick={() => handleSectionClick(section.id)}
+                                sx={{
+                                    backgroundImage: `url(${require(`../assets/img/${section.image}`)})`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    '&::before': {
+                                        content: '""',
+                                        position: 'absolute',
+                                        top: '-10px',
+                                        left: '-10px',
+                                        right: '-10px',
+                                        bottom: '-10px',
+                                        background: `url(${require(`../assets/img/${section.image}`)}) no-repeat center center / cover`,
+                                        filter: (selectedSection !== null) ? 'blur(3px)' : 'none',
+                                        transition: 'filter 0.3s ease-in-out',
+                                    },
+                                }}
+                            >
+                                {(selectedSection !== null) && (
+                                    <Typography variant="h4"
+                                    sx={{ color: 'white', position: 'absolute',
+                                        fontWeight:'bold',
+                                        fontFamily: 'Ultra',
+                                        bottom: '10px', left: '10px', textShadow: '3px 3px 6px rgba(0,0,0,5)',
+                                         }}>
+                                {section.title}
+                                    </Typography>
+                                )}
+                                {(selectedSection === null) && (
+                                    <Typography variant="h1"
+                                    sx={{ color: 'white', position: 'absolute', bottom: '10rem', right: '-80px',
+                                        fontWeight:'bold',
+                                        fontFamily: 'Ultra',
+                                        textShadow: '3px 3px 6px rgba(0,0,0,5)',
+                                        transform: 'rotate(270deg)',
+                                    }}>
+                                {section.title}
+                                    </Typography>
+                                )}
 
 
-                        </Section>
+                            </Section>
 
-                    </SectionContainer>
-                ))}
-                <SectionContent isVisible={selectedSection !== null}>
-                    <Typography variant="body1">
-                        {getContentById(selectedSection)}
-                    </Typography>
-                </SectionContent>
+                        </SectionContainer>
+                    ))}
+                    <Box className="section-content" sx={{ height: selectedSection !== null ? '86.5%' : '0' }}>
+                        <Typography variant="body1">
+                            {getContentById(selectedSection)}
+                        </Typography>
+                    </Box>
 
-            </Container>
+                </Container>
+            </Box>
         </>
 
 )

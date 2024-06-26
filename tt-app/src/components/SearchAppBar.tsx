@@ -10,6 +10,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import logoImage from '../assets/img/tazania101Logo.jpeg';
 import { Link } from "react-router-dom";
+import {Grid} from "@mui/material";
 
 
 const Logo = styled('img')({
@@ -64,22 +65,57 @@ export default function SearchAppBar() {
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="fixed" sx={{ backgroundColor: 'transparent', boxShadow: 'none', maxHeight: 50 }}>
                 <Toolbar>
-                    {/*<IconButton*/}
-                    {/*    size="large"*/}
-                    {/*    edge="start"*/}
-                    {/*    color="inherit"*/}
-                    {/*    aria-label="open drawer"*/}
-                    {/*    sx={{ mr: 2 }}*/}
-                    {/*>*/}
-                    {/*    <MenuIcon />*/}
-                    {/*</IconButton>*/}
-                    <Link to="/" onClick={window.location.reload} style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <Box sx={{ flexGrow: 1, textAlign: 'left' }}>
-                            <Logo src={logoImage} alt="Logo" />
-                        </Box>
-                    </Link>
-                    <Box sx={{ display:'flex', flexGrow: 1, textAlign: 'right' }}>
-                        <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <Grid container alignItems="center">
+                        <Grid item xs={4} container justifyContent="flex-start">
+                            <Box sx={{ display: 'flex' }}>
+                                <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+                                    <Typography
+                                        variant="h6"
+                                        noWrap
+                                        component="a"
+                                        href="#app-bar-with-responsive-menu"
+                                        sx={{
+                                            mr: 2,
+                                            display: { xs: 'none', md: 'flex' },
+                                            fontFamily: 'monospace',
+                                            fontWeight: 400,
+                                            color: 'inherit',
+                                            textDecoration: 'none',
+                                            marginLeft: '3rem',
+                                            textShadow: '3px 3px 6px rgba(0,0,0,5)',
+                                        }}
+                                    >
+                                        Home
+                                    </Typography>
+                                </Link>
+
+                                <Typography
+                                    variant="h6"
+                                    noWrap
+                                    component="a"
+                                    href="#app-bar-with-responsive-menu"
+                                    sx={{
+                                        mr: 2,
+                                        display: { xs: 'none', md: 'flex' },
+                                        fontFamily: 'monospace',
+                                        fontWeight: 400,
+                                        color: 'inherit',
+                                        textDecoration: 'none',
+                                        marginLeft: '2rem',
+                                        textShadow: '3px 3px 6px rgba(0,0,0,5)'
+                                    }}
+                                >
+                                    Make A Request
+                                </Typography>
+
+                            </Box>
+                        </Grid>
+                        <Grid item xs={4} container justifyContent="center">
+                            <Box sx={{ textAlign: 'center' }}>
+                                <Logo src={logoImage} alt="Logo" />
+                            </Box>
+                        </Grid>
+                        <Grid item xs={4} container justifyContent="flex-end">
                             <Typography
                                 variant="h6"
                                 noWrap
@@ -92,63 +128,24 @@ export default function SearchAppBar() {
                                     fontWeight: 400,
                                     color: 'inherit',
                                     textDecoration: 'none',
-                                    marginLeft: '3rem',
+                                    marginLeft: '2rem',
                                     textShadow: '3px 3px 6px rgba(0,0,0,5)',
+
                                 }}
-                                >
-                                Home
+                            >
+                                Contact
                             </Typography>
-                        </Link>
-
-                        <Typography
-                            variant="h6"
-                            noWrap
-                            component="a"
-                            href="#app-bar-with-responsive-menu"
-                            sx={{
-                                mr: 2,
-                                display: { xs: 'none', md: 'flex' },
-                                fontFamily: 'monospace',
-                                fontWeight: 400,
-                                color: 'inherit',
-                                textDecoration: 'none',
-                                marginLeft: '2rem',
-                                textShadow: '3px 3px 6px rgba(0,0,0,5)'
-                            }}
-                        >
-                            Make A Request
-                        </Typography>
-                        <Typography
-                            variant="h6"
-                            noWrap
-                            component="a"
-                            href="#app-bar-with-responsive-menu"
-                            sx={{
-                                mr: 2,
-                                display: { xs: 'none', md: 'flex' },
-                                fontFamily: 'monospace',
-                                fontWeight: 400,
-                                color: 'inherit',
-                                textDecoration: 'none',
-                                marginLeft: '2rem',
-                                textShadow: '3px 3px 6px rgba(0,0,0,5)',
-
-                            }}
-                        >
-                            Contact
-                        </Typography>
-                    </Box>
-
-
-                    <Search>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            placeholder="Search…"
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </Search>
+                            <Search>
+                                <SearchIconWrapper>
+                                    <SearchIcon />
+                                </SearchIconWrapper>
+                                <StyledInputBase
+                                    placeholder="Search…"
+                                    inputProps={{ 'aria-label': 'search' }}
+                                />
+                            </Search>
+                        </Grid>
+                    </Grid>
                 </Toolbar>
             </AppBar>
         </Box>
