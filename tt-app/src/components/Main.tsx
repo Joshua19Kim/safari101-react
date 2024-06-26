@@ -1,19 +1,17 @@
-import React, {useRef, useEffect, useState} from "react";
+import React, { useRef, useState } from "react";
 import '../assets/css/Main.css';
 import SearchAppBar from "./SearchAppBar";
-import {styled} from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import {Typography} from "@mui/material";
-
+import { Typography } from "@mui/material";
 
 const sections = [
     { id: 'safari', title: 'Safari', image: 'griff.png', content: 'Safari Content' },
-    { id: 'climbing', title: 'Climbing', image: 'climbing.png',  content: 'Climbing Content' },
-    { id: 'dayTrip', title: 'Daytrip', image: 'dayTrip.png',  content: 'Daytrip Content' },
+    { id: 'climbing', title: 'Climbing', image: 'climbing.png', content: 'Climbing Content' },
+    { id: 'dayTrip', title: 'Daytrip', image: 'dayTrip.png', content: 'Daytrip Content' },
 ];
 
-const backgroundImage = "animal.png"
-
+const backgroundImage = "animal.png";
 
 const Container = styled(Box)({
     display: 'flex',
@@ -22,7 +20,12 @@ const Container = styled(Box)({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.5)'
+    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.5)',
+    '@media (max-width: 600px)': {
+        flexDirection: 'column',
+        width: '100%',
+        height: 'auto',
+    }
 });
 
 const SectionContainer = styled(Box)(({ theme }) => ({
@@ -47,8 +50,8 @@ const Section = styled(Box)<{ isSelected: boolean }>(({ isSelected }) => ({
     '&:hover': {
         opacity: 0.8,
     },
-
 }));
+
 const Background = styled(Box)({
     position: 'fixed',
     top: 0,
@@ -70,9 +73,7 @@ const Background = styled(Box)({
     },
 });
 
-
 const Main = () => {
-
     const pageHeader = useRef<HTMLDivElement>(null);
     const [selectedSection, setSelectedSection] = useState<string | null>(null);
 
@@ -84,18 +85,16 @@ const Main = () => {
         return section?.content;
     };
 
-
-
     return (
         <>
             <SearchAppBar />
-                <Background
-                    style={{
-                        backgroundImage: `url(${require(`../assets/img/${backgroundImage}`)})`,
-                    }}
-                    data-parallax={true}
-                    ref={pageHeader}
-                />
+            <Background
+                style={{
+                    backgroundImage: `url(${require(`../assets/img/${backgroundImage}`)})`,
+                }}
+                data-parallax={true}
+                ref={pageHeader}
+            />
             <Box className="parent-container">
                 <Container>
                     {sections.map((section) => (
@@ -122,29 +121,28 @@ const Main = () => {
                             >
                                 {(selectedSection !== null) && (
                                     <Typography variant="h4"
-                                    sx={{ color: 'white', position: 'absolute',
-                                        fontWeight:'bold',
-                                        fontFamily: 'Ultra',
-                                        bottom: '10px', left: '10px', textShadow: '3px 3px 6px rgba(0,0,0,5)',
-                                         }}>
-                                {section.title}
+                                                sx={{
+                                                    color: 'white', position: 'absolute',
+                                                    fontWeight: 'bold',
+                                                    fontFamily: 'Ultra',
+                                                    bottom: '10px', left: '10px', textShadow: '3px 3px 6px rgba(0,0,0,5)',
+                                                }}>
+                                        {section.title}
                                     </Typography>
                                 )}
                                 {(selectedSection === null) && (
                                     <Typography variant="h1"
-                                    sx={{ color: 'white', position: 'absolute', bottom: '10rem', right: '-80px',
-                                        fontWeight:'bold',
-                                        fontFamily: 'Ultra',
-                                        textShadow: '3px 3px 6px rgba(0,0,0,5)',
-                                        transform: 'rotate(270deg)',
-                                    }}>
-                                {section.title}
+                                                sx={{
+                                                    color: 'white', position: 'absolute', bottom: '10rem', right: '-80px',
+                                                    fontWeight: 'bold',
+                                                    fontFamily: 'Ultra',
+                                                    textShadow: '3px 3px 6px rgba(0,0,0,5)',
+                                                    transform: 'rotate(270deg)',
+                                                }}>
+                                        {section.title}
                                     </Typography>
                                 )}
-
-
                             </Section>
-
                         </SectionContainer>
                     ))}
                     <Box className="section-content" sx={{ height: selectedSection !== null ? '86.5%' : '0' }}>
@@ -152,12 +150,10 @@ const Main = () => {
                             {getContentById(selectedSection)}
                         </Typography>
                     </Box>
-
                 </Container>
             </Box>
         </>
-
-)
-}
+    );
+};
 
 export default Main;
