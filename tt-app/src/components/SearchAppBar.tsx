@@ -18,7 +18,6 @@ const Logo = styled('img')({
     marginTop: "1rem"
 })
 
-
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -42,6 +41,7 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    cursor: 'pointer',
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
@@ -62,6 +62,30 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function SearchAppBar() {
+    const [isSearchClicked, setIsSearchClicked] = React.useState<boolean>(false);
+    const searchRef = React.useRef<HTMLDivElement>(null);
+    const inputRef = React.useRef<HTMLInputElement>(null);
+
+    const handleSearchClick = () => {
+        setIsSearchClicked(true);
+        setTimeout(() => {
+            inputRef.current?.focus();
+        }, 100);
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+        if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+            setIsSearchClicked(false);
+        }
+    };
+
+    React.useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="fixed" sx={{ backgroundColor: 'transparent', boxShadow: 'none', maxHeight: 50 }}>
@@ -77,9 +101,10 @@ export default function SearchAppBar() {
                                         href="#app-bar-with-responsive-menu"
                                         sx={{
                                             mr: 2,
-                                            display: { xs: 'none', md: 'flex' },
+                                            display: { xs: 'flex', sm: 'flex', md: 'flex' },
                                             fontFamily: 'monospace',
                                             fontWeight: 400,
+                                            fontSize: { xs: '4vw', md: '3vh' },
                                             color: 'inherit',
                                             textDecoration: 'none',
                                             marginLeft: '3rem',
@@ -97,9 +122,10 @@ export default function SearchAppBar() {
                                     href="#app-bar-with-responsive-menu"
                                     sx={{
                                         mr: 2,
-                                        display: { xs: 'none', md: 'flex' },
+                                        display: { xs: 'flex', sm: 'flex', md: 'flex' },
                                         fontFamily: 'monospace',
                                         fontWeight: 400,
+                                        fontSize: { xs: '4vw', md: '3vh' },
                                         color: 'inherit',
                                         textDecoration: 'none',
                                         marginLeft: '2rem',
@@ -124,9 +150,10 @@ export default function SearchAppBar() {
                                 href="#app-bar-with-responsive-menu"
                                 sx={{
                                     mr: 2,
-                                    display: { xs: 'none', md: 'flex' },
+                                    display: {xs: 'none', sm: 'flex', md: 'flex'},
                                     fontFamily: 'monospace',
                                     fontWeight: 400,
+                                    fontSize: {xs: '4vw', md: '3vh'},
                                     color: 'inherit',
                                     textDecoration: 'none',
                                     marginLeft: '2rem',
@@ -136,15 +163,24 @@ export default function SearchAppBar() {
                             >
                                 Contact
                             </Typography>
-                            <Search>
-                                <SearchIconWrapper>
-                                    <SearchIcon />
-                                </SearchIconWrapper>
-                                <StyledInputBase
-                                    placeholder="Search…"
-                                    inputProps={{ 'aria-label': 'search' }}
-                                />
-                            </Search>
+
+                            <div ref={searchRef}>
+                                {isSearchClicked ? (
+                                    <Search>
+                                        <SearchIconWrapper>
+                                            <SearchIcon/>
+                                        </SearchIconWrapper>
+                                        <StyledInputBase
+                                            placeholder="Search…"
+                                            inputProps={{'aria-label': 'search'}}
+                                            inputRef={inputRef}
+                                        />
+                                    </Search>
+                                ) : (
+                                    <SearchIcon onClick={handleSearchClick}
+                                                sx={{display: {xs: 'flex', sm: 'flex', md: 'flex'}}}/>
+                                )}
+                            </div>
                         </Grid>
                     </Grid>
                 </Toolbar>

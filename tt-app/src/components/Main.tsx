@@ -3,70 +3,18 @@ import '../assets/css/Main.css';
 import SearchAppBar from "./SearchAppBar";
 import {styled} from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
 import {Typography} from "@mui/material";
+import { SectionBox, SectionTypography, Section, ContentsBox } from "../assets/style/styledComponents";
 
 
-const sections = [
+
+const mainSections = [
     { id: 'safari', title: 'SAFARI', image: 'griff.jpg', content: 'Safari Content' },
     { id: 'climbing', title: 'Climbing', image: 'climbing.png',  content: 'Climbing Content' },
     { id: 'dayTrip', title: 'Day Trip', image: 'dayTrip.jpg',  content: 'Daytrip Content' },
 ];
 
 const backgroundImage = "safariBackground.jpg"
-
-
-const SectionBox = styled(Box)<{ isSelected: boolean }>(({ isSelected }) => ({
-    display: 'flex',
-    flexDirection: 'row',
-    height: isSelected ? '8%' : '100%',
-    width: '100%',
-    cursor: 'pointer',
-    justifyContent: 'center',
-    alignItem: 'center',
-    transition: 'height 0.3s ease-in-out',
-}));
-
-const SectionTypography = styled(Typography)<{ isSelected: boolean }>(({ isSelected }) => ({
-    fontSize: isSelected ? '2vw' : '5vw',
-    color: 'white',
-    position: 'absolute',
-    fontWeight:'bold',
-    fontFamily: 'roboto',
-    top: isSelected ? '0%' : '30%',
-    left: isSelected ? '10%' : '2%',
-    right: isSelected ? 'auto' : '50%',
-    textShadow: '3px 3px 6px rgba(0,0,0,5)',
-    transform: isSelected ? 'rotate(0deg)' : 'rotate(270deg)',
-    whiteSpace: 'nowrap',
-
-}));
-
-
-const Section = styled(Box)({
-    flex: 1,
-    height:'100%',
-    width:'33.33%',
-    position: 'relative',
-    transition: 'height 0.3s ease-in-out',
-    overflow: 'hidden',
-    '&:hover': {
-        opacity: 0.8,
-    },
-});
-
-const ContentsBox = styled(Box)<{ isSelected: boolean }>(({ isSelected }) => ({
-    display: 'flex',
-    flexDirection: 'row',
-    height: isSelected ? '92%' : '0%',
-    width: '100%',
-    cursor: 'pointer',
-    justifyContent: 'center',
-    alignItem: 'center',
-    transition: 'height 0.3s ease-in-out',
-    backgroundColor: 'white',
-
-}));
 
 const Background = styled(Box)({
     position: 'fixed',
@@ -99,7 +47,7 @@ const Main = () => {
         setSelectedSection(selectedSection === id ? null : id);
     };
     const getContentById = (id: string | null): string | undefined => {
-        const section = sections.find(section => section.id === id);
+        const section = mainSections.find(section => section.id === id);
         return section?.content;
     };
 
@@ -120,7 +68,7 @@ const Main = () => {
                         <SectionBox
                             isSelected={selectedSection !== null}
                         >
-                            {sections.map((section) => (
+                            {mainSections.map((section) => (
                             <Section
                                 onClick={() => handleSectionClick(section.id)}
                                  sx={{
