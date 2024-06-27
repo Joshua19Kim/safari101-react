@@ -29,3 +29,9 @@
     box-Shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
     height: calc(100% - 64px);
 }
+
+@media (max-width: 768px) {
+    .outside-container {
+        width: 100vw; /* Full width on mobile */
+    }
+}
