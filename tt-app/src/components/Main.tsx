@@ -9,8 +9,8 @@ import {Typography} from "@mui/material";
 
 const sections = [
     { id: 'safari', title: 'SAFARI', image: 'griff.jpg', content: 'Safari Content' },
-    { id: 'climbing', title: 'CLIMBING', image: 'climbing.png',  content: 'Climbing Content' },
-    { id: 'dayTrip', title: 'DAYTRIP', image: 'dayTrip.jpg',  content: 'Daytrip Content' },
+    { id: 'climbing', title: 'Climbing', image: 'climbing.png',  content: 'Climbing Content' },
+    { id: 'dayTrip', title: 'Day Trip', image: 'dayTrip.jpg',  content: 'Daytrip Content' },
 ];
 
 const backgroundImage = "safariBackground.jpg"
@@ -32,12 +32,13 @@ const SectionTypography = styled(Typography)<{ isSelected: boolean }>(({ isSelec
     color: 'white',
     position: 'absolute',
     fontWeight:'bold',
-    fontFamily: 'Ultra',
-    top: isSelected ? '0%' : '30%',
-    left: isSelected ? '10%' : 'auto',
-    right: isSelected ? 'auto' : '10%',
+    fontFamily: 'roboto',
+    bottom: isSelected ? '0%' : '10%',
+    left: isSelected ? '10%' : '50%',
+    right: isSelected ? 'auto' : '5%',
     textShadow: '3px 3px 6px rgba(0,0,0,5)',
     transform: isSelected ? 'rotate(0deg)' : 'rotate(270deg)',
+    whiteSpace: 'nowrap',
 
 }));
 
