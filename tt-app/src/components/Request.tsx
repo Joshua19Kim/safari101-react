@@ -1,26 +1,24 @@
 import SearchAppBar from "./SearchAppBar";
-import React, {useRef} from "react";
-import Box from "@mui/material/Box";
+import React from "react";
 import {Background} from "../assets/style/styledComponents";
-
+import Box from "@mui/material/Box";
 
 
 const backgroundImage = "safariBackground.jpg"
 
-
-const Test = () => {
-
+const Request = () => {
     return (
         <>
             <SearchAppBar />
             <Background bgImage={require(`../assets/img/${backgroundImage}`)} />
+
             <Box sx={{marginTop:'10rem'}}>
-                <h1>Test page</h1>
+                <h1>Request page</h1>
             </Box>
 
 
         </>
-            )
+    )
 }
 
-export default Test;
+export default Request;

@@ -4,6 +4,9 @@ import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import NotFound from "./components/NotFound"
 import Main from "./components/Main"
 import Test from "./components/Test"
+import Contact from "./components/Contact";
+import AboutUs from "./components/AboutUs";
+import Request from "./components/Request";
 
 
 function App() {
@@ -13,7 +16,11 @@ function App() {
           <div>
             <Routes>
               <Route path="/" element={<Main/>}/>
-              <Route path="/test" element={<Test/>}/>
+                <Route path="/contact" element={<Contact/>}/>
+                <Route path="/aboutus" element={<AboutUs/>}/>
+                <Route path="/request" element={<Request/>}/>
+
+                <Route path="/test" element={<Test/>}/>
               <Route path="/*" element={<NotFound/>}/>
             </Routes>
           </div>
