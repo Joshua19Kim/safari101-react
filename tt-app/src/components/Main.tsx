@@ -1,55 +1,70 @@
-import React, { useRef, useState } from "react";
+import React, {useRef, useEffect, useState} from "react";
 import '../assets/css/Main.css';
 import SearchAppBar from "./SearchAppBar";
-import { styled } from "@mui/material/styles";
+import {styled} from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import { Typography } from "@mui/material";
+import Container from "@mui/material/Container";
+import {Typography} from "@mui/material";
+
 
 const sections = [
-    { id: 'safari', title: 'Safari', image: 'griff.png', content: 'Safari Content' },
-    { id: 'climbing', title: 'Climbing', image: 'climbing.png', content: 'Climbing Content' },
-    { id: 'dayTrip', title: 'Daytrip', image: 'dayTrip.png', content: 'Daytrip Content' },
+    { id: 'safari', title: 'SAFARI', image: 'griff.jpg', content: 'Safari Content' },
+    { id: 'climbing', title: 'CLIMBING', image: 'climbing.png',  content: 'Climbing Content' },
+    { id: 'dayTrip', title: 'DAYTRIP', image: 'dayTrip.jpg',  content: 'Daytrip Content' },
 ];
 
-const backgroundImage = "animal.png";
+const backgroundImage = "safariBackground.jpg"
 
-const Container = styled(Box)({
+
+const SectionBox = styled(Box)<{ isSelected: boolean }>(({ isSelected }) => ({
     display: 'flex',
-    height: '87%',
-    width: '50%',
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.5)',
-    '@media (max-width: 600px)': {
-        flexDirection: 'column',
-        width: '100%',
-        height: 'auto',
-    }
-});
-
-const SectionContainer = styled(Box)(({ theme }) => ({
-    display: 'flex',
-    height: '94.6vh',
+    height: isSelected ? '8%' : '100%',
     width: '100%',
-    marginTop: '64px',
     cursor: 'pointer',
+    justifyContent: 'center',
+    alignItem: 'center',
     transition: 'height 0.3s ease-in-out',
-    [theme.breakpoints.down('sm')]: {
-        flexDirection: 'column',
-        height: 'auto',
-    },
 }));
 
-const Section = styled(Box)<{ isSelected: boolean }>(({ isSelected }) => ({
+const SectionTypography = styled(Typography)<{ isSelected: boolean }>(({ isSelected }) => ({
+    fontSize: isSelected ? '2vw' : '5vw',
+    color: 'white',
+    position: 'absolute',
+    fontWeight:'bold',
+    fontFamily: 'Ultra',
+    top: isSelected ? '0%' : '30%',
+    left: isSelected ? '10%' : 'auto',
+    right: isSelected ? 'auto' : '10%',
+    textShadow: '3px 3px 6px rgba(0,0,0,5)',
+    transform: isSelected ? 'rotate(0deg)' : 'rotate(270deg)',
+
+}));
+
+
+const Section = styled(Box)({
     flex: 1,
-    height: isSelected ? '8%' : '100%',
+    height:'100%',
+    width:'33.33%',
     position: 'relative',
     transition: 'height 0.3s ease-in-out',
     overflow: 'hidden',
     '&:hover': {
         opacity: 0.8,
     },
+});
+
+const ContentsBox = styled(Box)<{ isSelected: boolean }>(({ isSelected }) => ({
+    display: 'flex',
+    flexDirection: 'row',
+    height: isSelected ? '92%' : '0%',
+    width: '100%',
+    cursor: 'pointer',
+    justifyContent: 'center',
+    alignItem: 'center',
+    transition: 'height 0.3s ease-in-out',
+    backgroundColor: 'white',
+
 }));
 
 const Background = styled(Box)({
@@ -73,7 +88,9 @@ const Background = styled(Box)({
     },
 });
 
+
 const Main = () => {
+
     const pageHeader = useRef<HTMLDivElement>(null);
     const [selectedSection, setSelectedSection] = useState<string | null>(null);
 
@@ -85,75 +102,67 @@ const Main = () => {
         return section?.content;
     };
 
+
+
     return (
         <>
             <SearchAppBar />
-            <Background
-                style={{
-                    backgroundImage: `url(${require(`../assets/img/${backgroundImage}`)})`,
-                }}
-                data-parallax={true}
-                ref={pageHeader}
-            />
-            <Box className="parent-container">
-                <Container>
-                    {sections.map((section) => (
-                        <SectionContainer key={section.id}>
+                <Background
+                    style={{
+                        backgroundImage: `url(${require(`../assets/img/${backgroundImage}`)})`,
+                    }}
+                    data-parallax={true}
+                    ref={pageHeader}
+                />
+                <Box className="parent-container">
+                    <Box className="outside-container">
+                        <SectionBox
+                            isSelected={selectedSection !== null}
+                        >
+                            {sections.map((section) => (
                             <Section
-                                isSelected={selectedSection !== null}
                                 onClick={() => handleSectionClick(section.id)}
-                                sx={{
-                                    backgroundImage: `url(${require(`../assets/img/${section.image}`)})`,
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center',
-                                    '&::before': {
-                                        content: '""',
-                                        position: 'absolute',
-                                        top: '-10px',
-                                        left: '-10px',
-                                        right: '-10px',
-                                        bottom: '-10px',
-                                        background: `url(${require(`../assets/img/${section.image}`)}) no-repeat center center / cover`,
-                                        filter: (selectedSection !== null) ? 'blur(3px)' : 'none',
-                                        transition: 'filter 0.3s ease-in-out',
-                                    },
-                                }}
+                                 sx={{
+                                     backgroundImage: `url(${require(`../assets/img/${section.image}`)})`,
+                                     backgroundSize: 'cover',
+                                     backgroundPosition: 'center',
+                                     '&::before': {
+                                         content: '""',
+                                         position: 'absolute',
+                                         background: `url(${require(`../assets/img/${section.image}`)}) no-repeat center center / cover`,
+                                         filter: (selectedSection !== null) ? 'blur(3px)' : 'none',
+                                         transition: 'filter 0.3s ease-in-out',
+                                     },
+                                 }}
                             >
-                                {(selectedSection !== null) && (
-                                    <Typography variant="h4"
-                                                sx={{
-                                                    color: 'white', position: 'absolute',
-                                                    fontWeight: 'bold',
-                                                    fontFamily: 'Ultra',
-                                                    bottom: '10px', left: '10px', textShadow: '3px 3px 6px rgba(0,0,0,5)',
-                                                }}>
-                                        {section.title}
-                                    </Typography>
-                                )}
-                                {(selectedSection === null) && (
-                                    <Typography variant="h1"
-                                                sx={{
-                                                    color: 'white', position: 'absolute', bottom: '10rem', right: '-80px',
-                                                    fontWeight: 'bold',
-                                                    fontFamily: 'Ultra',
-                                                    textShadow: '3px 3px 6px rgba(0,0,0,5)',
-                                                    transform: 'rotate(270deg)',
-                                                }}>
-                                        {section.title}
-                                    </Typography>
-                                )}
+                                <SectionTypography
+                                    isSelected={selectedSection !== null}
+                                >
+
+                                    {section.title}
+                                </SectionTypography>
                             </Section>
-                        </SectionContainer>
-                    ))}
-                    <Box className="section-content" sx={{ height: selectedSection !== null ? '86.5%' : '0' }}>
-                        <Typography variant="body1">
-                            {getContentById(selectedSection)}
-                        </Typography>
+                            ))}
+
+
+                        </SectionBox>
+                        <ContentsBox
+                            isSelected={selectedSection !== null}
+                        >
+                            <Typography variant="body1">
+                                {getContentById(selectedSection)}
+                            </Typography>
+                        </ContentsBox>
+
+
+
                     </Box>
-                </Container>
-            </Box>
+
+                </Box>
+
         </>
-    );
-};
+
+)
+}
 
 export default Main;

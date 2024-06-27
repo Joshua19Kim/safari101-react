@@ -8,13 +8,14 @@ import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import logoImage from '../assets/img/tazania101Logo.jpeg';
 import { Link } from "react-router-dom";
 import {Grid} from "@mui/material";
+import logoImage from '../assets/img/tazania101Logo-cutout.png';
 
 
 const Logo = styled('img')({
-    maxHeight: 40,
+    maxHeight: 55,
+    marginTop: "1rem"
 })
 
 
