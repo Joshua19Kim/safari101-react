@@ -362,44 +362,6 @@ export interface AdminTransferTokenPermission extends Schema.CollectionType {
   };
 }
 
-export interface ApiSafarisSafaris extends Schema.CollectionType {
-  collectionName: 'safarises';
-  info: {
-    singularName: 'safaris';
-    pluralName: 'safarises';
-    displayName: 'safaris';
-    description: '';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    safariName: Attribute.String;
-    safariPrice: Attribute.Integer;
-    safariDescription: Attribute.String;
-    safariMainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
-    safariImages: Attribute.Media<
-      'images' | 'files' | 'videos' | 'audios',
-      true
-    >;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::safaris.safaris',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::safaris.safaris',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
 export interface PluginUploadFile extends Schema.CollectionType {
   collectionName: 'files';
   info: {
@@ -826,6 +788,142 @@ export interface PluginI18NLocale extends Schema.CollectionType {
   };
 }
 
+export interface ApiAboutUsAboutUs extends Schema.SingleType {
+  collectionName: 'about_uses';
+  info: {
+    singularName: 'about-us';
+    pluralName: 'about-uses';
+    displayName: 'AboutUs';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    CompanyName: Attribute.String;
+    CompanyDescription: Attribute.Text;
+    CompanyImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::about-us.about-us',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::about-us.about-us',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiClimbingClimbing extends Schema.CollectionType {
+  collectionName: 'climbings';
+  info: {
+    singularName: 'climbing';
+    pluralName: 'climbings';
+    displayName: 'Climbing';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    climbingName: Attribute.String;
+    climbingDescription: Attribute.Text;
+    climbingPrice: Attribute.Integer;
+    climbingMainImage: Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::climbing.climbing',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::climbing.climbing',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiDayTripDayTrip extends Schema.CollectionType {
+  collectionName: 'day_trips';
+  info: {
+    singularName: 'day-trip';
+    pluralName: 'day-trips';
+    displayName: 'DayTrip';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    dayTripName: Attribute.String;
+    dayTripDescription: Attribute.Text;
+    dayTripPrice: Attribute.Integer;
+    dayTripMainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::day-trip.day-trip',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::day-trip.day-trip',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiSafarisSafaris extends Schema.CollectionType {
+  collectionName: 'safarises';
+  info: {
+    singularName: 'safaris';
+    pluralName: 'safarises';
+    displayName: 'Safaris';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    safariName: Attribute.String;
+    safariPrice: Attribute.Integer;
+    safariDescription: Attribute.String;
+    safariMainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::safaris.safaris',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::safaris.safaris',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -836,7 +934,6 @@ declare module '@strapi/types' {
       'admin::api-token-permission': AdminApiTokenPermission;
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
-      'api::safaris.safaris': ApiSafarisSafaris;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;
@@ -845,6 +942,10 @@ declare module '@strapi/types' {
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'plugin::i18n.locale': PluginI18NLocale;
+      'api::about-us.about-us': ApiAboutUsAboutUs;
+      'api::climbing.climbing': ApiClimbingClimbing;
+      'api::day-trip.day-trip': ApiDayTripDayTrip;
+      'api::safaris.safaris': ApiSafarisSafaris;
     }
   }
 }

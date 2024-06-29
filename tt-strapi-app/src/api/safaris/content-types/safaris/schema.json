@@ -4,7 +4,7 @@
   "info": {
     "singularName": "safaris",
     "pluralName": "safarises",
-    "displayName": "safaris",
+    "displayName": "Safaris",
     "description": ""
   },
   "options": {
@@ -22,24 +22,15 @@
       "type": "string"
     },
     "safariMainImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": false
-    },
-    "safariImages": {
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
     }
   }
 }
