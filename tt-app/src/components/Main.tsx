@@ -21,37 +21,44 @@ const backgroundImage = "safariBackground.jpg"
 const Main = () => {
     const [contentsList, setContentsList] = useState<Content[]>([]);
     const [selectedSection, setSelectedSection] = useState<string | null>(null);
-
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSectionClick = (id: string) => {
         setSelectedSection(selectedSection === id ? null : id);
     };
 
     useEffect(() => {
-        const fetchSafari = async() => {
+        const fetchContents = async() => {
             try {
                 if(selectedSection !== null) {
+                    setIsLoading(true);
                     const response = await getData(selectedSection);
                     setContentsList(response.data);
-                    console.log(response.data[0]);
-
+                    // console.log(response.data[0]);
+                } else {
+                    setContentsList([]);
                 }
             } catch(error) {
                 console.error('Error fetching items', error);
+            } finally {
+                setIsLoading(false);
             }
         };
-        fetchSafari();
+        fetchContents();
     }, [selectedSection]);
 
     const SafariCard: React.FC<{ safari: Safari }> = ({ safari }) => {
+        if (!safari || !safari.attributes || !safari.attributes.safariMainImage) {
+            return null;
+        }
         return (
             <Card sx={{ height: '20%', width: '80%', maxWidth: 345, margin: '1rem' }}>
-                {/*<CardMedia*/}
-                {/*    component="img"*/}
-                {/*    height="140"*/}
-                {/*    image={`http://localhost:1337${safari.attributes.safariMainImage.data.attributes.url}`}*/}
-                {/*    alt={safari.attributes.safariName}*/}
-                {/*/>*/}
+                <CardMedia
+                    component="img"
+                    height="140"
+                    image={`http://localhost:1337${safari.attributes.safariMainImage.data.attributes.url}`}
+                    alt={safari.attributes.safariName}
+                />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
                         {safari.attributes.safariName}
@@ -68,14 +75,17 @@ const Main = () => {
     };
 
     const ClimbingCard: React.FC<{ climbing: Climbing }> = ({ climbing }) => {
+        if (!climbing || !climbing.attributes || !climbing.attributes.climbingMainImage) {
+            return null;
+        }
         return (
             <Card sx={{ height: '20%', width: '80%', maxWidth: 345, margin: '1rem' }}>
-                {/*<CardMedia*/}
-                {/*    component="img"*/}
-                {/*    height="140"*/}
-                {/*    image={`http://localhost:1337${climbing.attributes.climbingMainImage.data.attributes.url}`}*/}
-                {/*    alt={climbing.attributes.climbingName}*/}
-                {/*/>*/}
+                <CardMedia
+                    component="img"
+                    height="140"
+                    image={`http://localhost:1337${climbing.attributes.climbingMainImage.data.attributes.url}`}
+                    alt={climbing.attributes.climbingName}
+                />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
                         {climbing.attributes.climbingName}
@@ -91,14 +101,17 @@ const Main = () => {
         );
     };
     const DayTripCard: React.FC<{ dayTrip: DayTrip }> = ({ dayTrip }) => {
+        if (!dayTrip || !dayTrip.attributes || !dayTrip.attributes.dayTripMainImage) {
+            return null;
+        }
         return (
             <Card sx={{ height: '20%', width: '80%', maxWidth: 345, margin: '1rem' }}>
-                {/*<CardMedia*/}
-                {/*    component="img"*/}
-                {/*    height="140"*/}
-                {/*    image={`http://localhost:1337${dayTrip.attributes.dayTripMainImage.data.attributes.url}`}*/}
-                {/*    alt={dayTrip.attributes.dayTripName}*/}
-                {/*/>*/}
+                <CardMedia
+                    component="img"
+                    height="140"
+                    image={`http://localhost:1337${dayTrip.attributes.dayTripMainImage.data.attributes.url}`}
+                    alt={dayTrip.attributes.dayTripName}
+                />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
                         {dayTrip.attributes.dayTripName}
@@ -127,53 +140,54 @@ const Main = () => {
                             isSelected={selectedSection !== null}
                         >
                             {mainSections.map((section) => (
-                            <Section
-                                onClick={() => handleSectionClick(section.id)}
-                                 sx={{
-                                     backgroundImage: `url(${require(`../assets/img/${section.image}`)})`,
-                                     backgroundSize: 'cover',
-                                     backgroundPosition: 'center',
-                                     '&::before': {
-                                         content: '""',
-                                         position: 'absolute',
-                                         background: `url(${require(`../assets/img/${section.image}`)}) no-repeat center center / cover`,
-                                         filter: (selectedSection !== null) ? 'blur(3px)' : 'none',
-                                         transition: 'filter 0.3s ease-in-out',
-                                     },
-                                 }}
-                            >
-                                <SectionTypography
+                                <Section
+                                    key={section.id}
                                     isSelected={selectedSection !== null}
+                                    onClick={() => handleSectionClick(section.id)}
+                                    sx={{
+                                        backgroundImage: `url(${require(`../assets/img/${section.image}`)})`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center',
+                                        '&::before': {
+                                            content: '""',
+                                            position: 'absolute',
+                                            background: `url(${require(`../assets/img/${section.image}`)}) no-repeat center center / cover`,
+                                            filter: (selectedSection !== null) ? 'blur(3px)' : 'none',
+                                            transition: 'filter 0.3s ease-in-out',
+                                        },
+                                    }}
                                 >
-
-                                    {section.title}
-                                </SectionTypography>
-                            </Section>
+                                    <SectionTypography isSelected={selectedSection !== null}>
+                                        {section.title}
+                                    </SectionTypography>
+                                </Section>
                             ))}
-
-
                         </SectionBox>
-                        <ContentsBox
-                            isSelected={selectedSection !== null}
-                        >
+                        <ContentsBox isSelected={selectedSection !== null}>
                             <Box sx={{ height: '90%', width: '99%', padding: '2rem' }}>
-                                <Grid container spacing={2}>
-                                    {selectedSection === 'safarises' && contentsList.map((content) => (
-                                        <Grid item xs={12} sm={6} md={4} key={content.id}>
-                                            <SafariCard safari={content as Safari}/>
-                                        </Grid>
-                                    ))}
-                                    {selectedSection === 'climbings' && contentsList.map((content) => (
-                                        <Grid item xs={12} sm={6} md={4} key={content.id}>
-                                            <ClimbingCard climbing={content as Climbing}/>
-                                        </Grid>
-                                    ))}
-                                    {selectedSection === 'day-trips' && contentsList.map((content) => (
-                                        <Grid item xs={12} sm={6} md={4} key={content.id}>
-                                            <DayTripCard dayTrip={content as DayTrip}/>
-                                        </Grid>
-                                    ))}
-                                </Grid>
+                                {isLoading ? (
+                                    <Typography>Loading...</Typography>
+                                ) : contentsList.length > 0 ? (
+                                    <Grid container spacing={2}>
+                                        {selectedSection === 'safarises' && contentsList.map((content) => (
+                                            <Grid item xs={12} sm={6} md={4} key={content.id}>
+                                                <SafariCard safari={content as Safari}/>
+                                            </Grid>
+                                        ))}
+                                        {selectedSection === 'climbings' && contentsList.map((content) => (
+                                            <Grid item xs={12} sm={6} md={4} key={content.id}>
+                                                <ClimbingCard climbing={content as Climbing}/>
+                                            </Grid>
+                                        ))}
+                                        {selectedSection === 'day-trips' && contentsList.map((content) => (
+                                            <Grid item xs={12} sm={6} md={4} key={content.id}>
+                                                <DayTripCard dayTrip={content as DayTrip}/>
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                ) : (
+                                    <Typography>No content available.</Typography>
+                                )}
                             </Box>
                         </ContentsBox>
 

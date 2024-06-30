@@ -3,7 +3,7 @@ import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-interface SectionBoxProps {
+interface SelectedProps {
     isSelected: boolean;
 }
 
@@ -33,7 +33,7 @@ export const Background = styled(Box)<BackgroundImageProps>(({ bgImage }) => ({
 }));
 
 
-export const SectionBox = styled(Box)<SectionBoxProps>(({ isSelected }) => ({
+export const SectionBox = styled(Box)<SelectedProps>(({ isSelected }) => ({
     display: 'flex',
     flexDirection: 'row',
     height: isSelected ? '8%' : '100%',
@@ -44,37 +44,48 @@ export const SectionBox = styled(Box)<SectionBoxProps>(({ isSelected }) => ({
     transition: 'height 0.3s ease-in-out',
 }));
 
-interface SectionTypographyProps {
-    isSelected: boolean;
-}
 
-export const SectionTypography = styled(Typography)<SectionTypographyProps>(({ isSelected }) => ({
-    fontSize: isSelected ? '2vw' : '5vw',
+export const SectionTypography = styled(Typography)<SelectedProps>(({ isSelected }) => ({
+    fontSize: isSelected ? '2vw' : '7vw',
     color: 'white',
     position: 'absolute',
     fontWeight: 'bold',
     fontFamily: 'roboto',
-    top: isSelected ? '0%' : '30%',
+    top: isSelected ? '0%' : '50%',
+    // bottom: isSelected ? 'auto' : '0',
     left: isSelected ? '10%' : '2%',
     right: isSelected ? 'auto' : '50%',
     textShadow: '3px 3px 6px rgba(0,0,0,5)',
     transform: isSelected ? 'rotate(0deg)' : 'rotate(270deg)',
     whiteSpace: 'nowrap',
+    zIndex: 2,
 }));
 
-export const Section = styled(Box)({
+export const Section = styled(Box)<SelectedProps>(({ isSelected }) => ({
     flex: 1,
     height: '100%',
     width: '33.33%',
     position: 'relative',
-    transition: 'height 0.3s ease-in-out',
+    transition: 'all 0.3s ease-in-out',
     overflow: 'hidden',
     '&:hover': {
         opacity: 0.8,
     },
-});
+    '&::before': {
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.3)', // Adjust the last value (0.3) for darkness
+        opacity: isSelected ? 1 : 0,
+        transition: 'opacity 0.3s ease-in-out',
+        zIndex: 1,
+    },
+}));
 
-export const ContentsBox = styled(Box)<SectionBoxProps>(({ isSelected }) => ({
+export const ContentsBox = styled(Box)<SelectedProps>(({ isSelected }) => ({
     display: 'flex',
     flexDirection: 'row',
     height: isSelected ? '92%' : '0%',

@@ -1,3 +1,6 @@
+
+type Content = Safari | Climbing | DayTrip;
+
 type Safari = {
     id: number;
     attributes: {
@@ -48,4 +51,4 @@ type DayTrip = {
         };
     };
 }
-type Content = Safari | Climbing | DayTrip;
+
