@@ -55,7 +55,7 @@ const Main = () => {
             <Card sx={{ height: '20%', width: '80%', maxWidth: 345, margin: '1rem' }}>
                 <CardMedia
                     component="img"
-                    height="140"
+                    height="300"
                     image={`http://localhost:1337${safari.attributes.safariMainImage.data.attributes.url}`}
                     alt={safari.attributes.safariName}
                 />
