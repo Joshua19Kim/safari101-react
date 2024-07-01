@@ -48,34 +48,47 @@ const Main = () => {
     }, [selectedSection]);
 
     const SafariCard: React.FC<{ safari: Safari }> = ({ safari }) => {
-        if (!safari || !safari.attributes || !safari.attributes.safariMainImage) {
+        if (!safari || !safari.attributes) {
             return null;
         }
         return (
-            <Card sx={{ height: '20%', width: '80%', maxWidth: 345, margin: '1rem' }}>
-                <CardMedia
-                    component="img"
-                    height="300"
-                    image={`http://localhost:1337${safari.attributes.safariMainImage.data.attributes.url}`}
-                    alt={safari.attributes.safariName}
-                />
-                <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                        {safari.attributes.safariName}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                        {safari.attributes.safariDescription}
-                    </Typography>
-                    <Typography variant="h6" component="div">
-                        ${safari.attributes.safariPrice}
-                    </Typography>
-                </CardContent>
-            </Card>
+                <Grid container direction="row" sx={{ height:'20vh', width:'90vw', backgroundColor:'white'}}
+                      >
+                    <Grid item xs={4} md={2} sx={{ height:'20vh', width:'20%'}} >
+                        <img
+                            src={`http://localhost:1337${safari.attributes.safariMainImage.data.attributes.url}`}
+                            alt={safari.attributes.safariName}
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                            }}
+                        />
+                            </Grid>
+                    <Grid item xs={6} md={7} >
+                        <Typography gutterBottom variant="h5" component="div">
+                            {safari.attributes.safariName}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            {safari.attributes.safariDescription}
+                        </Typography>
+                        <Typography variant="h6" component="div">
+                            ${safari.attributes.safariPrice}
+                        </Typography>
+
+
+
+
+                    </Grid>
+
+                </Grid>
+
+
         );
     };
 
     const ClimbingCard: React.FC<{ climbing: Climbing }> = ({ climbing }) => {
-        if (!climbing || !climbing.attributes || !climbing.attributes.climbingMainImage) {
+        if (!climbing || !climbing.attributes) {
             return null;
         }
         return (
@@ -101,7 +114,7 @@ const Main = () => {
         );
     };
     const DayTripCard: React.FC<{ dayTrip: DayTrip }> = ({ dayTrip }) => {
-        if (!dayTrip || !dayTrip.attributes || !dayTrip.attributes.dayTripMainImage) {
+        if (!dayTrip || !dayTrip.attributes) {
             return null;
         }
         return (
@@ -151,6 +164,10 @@ const Main = () => {
                                         '&::before': {
                                             content: '""',
                                             position: 'absolute',
+                                            top: '-10px',
+                                            left: '-10px',
+                                            right: '-10px',
+                                            bottom: '-10px',
                                             background: `url(${require(`../assets/img/${section.image}`)}) no-repeat center center / cover`,
                                             filter: (selectedSection !== null) ? 'blur(3px)' : 'none',
                                             transition: 'filter 0.3s ease-in-out',
@@ -164,11 +181,13 @@ const Main = () => {
                             ))}
                         </SectionBox>
                         <ContentsBox isSelected={selectedSection !== null}>
-                            <Box sx={{ height: '90%', width: '99%', padding: '2rem' }}>
+                            <Box sx={{width: '99%', marginTop: '22%', marginBottom: '5%', padding: '1rem', alignItems:'center',alignContent:'center',  }}>
                                 {isLoading ? (
                                     <Typography>Loading...</Typography>
                                 ) : contentsList.length > 0 ? (
-                                    <Grid container spacing={2}>
+                                    <Grid container rowSpacing={2} direction="column"
+                                          justifyContent="center"
+                                          alignItems="center">
                                         {selectedSection === 'safarises' && contentsList.map((content) => (
                                             <Grid item xs={12} sm={6} md={4} key={content.id}>
                                                 <SafariCard safari={content as Safari}/>

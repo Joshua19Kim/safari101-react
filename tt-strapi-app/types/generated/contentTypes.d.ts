@@ -890,6 +890,36 @@ export interface ApiDayTripDayTrip extends Schema.CollectionType {
   };
 }
 
+export interface ApiRequestRequest extends Schema.SingleType {
+  collectionName: 'requests';
+  info: {
+    singularName: 'request';
+    pluralName: 'requests';
+    displayName: 'Request';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    TypeOfTrip: Attribute.Enumeration<['safari', 'climbing', 'dayTrip']>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::request.request',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::request.request',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiSafarisSafaris extends Schema.CollectionType {
   collectionName: 'safarises';
   info: {
@@ -945,6 +975,7 @@ declare module '@strapi/types' {
       'api::about-us.about-us': ApiAboutUsAboutUs;
       'api::climbing.climbing': ApiClimbingClimbing;
       'api::day-trip.day-trip': ApiDayTripDayTrip;
+      'api::request.request': ApiRequestRequest;
       'api::safaris.safaris': ApiSafarisSafaris;
     }
   }
