@@ -46,7 +46,7 @@ export const SectionBox = styled(Box)<SelectedProps>(({ isSelected }) => ({
 
 
 export const SectionTypography = styled(Typography)<SelectedProps>(({ isSelected }) => ({
-    fontSize: isSelected ? '2vw' : '7vw',
+    fontSize: isSelected ? '3vw' : '7vw',
     color: 'white',
     position: 'absolute',
     fontWeight: 'bold',
@@ -86,8 +86,8 @@ export const Section = styled(Box)<SelectedProps>(({ isSelected }) => ({
 
 export const ContentsBox = styled(Box)<SelectedProps>(({ isSelected }) => ({
     display: 'flex',
-    flexDirection: 'row',
-    height: isSelected ? '92%' : '0%',
+    flexDirection: 'column',
+    height: isSelected ? '100%' : '0%',
     width: '100%',
     cursor: 'pointer',
     justifyContent: 'center',
@@ -95,6 +95,7 @@ export const ContentsBox = styled(Box)<SelectedProps>(({ isSelected }) => ({
     transition: 'height 0.3s ease-in-out',
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
     overflowY: 'auto', // Add this line to enable vertical scrolling
+    overflowX: 'hidden',
     '&::-webkit-scrollbar': {
         width: '8px',
     },
@@ -109,4 +110,6 @@ export const ContentsBox = styled(Box)<SelectedProps>(({ isSelected }) => ({
         background: '#555',
     },
 }));
+
+
 

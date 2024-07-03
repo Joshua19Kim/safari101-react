@@ -12,16 +12,16 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "safariName": {
+    "name": {
       "type": "string"
     },
-    "safariPrice": {
+    "price": {
       "type": "integer"
     },
-    "safariDescription": {
-      "type": "string"
+    "description": {
+      "type": "text"
     },
-    "safariMainImage": {
+    "mainImage": {
       "type": "media",
       "multiple": false,
       "required": false,
