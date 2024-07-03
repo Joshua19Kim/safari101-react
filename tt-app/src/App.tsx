@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import NotFound from "./components/NotFound"
-import Main from "./components/Main"
+import LandingPage from "./components/LandingPage"
 import Test from "./components/Test"
 import Contact from "./components/Contact";
 import AboutUs from "./components/AboutUs";
@@ -15,7 +15,7 @@ function App() {
         <Router>
           <div>
             <Routes>
-              <Route path="/" element={<Main/>}/>
+              <Route path="/" element={<LandingPage/>}/>
                 <Route path="/contact" element={<Contact/>}/>
                 <Route path="/aboutus" element={<AboutUs/>}/>
                 <Route path="/request" element={<Request/>}/>

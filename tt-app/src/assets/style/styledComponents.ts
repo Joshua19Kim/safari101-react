@@ -46,13 +46,12 @@ export const SectionBox = styled(Box)<SelectedProps>(({ isSelected }) => ({
 
 
 export const SectionTypography = styled(Typography)<SelectedProps>(({ isSelected }) => ({
-    fontSize: isSelected ? '2vw' : '7vw',
+    fontSize: isSelected ? '3vw' : '7vw',
     color: 'white',
     position: 'absolute',
     fontWeight: 'bold',
     fontFamily: 'roboto',
     top: isSelected ? '0%' : '50%',
-    // bottom: isSelected ? 'auto' : '0',
     left: isSelected ? '10%' : '2%',
     right: isSelected ? 'auto' : '50%',
     textShadow: '3px 3px 6px rgba(0,0,0,5)',
@@ -87,13 +86,30 @@ export const Section = styled(Box)<SelectedProps>(({ isSelected }) => ({
 
 export const ContentsBox = styled(Box)<SelectedProps>(({ isSelected }) => ({
     display: 'flex',
-    flexDirection: 'row',
-    height: isSelected ? '92%' : '0%',
+    flexDirection: 'column',
+    height: isSelected ? '100%' : '0%',
     width: '100%',
     cursor: 'pointer',
     justifyContent: 'center',
     alignItems: 'center',
     transition: 'height 0.3s ease-in-out',
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    overflowY: 'auto', // Add this line to enable vertical scrolling
+    overflowX: 'hidden',
+    '&::-webkit-scrollbar': {
+        width: '8px',
+    },
+    '&::-webkit-scrollbar-track': {
+        background: '#f1f1f1',
+    },
+    '&::-webkit-scrollbar-thumb': {
+        background: '#888',
+        borderRadius: '4px',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+        background: '#555',
+    },
 }));
+
+
 

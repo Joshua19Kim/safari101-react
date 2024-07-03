@@ -5,14 +5,13 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
 import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import HomeIcon from '@mui/icons-material/Home';
 import SendIcon from '@mui/icons-material/Send';
 import GradingIcon from '@mui/icons-material/Grading';
 import InfoIcon from '@mui/icons-material/Info';
 
+import NavBarLink from "../assets/style/NavBarTextWithLink";
 import { Link, useLocation } from "react-router-dom";
 import {Drawer, Grid, ListItem, ListItemIcon, ListItemText} from "@mui/material";
 import logoImage from '../assets/img/tazania101Logo-cutout.png';
@@ -20,7 +19,9 @@ import List from '@mui/material/List';
 
 const Logo = styled('img')({
     maxHeight: 55,
-    marginTop: "1rem"
+    marginTop: "1rem",
+    height:'5vw',
+    width: 'auto',
 });
 
 interface SidebarProps {
@@ -30,7 +31,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     return (
-        <Drawer anchor="left" open={isOpen} onClose={onClose}>
+        <Drawer anchor="right" open={isOpen} onClose={onClose}>
             <Box
                 sx={{ width: 250 }}
                 role="presentation"
@@ -68,53 +69,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     );
 };
 
-const Search = styled('div')(({ theme }) => ({
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
-        backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(1),
-        width: 'auto',
-    },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'inherit',
-    width: '100%',
-    '& .MuiInputBase-input': {
-        padding: theme.spacing(1, 1, 1, 0),
-        // vertical padding + font size from searchIcon
-        paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-        transition: theme.transitions.create('width'),
-        [theme.breakpoints.up('sm')]: {
-            width: '12ch',
-            '&:focus': {
-                width: '20ch',
-            },
-        },
-    },
-}));
-
 export default function SearchAppBar() {
-    const [isSearchClicked, setIsSearchClicked] = React.useState<boolean>(false);
-    const searchRef = React.useRef<HTMLDivElement>(null);
-    const inputRef = React.useRef<HTMLInputElement>(null);
 
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
     const location = useLocation();
@@ -128,92 +83,62 @@ export default function SearchAppBar() {
         setIsSidebarOpen(!isSidebarOpen);
     }
 
-    const handleSearchClick = () => {
-        setIsSearchClicked(true);
-        setTimeout(() => {
-            inputRef.current?.focus();
-        }, 100);
-    };
-
-    const handleClickOutside = (event: MouseEvent) => {
-        if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-            setIsSearchClicked(false);
-        }
-    };
-
-    React.useEffect(() => {
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="fixed" sx={{ backgroundColor: 'transparent', boxShadow: 'none', maxHeight: 50 }}>
+            <AppBar position="fixed" sx={{ backgroundColor: '#c58a60', boxShadow: 'none', height: '9vh' }}>
                 <Toolbar>
                     <Grid container alignItems="center">
-                        <Grid item xs={4} container justifyContent="flex-start">
-                            <IconButton
-                                size="large"
-                                edge="start"
-                                color="inherit"
-                                aria-label="open drawer"
-                                sx={{ mr: 2 }}
-                                onClick={toggleSidebar}
-                            >
-                                <MenuIcon />
-                            </IconButton>
-                        </Grid>
-                        <Grid item xs={4} container justifyContent="center">
+
+                        <Grid item xs={4} container justifyContent="left">
                             <Box sx={{ textAlign: 'center' }}>
                                 <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                    <Logo src={logoImage} alt="Logo" />
+                                    <Logo
+                                          src={logoImage} alt="Logo" />
                                 </Link>
 
                             </Box>
                         </Grid>
                         <Grid item xs={4} container justifyContent="flex-end">
-                            <Link to="/request" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <Typography
-                                    variant="h6"
-                                    noWrap
-                                    component="a"
-                                    href="#app-bar-with-responsive-menu"
-                                    sx={{
-                                        mr: 2,
-                                        display: { xs: 'none', sm: 'none', md: 'flex' },
-                                        fontFamily: 'monospace',
-                                        fontWeight: 700,
-                                        fontSize: { xs: '4vw', md: '3vh' },
-                                        color: 'inherit',
-                                        textDecoration: 'none',
-                                        marginRight: '2rem',
-                                        textShadow: '3px 3px 6px rgba(0,0,0,5)',
-                                    }}
-                                >
-                                    Request
-                                </Typography>
-                            </Link>
-                            <div ref={searchRef}>
-                                {isSearchClicked ? (
-                                    <Search>
-                                        <SearchIconWrapper>
-                                            <SearchIcon />
-                                        </SearchIconWrapper>
-                                        <StyledInputBase
-                                            placeholder="Search…"
-                                            inputProps={{ 'aria-label': 'search' }}
-                                            inputRef={inputRef}
-                                        />
-                                    </Search>
-                                ) : (
-                                    <SearchIcon onClick={handleSearchClick}
-                                                sx={{
-                                                    marginTop: '1rem',
-                                                    display: { xs: 'flex', sm: 'flex', md: 'flex' } }} />
-                                )}
-                            </div>
+                            <NavBarLink to="/contact" text="Contact" />
+
+                        </Grid>
+                        <Grid item xs={4} container justifyContent="flex-end">
+                            <Box className="Nav-request">
+                                <Link to='/request' style={{ textDecoration: 'none', color: 'inherit' }}>
+                                    <Typography
+                                        variant="h6"
+                                        noWrap
+                                        component="a"
+                                        sx={{
+                                            mr: 2,
+                                            display: { xs: 'none', sm: 'none', md: 'flex' },
+                                            fontFamily: 'monospace',
+                                            fontWeight: 700,
+                                            fontSize: { md: '3vh' },
+                                            color: 'inherit',
+                                            textDecoration: 'none',
+                                            marginRight: '1rem',
+                                            textShadow: '3px 3px 6px rgba(0,0,0,5)',
+                                        }}>
+                                        Request
+                                    </Typography>
+                                </Link>
+                            </Box>
+
+                            <IconButton
+                                className="Nav-menu-icon"
+                                size="large"
+                                edge="start"
+                                color="inherit"
+                                aria-label="open drawer"
+                                sx={{ mr: 2,
+                                    display: { xs: 'flex', sm: 'flex', md: 'none' },
+                                }}
+                                onClick={toggleSidebar}
+                            >
+                                <MenuIcon />
+                            </IconButton>
                         </Grid>
                     </Grid>
                 </Toolbar>

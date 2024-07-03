@@ -832,12 +832,9 @@ export interface ApiClimbingClimbing extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    climbingName: Attribute.String;
-    climbingDescription: Attribute.Text;
-    climbingPrice: Attribute.Integer;
-    climbingMainImage: Attribute.Media<
-      'images' | 'files' | 'videos' | 'audios'
-    >;
+    name: Attribute.String;
+    description: Attribute.Text;
+    mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -868,10 +865,10 @@ export interface ApiDayTripDayTrip extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    dayTripName: Attribute.String;
-    dayTripDescription: Attribute.Text;
-    dayTripPrice: Attribute.Integer;
-    dayTripMainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    name: Attribute.String;
+    description: Attribute.Text;
+    price: Attribute.Integer;
+    mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -883,6 +880,70 @@ export interface ApiDayTripDayTrip extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::day-trip.day-trip',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiKilimanjaroKilimanjaro extends Schema.CollectionType {
+  collectionName: 'kilimanjaros';
+  info: {
+    singularName: 'kilimanjaro';
+    pluralName: 'kilimanjaros';
+    displayName: 'Kilimanjaro';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String;
+    price: Attribute.Integer;
+    description: Attribute.Text;
+    mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::kilimanjaro.kilimanjaro',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::kilimanjaro.kilimanjaro',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiRequestRequest extends Schema.SingleType {
+  collectionName: 'requests';
+  info: {
+    singularName: 'request';
+    pluralName: 'requests';
+    displayName: 'Request';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    TypeOfTrip: Attribute.Enumeration<['safari', 'climbing', 'dayTrip']>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::request.request',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::request.request',
       'oneToOne',
       'admin::user'
     > &
@@ -902,10 +963,10 @@ export interface ApiSafarisSafaris extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    safariName: Attribute.String;
-    safariPrice: Attribute.Integer;
-    safariDescription: Attribute.String;
-    safariMainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    name: Attribute.String;
+    price: Attribute.Integer;
+    description: Attribute.Text;
+    mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -945,6 +1006,8 @@ declare module '@strapi/types' {
       'api::about-us.about-us': ApiAboutUsAboutUs;
       'api::climbing.climbing': ApiClimbingClimbing;
       'api::day-trip.day-trip': ApiDayTripDayTrip;
+      'api::kilimanjaro.kilimanjaro': ApiKilimanjaroKilimanjaro;
+      'api::request.request': ApiRequestRequest;
       'api::safaris.safaris': ApiSafarisSafaris;
     }
   }
