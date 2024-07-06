@@ -1,13 +1,19 @@
-import {Container} from "reactstrap";
+import {Button, Container} from "reactstrap";
 import Box from "@mui/material/Box";
 import SearchAppBar from "./SearchAppBar";
+import RequestBox from "./RequestBox";
 import React from "react";
+import Typography from "@mui/material/Typography";
+import {Grid, TextField} from "@mui/material";
+import '../assets/css/Main.css';
+
+
 
 
 
 const backgroundImage = "mainLandingImage.jpg"
 
-const landingPage = () => {
+const LandingPage = () => {
 
 
     return (
@@ -15,16 +21,7 @@ const landingPage = () => {
             <SearchAppBar />
 
             <Container>
-                <Box sx={{
-                    width:'100vw',
-                    height:'40vh',
-                    marginTop:'9vh',
-                    backgroundImage: `url(${require(`../assets/img/${backgroundImage}`)})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                }}>
-
-                </Box>
+                <RequestBox image={backgroundImage} />
 
 
 
@@ -43,4 +40,4 @@ const landingPage = () => {
 
 }
 
-export default landingPage;
+export default LandingPage;

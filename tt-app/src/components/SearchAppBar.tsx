@@ -90,7 +90,7 @@ export default function SearchAppBar() {
                 <Toolbar>
                     <Grid container alignItems="center">
 
-                        <Grid item xs={4} container justifyContent="left">
+                        <Grid item xs={1} container justifyContent="left">
                             <Box sx={{ textAlign: 'center' }}>
                                 <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
                                     <Logo
@@ -99,11 +99,24 @@ export default function SearchAppBar() {
 
                             </Box>
                         </Grid>
-                        <Grid item xs={4} container justifyContent="flex-end">
-                            <NavBarLink to="/contact" text="Contact" />
+                        <Grid item md={10} container justifyContent="flex-end">
+                            {/*<Box sx={{*/}
+                            {/*    flexDirection:'column'*/}
+                            {/*}}>*/}
+                                <NavBarLink to="/contact" text="East Africa" />
+                                <NavBarLink to="/contact" text="Safaris" />
+                                <NavBarLink to="/contact" text="Kilimanjaro" />
+                                <NavBarLink to="/contact" text="Climbing" />
+                                <NavBarLink to="/contact" text="Zanzibar" />
+                                <NavBarLink to="/contact" text="Day Trips" />
+                                <NavBarLink to="/contact" text="Photograpic Safari" />
+                                <NavBarLink to="/contact" text="Contact" />
+
+                            {/*</Box>*/}
+
 
                         </Grid>
-                        <Grid item xs={4} container justifyContent="flex-end">
+                        <Grid item xs={1} container justifyContent="right">
                             <Box className="Nav-request">
                                 <Link to='/request' style={{ textDecoration: 'none', color: 'inherit' }}>
                                     <Typography
@@ -115,7 +128,7 @@ export default function SearchAppBar() {
                                             display: { xs: 'none', sm: 'none', md: 'flex' },
                                             fontFamily: 'monospace',
                                             fontWeight: 700,
-                                            fontSize: { md: '3vh' },
+                                            fontSize: { md: '2.5vh' },
                                             color: 'inherit',
                                             textDecoration: 'none',
                                             marginRight: '1rem',
@@ -124,21 +137,23 @@ export default function SearchAppBar() {
                                         Request
                                     </Typography>
                                 </Link>
+                                <IconButton
+                                    className="Nav-menu-icon"
+                                    size="large"
+                                    edge="start"
+                                    color="inherit"
+                                    aria-label="open drawer"
+                                    sx={{ mr: 2,
+                                        display: { xs: 'flex', sm: 'flex', md: 'none' },
+                                        alignSelf: 'right',
+                                    }}
+                                    onClick={toggleSidebar}
+                                >
+                                    <MenuIcon />
+                                </IconButton>
                             </Box>
 
-                            <IconButton
-                                className="Nav-menu-icon"
-                                size="large"
-                                edge="start"
-                                color="inherit"
-                                aria-label="open drawer"
-                                sx={{ mr: 2,
-                                    display: { xs: 'flex', sm: 'flex', md: 'none' },
-                                }}
-                                onClick={toggleSidebar}
-                            >
-                                <MenuIcon />
-                            </IconButton>
+
                         </Grid>
                     </Grid>
                 </Toolbar>

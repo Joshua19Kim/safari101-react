@@ -15,10 +15,10 @@ const NavBarLink: React.FC<NavBarLinkProps> = ({ to, text }) => (
             component="a"
             sx={{
                 mr: 2,
-                display: { xs: 'none', sm: 'flex', md: 'flex' },
+                display: { xs: 'none', sm: 'none', md: 'flex' },
                 fontFamily: 'monospace',
                 fontWeight: 700,
-                fontSize: { xs: '2vw', md: '3vh' },
+                fontSize: { xs: '2vh', md: '2vh' },
                 color: 'inherit',
                 textDecoration: 'none',
                 marginRight: '2rem',

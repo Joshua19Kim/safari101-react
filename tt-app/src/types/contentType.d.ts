@@ -1,5 +1,40 @@
 
+
+type Contents = {
+    id: number;
+    attributes: {
+        name: string;
+        price: number;
+        description: string;
+        mainImage: {
+            data: {
+                id: number;
+                attributes: {
+                    url: string;
+                };
+            };
+        };
+    };
+}
+
+type TripInfo = {
+    adults: number;
+    children: number;
+    arrivalDate: string;
+    description: string;
+    email: string;
+}
+
+
+
+
+
+
+
+
+
 type Content = Safari | Climbing | DayTrip;
+
 
 type Safari = {
     id: number;

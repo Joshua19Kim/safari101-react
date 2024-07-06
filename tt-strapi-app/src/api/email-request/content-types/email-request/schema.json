@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "email_requests",
+  "info": {
+    "singularName": "email-request",
+    "pluralName": "email-requests",
+    "displayName": "Email Request"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "adults": {
+      "type": "integer"
+    },
+    "children": {
+      "type": "integer"
+    },
+    "arrivalDate": {
+      "type": "date"
+    },
+    "description": {
+      "type": "text"
+    },
+    "email": {
+      "type": "email"
+    }
+  }
+}
