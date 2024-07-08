@@ -28,8 +28,6 @@ export const getData = async (endpoint: string) => {
 export const sendEmail = async (tripInfo: TripInfo) => {
     try {
         const payload = { data: tripInfo };
-        console.log('Sending payload:', JSON.stringify(payload, null, 2));
-
         const response = await fetch(`${API_URL}/email-requests`, {
             method: 'POST',
             headers: {
@@ -39,11 +37,7 @@ export const sendEmail = async (tripInfo: TripInfo) => {
             body: JSON.stringify(payload),
         });
 
-        console.log('Response status:', response.status);
-        console.log('Response headers:', JSON.stringify(Object.fromEntries(response.headers), null, 2));
-
         const responseText = await response.text();
-        console.log('Response body:', responseText);
 
         if (response.ok) {
             const result = JSON.parse(responseText);

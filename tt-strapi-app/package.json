@@ -11,6 +11,7 @@
     "deploy": "strapi deploy"
   },
   "dependencies": {
+    "@akemona-org/strapi-utils": "^3.15.1",
     "@strapi/plugin-cloud": "4.25.1",
     "@strapi/plugin-i18n": "4.25.1",
     "@strapi/plugin-users-permissions": "4.25.1",
@@ -18,12 +19,16 @@
     "@strapi/strapi": "4.25.1",
     "better-sqlite3": "8.6.0",
     "express": "^4.19.2",
+    "form-data": "^4.0.0",
+    "mailgun.js": "^10.2.1",
     "nodemailer": "^6.9.14",
+    "pino": "^9.2.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "5.3.4",
-    "strapi-provider-email-mailtrap": "^3.5.0",
-    "styled-components": "5.3.3"
+    "strapi-provider-email-mailgun": "^3.6.11",
+    "styled-components": "5.3.3",
+    "winston": "^3.13.0"
   },
   "author": {
     "name": "A Strapi developer"

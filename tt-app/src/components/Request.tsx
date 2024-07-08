@@ -57,7 +57,7 @@ const Request = () => {
 
         if (result.success) {
             alert(result.message);
-            navigate('/thank-you');
+            navigate('/request');
         } else {
             alert(result.error);
         }
