@@ -5,17 +5,15 @@ const nodemailer = require("nodemailer");
 
 module.exports = factories.createCoreService('api::email-request.email-request', ({ strapi }) => ({
   async sendEmail(data) {
-    console.log('sendEmail function called with data:', JSON.stringify(data, null, 2));
-
     const { adults, children, arrivalDate, description, email } = data;
 
     const emailRequest = {
-      host: "smtp.mailgun.org",
-      port: 587,
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
       secure: false,
       auth: {
-        user: "postmaster@sandbox35823f598f8a4b98bd0afccad17d029a.mailgun.org",
-        pass: "c25130ec3d2e80ffe9ff717e8a2f524f-623e10c8-6f3040bb",
+        user: process.env.SMTP_USERNAME,
+        pass: process.env.SMTP_PASSWORD,
       },
     };
 
@@ -44,7 +42,6 @@ module.exports = factories.createCoreService('api::email-request.email-request',
     };
 
     try {
-      console.log('Attempting to send email with content:', JSON.stringify(content, null, 2));
       const transporter = nodemailer.createTransport(emailRequest);
       const info = await transporter.sendMail(content);
       console.log('Email sent successfully:', info);

@@ -1,40 +1,19 @@
-import {Button, Container} from "reactstrap";
-import Box from "@mui/material/Box";
 import SearchAppBar from "./SearchAppBar";
+import React from "react";
+import {Background} from "../assets/style/styledComponents";
+import Box from "@mui/material/Box";
 import RequestBox from "./RequestBox";
-import React, {useEffect, useState} from "react";
-import Typography from "@mui/material/Typography";
-import {Grid, TextField} from "@mui/material";
-import '../assets/css/Main.css';
+import {Container} from "reactstrap";
 
 
 
-
-
-const backgroundImage = "mainLandingImage.jpg"
+const backgroundImage = "safariLion.jpg"
 const secondBackImage = "brightBackground.jpg"
 
-const LandingPage = () => {
-    const [scrollPosition, setScrollPosition] = useState(0);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            const position = window.pageYOffset;
-            setScrollPosition(position);
-        };
-
-        window.addEventListener('scroll', handleScroll, { passive: true });
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
-
-
+const Safaris = () => {
     return (
         <>
             <SearchAppBar />
-
             <Container>
                 <RequestBox image={backgroundImage} />
                 <Box sx={{
@@ -57,14 +36,9 @@ const LandingPage = () => {
             </Container>
 
 
+
         </>
-
-
     )
-
-
-
-
 }
 
-export default LandingPage;
+export default Safaris;
