@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "merus",
+  "info": {
+    "singularName": "meru",
+    "pluralName": "merus",
+    "displayName": "Meru"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "cost": {
+      "type": "integer"
+    },
+    "shortDescription": {
+      "type": "text"
+    },
+    "longDescription": {
+      "type": "text"
+    },
+    "mainImage": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    }
+  }
+}

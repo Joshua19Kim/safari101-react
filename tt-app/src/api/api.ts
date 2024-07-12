@@ -2,7 +2,7 @@ import axios from 'axios';
 import {useNavigate} from "react-router-dom";
 
 const API_URL = 'http://localhost:1337/api';
-const token = '388e41a7adcbfb76756fa06a32c084cc0f9ea451f3b15a56b307933af484c39da8a7c3c634c641c388dbbee12300b8424325dc0506b3c443a7c4494a1857d4b36862fab2382952bacef760dbb0bf979dc9860d091d38035ccff5c85ff7cf37d2788b1727f4aae678087d7fb3ea6804cfcca227d92d5de4863440f6f692d91970'; // Adjust according to your auth logic
+const token = '1136c14d3f92dc6cd15f01c55e9caf9b28a8fa33c38ab18c53669f782c161ad15e86c3783f6bc52291f1ec962dc32fb29e133bfe9a51a5ba803b4ff5fe38eea1cb480829e8a6ae8b483b49ae96432e2d126aa4f96106b788240e7b8d36c8466b5f214d12320fdbcadd7a5d08258a895d430f62c459949a4b541f142c3540dd51'; // Adjust according to your auth logic
 
 axios.interceptors.request.use(
     config => {

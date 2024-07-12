@@ -28,21 +28,16 @@ const ContentsPage = () => {
                 }}>
                     <Container>
                         <h1>{decodeURIComponent(contentTopic || '')}</h1>
-                        {/* Add your content here based on the category */}
-                        {/* For example: */}
                         {contentTopic === 'Safari' && (
                             <div>
                                 <h2>Safari Content</h2>
-                                {/* Add Safari-specific content */}
                             </div>
                         )}
                         {contentTopic === 'Kilimanjaro' && (
                             <div>
                                 <h2>Kilimanjaro Content</h2>
-                                {/* Add Kilimanjaro-specific content */}
                             </div>
                         )}
-                        {/* Add more conditions for other categories */}
                     </Container>
                 </Box>
             </Container>

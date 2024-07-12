@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "oldonyo_lengais",
+  "info": {
+    "singularName": "oldonyo-lengai",
+    "pluralName": "oldonyo-lengais",
+    "displayName": "OldonyoLengai"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "cost": {
+      "type": "integer"
+    },
+    "shortDescription": {
+      "type": "string"
+    },
+    "longDescription": {
+      "type": "text"
+    },
+    "mainImage": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    }
+  }
+}

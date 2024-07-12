@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "rwandas",
+  "info": {
+    "singularName": "rwanda",
+    "pluralName": "rwandas",
+    "displayName": "Rwanda"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "cost": {
+      "type": "integer"
+    },
+    "shortDescription": {
+      "type": "text"
+    },
+    "longDescription": {
+      "type": "text"
+    },
+    "mainlmage": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    }
+  }
+}

@@ -4,6 +4,24 @@ type Contents = {
     id: number;
     attributes: {
         name: string;
+        cost: number;
+        shortDescription: string;
+        longDescription: string;
+        mainImage: {
+            data: {
+                id: number;
+                attributes: {
+                    url: string;
+                };
+            };
+        };
+    };
+}
+
+type Category = {
+    id: number;
+    attributes: {
+        name: string;
         price: number;
         description: string;
         mainImage: {
