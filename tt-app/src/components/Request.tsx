@@ -10,6 +10,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import ChildCareIcon from "@mui/icons-material/ChildCare";
 import EmailIcon from '@mui/icons-material/Email';
 import {sendEmail} from "../api/api";
+import {TbMoodKid} from "react-icons/tb";
 
 
 
@@ -84,7 +85,9 @@ const Request = () => {
                        display:'flex',
                        alignItems:'center',
                        alignContent:'center',
-                       justifyContent:'center'
+                       justifyContent:'center',
+                       minWidth:'33rem',
+
                    }}
                >
 
@@ -98,7 +101,7 @@ const Request = () => {
                        }}
                    >
                        <Typography variant="h2" component="h1" gutterBottom>
-                           Request Page
+                           Request
                        </Typography>
                        <Grid container spacing={2}>
                            <Grid item container spacing={2}>
@@ -123,7 +126,9 @@ const Request = () => {
                                        value={tripInfo.children}
                                        fullWidth
                                        InputProps={{
-                                           endAdornment: <ChildCareIcon onClick={() => handleIconClick('children')} style={{ cursor: 'pointer' }} />,
+                                           endAdornment: <TbMoodKid onClick={() => handleIconClick('children')}
+                                                                    style={{ cursor: 'pointer', width: '32px', height: '32px' }}
+                                           />,
                                            inputMode: 'numeric',}}
                                        onChange={handleInputChange}
                                        margin="normal"
@@ -165,7 +170,7 @@ const Request = () => {
                            label="Trip Description"
                            name="description"
                            multiline
-                           rows={4}
+                           rows={5}
                            fullWidth
                            value={tripInfo.description}
                            onChange={handleInputChange}

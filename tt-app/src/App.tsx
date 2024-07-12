@@ -9,7 +9,8 @@ import LandingPage from "./components/LandingPage"
 import Contact from "./components/Contact";
 import AboutUs from "./components/AboutUs";
 import Request from "./components/Request";
-import Safaris from "./components/Safaris";
+import ContentsPage from "./components/ContentsPage";
+import CategoryPage from "./components/CategoryPage";
 
 
 function App() {
@@ -21,10 +22,11 @@ function App() {
                   <div>
                     <Routes>
                       <Route path="/" element={<LandingPage/>}/>
+                        <Route path="/category/:categoryName" element={<CategoryPage/>}/>
+                        <Route path="/contents/:contentTopic" element={<ContentsPage/>}/>
                         <Route path="/contact" element={<Contact/>}/>
                         <Route path="/aboutus" element={<AboutUs/>}/>
                         <Route path="/request" element={<Request/>}/>
-                        <Route path="/safaris" element={<Safaris/>}/>
                         <Route path="/*" element={<NotFound/>}/>
                     </Routes>
                   </div>

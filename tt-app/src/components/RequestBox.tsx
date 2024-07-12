@@ -2,8 +2,9 @@ import Box from "@mui/material/Box";
 import { Theme } from '@mui/material/styles';
 import Typography from "@mui/material/Typography";
 import {Grid, TextField} from "@mui/material";
+import { TbMoodKid } from "react-icons/tb";
 import PersonIcon from "@mui/icons-material/Person";
-import ChildCareIcon from "@mui/icons-material/ChildCare";
+
 import {Button} from "reactstrap";
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
@@ -59,8 +60,8 @@ export const RequestBox: React.FC<BackGroundImage> = ({image}) => {
             height:'40vh',
             marginTop:'9vh',
             backgroundImage: `url(${require(`../assets/img/${image}`)})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundSize: '100% auto',
+            backgroundPosition: 'center center',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'flex-start',
@@ -106,10 +107,13 @@ export const RequestBox: React.FC<BackGroundImage> = ({image}) => {
                             <TextField fullWidth
                                        name="children"
                                        InputProps={{
-                                           endAdornment: <ChildCareIcon onClick={() => handleIconClick('children')} style={{ cursor: 'pointer' }} />,
+                                           endAdornment: <TbMoodKid onClick={() => handleIconClick('children')}
+                                                                    style={{ cursor: 'pointer', width: '32px', height: '32px' }}
+                                           />,
                                            inputMode: 'numeric',}}
                                        value={tripInfo.children}
                                        onChange={handleInputChange}
+
                             />
                         </Grid>
                     </Grid>
