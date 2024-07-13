@@ -804,6 +804,21 @@ export interface ApiClimbingClimbing extends Schema.CollectionType {
     mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     description: Attribute.Text;
     link: Attribute.String;
+    kilimanjaro: Attribute.Relation<
+      'api::climbing.climbing',
+      'manyToOne',
+      'api::kilimanjaro.kilimanjaro'
+    >;
+    meru: Attribute.Relation<
+      'api::climbing.climbing',
+      'manyToOne',
+      'api::meru.meru'
+    >;
+    oldonyo_lengai: Attribute.Relation<
+      'api::climbing.climbing',
+      'manyToOne',
+      'api::oldonyo-lengai.oldonyo-lengai'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -827,7 +842,8 @@ export interface ApiDayTripDayTrip extends Schema.CollectionType {
   info: {
     singularName: 'day-trip';
     pluralName: 'day-trips';
-    displayName: 'DayTrip';
+    displayName: 'Day Trip';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -871,6 +887,12 @@ export interface ApiEastAfricaEastAfrica extends Schema.CollectionType {
     areaName: Attribute.String;
     description: Attribute.Text;
     mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    safari: Attribute.Relation<
+      'api::east-africa.east-africa',
+      'manyToOne',
+      'api::safari.safari'
+    >;
+    link: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -973,6 +995,11 @@ export interface ApiKilimanjaroKilimanjaro extends Schema.CollectionType {
     shortDescription: Attribute.Text;
     longDescription: Attribute.Text;
     mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    climbings: Attribute.Relation<
+      'api::kilimanjaro.kilimanjaro',
+      'oneToMany',
+      'api::climbing.climbing'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -997,6 +1024,7 @@ export interface ApiMeruMeru extends Schema.CollectionType {
     singularName: 'meru';
     pluralName: 'merus';
     displayName: 'Meru';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -1007,6 +1035,11 @@ export interface ApiMeruMeru extends Schema.CollectionType {
     shortDescription: Attribute.Text;
     longDescription: Attribute.Text;
     mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    climbings: Attribute.Relation<
+      'api::meru.meru',
+      'oneToMany',
+      'api::climbing.climbing'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1023,6 +1056,7 @@ export interface ApiOldonyoLengaiOldonyoLengai extends Schema.CollectionType {
     singularName: 'oldonyo-lengai';
     pluralName: 'oldonyo-lengais';
     displayName: 'OldonyoLengai';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -1033,6 +1067,11 @@ export interface ApiOldonyoLengaiOldonyoLengai extends Schema.CollectionType {
     shortDescription: Attribute.String;
     longDescription: Attribute.Text;
     mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    climbings: Attribute.Relation<
+      'api::oldonyo-lengai.oldonyo-lengai',
+      'oneToMany',
+      'api::climbing.climbing'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1044,6 +1083,41 @@ export interface ApiOldonyoLengaiOldonyoLengai extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::oldonyo-lengai.oldonyo-lengai',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiPhotographicSafariPhotographicSafari
+  extends Schema.CollectionType {
+  collectionName: 'photographic_safaris';
+  info: {
+    singularName: 'photographic-safari';
+    pluralName: 'photographic-safaris';
+    displayName: 'Photographic Safari';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String;
+    cost: Attribute.Integer;
+    shortDescription: Attribute.Text;
+    longDescription: Attribute.Text;
+    mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::photographic-safari.photographic-safari',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::photographic-safari.photographic-safari',
       'oneToOne',
       'admin::user'
     > &
@@ -1091,6 +1165,7 @@ export interface ApiSafariSafari extends Schema.CollectionType {
     singularName: 'safari';
     pluralName: 'safaris';
     displayName: 'Safari';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -1101,6 +1176,11 @@ export interface ApiSafariSafari extends Schema.CollectionType {
     shortDescription: Attribute.Text;
     longDescription: Attribute.Text;
     mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    east_africas: Attribute.Relation<
+      'api::safari.safari',
+      'oneToMany',
+      'api::east-africa.east-africa'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1247,6 +1327,7 @@ declare module '@strapi/types' {
       'api::kilimanjaro.kilimanjaro': ApiKilimanjaroKilimanjaro;
       'api::meru.meru': ApiMeruMeru;
       'api::oldonyo-lengai.oldonyo-lengai': ApiOldonyoLengaiOldonyoLengai;
+      'api::photographic-safari.photographic-safari': ApiPhotographicSafariPhotographicSafari;
       'api::rwanda.rwanda': ApiRwandaRwanda;
       'api::safari.safari': ApiSafariSafari;
       'api::tanzania.tanzania': ApiTanzaniaTanzania;

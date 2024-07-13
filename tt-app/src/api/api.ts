@@ -17,7 +17,7 @@ axios.interceptors.request.use(
 
 export const getData = async (endpoint: string) => {
     try {
-        const response = await axios.get(`${API_URL}/${endpoint}?populate=*`);
+        const response = await axios.get(`${API_URL}${endpoint}?populate=*`);
         return response.data;
     } catch (error) {
         console.error('Error fetching data', error);

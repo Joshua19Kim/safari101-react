@@ -4,7 +4,8 @@
   "info": {
     "singularName": "safari",
     "pluralName": "safaris",
-    "displayName": "Safari"
+    "displayName": "Safari",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -24,14 +25,21 @@
       "type": "text"
     },
     "mainImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
+    },
+    "east_africas": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::east-africa.east-africa",
+      "mappedBy": "safari"
     }
   }
 }

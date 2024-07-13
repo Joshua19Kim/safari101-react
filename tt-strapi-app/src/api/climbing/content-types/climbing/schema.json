@@ -31,6 +31,24 @@
     },
     "link": {
       "type": "string"
+    },
+    "kilimanjaro": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::kilimanjaro.kilimanjaro",
+      "inversedBy": "climbings"
+    },
+    "meru": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::meru.meru",
+      "inversedBy": "climbings"
+    },
+    "oldonyo_lengai": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::oldonyo-lengai.oldonyo-lengai",
+      "inversedBy": "climbings"
     }
   }
 }

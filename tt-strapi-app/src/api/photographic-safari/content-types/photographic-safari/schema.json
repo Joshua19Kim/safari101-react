@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "kilimanjaros",
+  "collectionName": "photographic_safaris",
   "info": {
-    "singularName": "kilimanjaro",
-    "pluralName": "kilimanjaros",
-    "displayName": "Kilimanjaro"
+    "singularName": "photographic-safari",
+    "pluralName": "photographic-safaris",
+    "displayName": "Photographic Safari"
   },
   "options": {
     "draftAndPublish": true
@@ -32,12 +32,6 @@
       ],
       "type": "media",
       "multiple": false
-    },
-    "climbings": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::climbing.climbing",
-      "mappedBy": "kilimanjaro"
     }
   }
 }

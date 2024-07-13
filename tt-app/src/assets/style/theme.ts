@@ -13,13 +13,13 @@ declare module '@mui/material/styles' {
 const themeOptions: ThemeOptions = {
     palette: {
         primary: {
-            main: '#c58a60', // Your main theme color (gold in this case)
+            main: '#c58a60',
         },
         secondary: {
-            main: '#1976d2', // Your secondary theme color (blue in this case)
+            main: '#F5C19D',
         },
         customColor: {
-            main: '#f44336', // Example of a custom color
+            main: '#ffd700',
         },
     },
     typography: {

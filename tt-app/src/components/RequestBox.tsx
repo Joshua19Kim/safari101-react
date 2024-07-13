@@ -1,13 +1,14 @@
+import React, { useState } from "react";
+import '../assets/css/Main.css';
 import Box from "@mui/material/Box";
 import { Theme } from '@mui/material/styles';
 import Typography from "@mui/material/Typography";
-import {Grid, TextField} from "@mui/material";
+import { Grid, TextField, useMediaQuery, useTheme } from "@mui/material";
 import { TbMoodKid } from "react-icons/tb";
 import PersonIcon from "@mui/icons-material/Person";
+import { Button } from "reactstrap";
+import { useNavigate } from "react-router-dom";
 
-import {Button} from "reactstrap";
-import React, {useState} from "react";
-import {useNavigate} from "react-router-dom";
 
 
 interface BackGroundImage {
@@ -23,18 +24,27 @@ interface TripInfo {
 const getTodayDate = (): string => {
     const today = new Date();
     return today.toISOString().split('T')[0];
-
 };
-export const RequestBox: React.FC<BackGroundImage> = ({image}) => {
 
+export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
     const navigate = useNavigate();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     const [tripInfo, setTripInfo] = useState<TripInfo>({
         adults: 2,
         children: 0,
         arrivalDate: getTodayDate(),
-    })
+    });
+    const [requestInputInteracted, setRequestInputInteracted] = useState<RequestInputInteraction>({
+        adults: false,
+        children: false,
+        email: false,
+        arrivalDate: false,
+        description: false,
+    });
 
-    const handleInputChange = (e: any) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         if (name === 'adults' || name === 'children') {
             const numValue = value.replace(/\D/g, '');
@@ -43,7 +53,14 @@ export const RequestBox: React.FC<BackGroundImage> = ({image}) => {
             setTripInfo(prev => ({ ...prev, [name]: value }));
         }
     };
-    const handleIconClick = (field: any) => {
+    const handleFieldFocus = (field: keyof RequestInputInteraction) => {
+        if (!requestInputInteracted[field]) {
+            setRequestInputInteracted(prev => ({ ...prev, [field]: true }));
+            setTripInfo(prev => ({ ...prev, [field]: field === 'adults' ? '' : field === 'children' ? '' : '' }));
+        }
+    };
+
+    const handleIconClick = (field: 'adults' | 'children') => {
         setTripInfo(prev => ({
             ...prev,
             [field]: field === 'adults' ? 2 : 0
@@ -52,107 +69,110 @@ export const RequestBox: React.FC<BackGroundImage> = ({image}) => {
 
     const handleSubmit = () => {
         navigate('/request', { state: tripInfo });
-    }
+    };
 
     return (
-        <Box className='outside-box-landing' sx={{
-            width:'100vw',
-            height:'40vh',
-            marginTop:'9vh',
+        <Box sx={{
+            width: '100%',
+            height: '28rem',
+            marginTop: '9vh',
+            minWidth: '23rem',
             backgroundImage: `url(${require(`../assets/img/${image}`)})`,
-            backgroundSize: '100% auto',
+            backgroundSize: 'cover',
             backgroundPosition: 'center center',
+            backgroundRepeat: 'no-repeat',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'flex-start',
+            justifyContent: isMobile? 'center': 'flex-start',
+            padding: isMobile ? '0' : '2rem',
         }}>
-
-            <Box className='inside-box-landing'
-                 sx={(theme:Theme) => ({
-                     backgroundColor: theme.palette.primary.main,
-                     height: '20rem',
-                     width: '23rem',
-                     marginTop:'4vh',
-                     marginLeft:'4vh',
-                     marginRight:'4vh',
-                     marginBottom:'4vh',
-                     padding: '1rem',
-                     borderRadius: '10px',
-                     boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                 })}
-            >
-
+            <Box sx={(theme: Theme) => ({
+                backgroundColor: theme.palette.primary.main,
+                minWidth: '23rem',
+                width: isMobile ? '100%' : '23rem',
+                padding: '1rem',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+            })}>
                 <Typography variant="h5" component="h2" sx={{ color: 'white', mb: 2, textAlign: 'center' }}>
                     LET'S PLAN YOUR OWN ITINERARY!
                 </Typography>
 
-                <Box>
-                    <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                            <Typography sx={{ color: '#ffd700', fontWeight: 'bold',
-                                textAlign: 'left'}}>ADULTS</Typography>
-                            <TextField fullWidth
-                                       name="adults"
-                                       InputProps={{
-                                           endAdornment: <PersonIcon onClick={() => handleIconClick('adults')} style={{ cursor: 'pointer' }} />,
-                                           inputMode: 'numeric',
-                                       }}
-                                       value={tripInfo.adults}
-                                       onChange={handleInputChange}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Typography sx={{ color: '#ffd700' , fontWeight: 'bold',
-                                textAlign: 'left'}}>CHILDREN</Typography>
-                            <TextField fullWidth
-                                       name="children"
-                                       InputProps={{
-                                           endAdornment: <TbMoodKid onClick={() => handleIconClick('children')}
-                                                                    style={{ cursor: 'pointer', width: '32px', height: '32px' }}
-                                           />,
-                                           inputMode: 'numeric',}}
-                                       value={tripInfo.children}
-                                       onChange={handleInputChange}
-
-                            />
-                        </Grid>
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>ADULTS</Typography>
+                        <TextField
+                            fullWidth
+                            name="adults"
+                            InputProps={{
+                                endAdornment: <PersonIcon onClick={() => handleIconClick('adults')} style={{ cursor: 'pointer' }} />,
+                                inputMode: 'numeric',
+                            }}
+                            value={tripInfo.adults}
+                            onChange={handleInputChange}
+                            onFocus={() => handleFieldFocus('adults')}
+                        />
                     </Grid>
-                </Box>
+                    <Grid item xs={6}>
+                        <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>CHILDREN</Typography>
+                        <TextField
+                            fullWidth
+                            name="children"
+                            InputProps={{
+                                endAdornment: <TbMoodKid onClick={() => handleIconClick('children')} style={{ cursor: 'pointer', width: '32px', height: '32px' }} />,
+                                inputMode: 'numeric',
+                            }}
+                            value={tripInfo.children}
+                            onChange={handleInputChange}
+                            onFocus={() => handleFieldFocus('children')}
+                        />
+                    </Grid>
+                </Grid>
 
-                <Box sx={{ mt: 2, mb: 2, }}>
-                    <Typography sx={{ color: '#ffd700', fontWeight: 'bold',
-                        textAlign: 'left' }}>ESTIMATED ARRIVAL DATE</Typography>
-                    <TextField type="date"
-                               name="arrivalDate"
-                               fullWidth
-                               value={tripInfo.arrivalDate}
-                               onChange={handleInputChange}
-                               InputProps={{
-                                   inputProps: { min: getTodayDate() }
-                               }}
+                <Box sx={{ mt: 2, mb: 2 }}>
+                    <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>EXPECTED ARRIVAL DATE</Typography>
+                    <TextField
+                        type="date"
+                        name="arrivalDate"
+                        fullWidth
+                        value={tripInfo.arrivalDate}
+                        onChange={handleInputChange}
+                        InputProps={{
+                            inputProps: { min: getTodayDate() }
+                        }}
+                        onFocus={() => handleFieldFocus('arrivalDate')}
+
                     />
                 </Box>
 
-                <Box>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        mt: 3,
+                    }}
+                >
                     <Button
-                        variant="contained"
-                        fullWidth
+                        color="warning"
                         onClick={handleSubmit}
-                        sx={{
-                            mt: 2,
+                        style={{
                             backgroundColor: '#ffd700',
                             color: 'black',
-                            '&:hover': { backgroundColor: '#e6c200' }
+                            border: 'none',
+                            padding: '15px 30px',
+                            fontSize: '1.1rem',
+                            fontWeight: 'bold',
+                            textTransform: 'uppercase',
+                            cursor: 'pointer',
+                            transition: 'background-color 0.3s ease',
                         }}
+                        className="custom-button"
                     >
-                        START PLANNING
+                        Start Planning
                     </Button>
-
                 </Box>
-
             </Box>
         </Box>
-    )
-}
+    );
+};
 
 export default RequestBox;

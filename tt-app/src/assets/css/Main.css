@@ -31,6 +31,10 @@
 }
 
 
+.custom-button:hover {
+    background-color: #e6b800 !important;
+}
+
 
 
 @media (max-width: 768px) {

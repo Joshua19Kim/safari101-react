@@ -4,7 +4,8 @@
   "info": {
     "singularName": "meru",
     "pluralName": "merus",
-    "displayName": "Meru"
+    "displayName": "Meru",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -24,14 +25,21 @@
       "type": "text"
     },
     "mainImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
+    },
+    "climbings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::climbing.climbing",
+      "mappedBy": "meru"
     }
   }
 }
