@@ -1,140 +1,178 @@
 import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
+import { Theme, styled, alpha } from '@mui/material/styles';
+import {AppBar, Box, Toolbar, IconButton, Typography, Grid, Paper, Popper, ClickAwayListener} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import HomeIcon from '@mui/icons-material/Home';
-import SendIcon from '@mui/icons-material/Send';
-import GradingIcon from '@mui/icons-material/Grading';
-import InfoIcon from '@mui/icons-material/Info';
-
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import NavBarLink from "../assets/style/NavBarTextWithLink";
-import { Link, useLocation } from "react-router-dom";
-import {Drawer, Grid, ListItem, ListItemIcon, ListItemText} from "@mui/material";
-import logoImage from '../assets/img/tazania101Logo-cutout.png';
-import List from '@mui/material/List';
+import logoImage from '../assets/img/logo/LOGO-Main.png';
+import Sidebar from './Sidebar';
+import {getData} from "../api/api";
 
-const Logo = styled('img')({
-    maxHeight: 55,
-    marginTop: "1rem",
-    height:'5vw',
-    width: 'auto',
-});
+const Logo = styled('img')(({ theme }) => ({
+    height: '6vh',
+    minHeight: '2.5rem',
+    width: '8rem',
+}));
 
-interface SidebarProps {
-    isOpen: boolean;
-    onClose: () => void;
-}
+const DropdownContent = styled(Paper)(({ theme }) => ({
+    padding: theme.spacing(1),
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[4],
+    maxWidth: "80%",
+    width: "50rem",
+}));
 
-const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
-    return (
-        <Drawer anchor="right" open={isOpen} onClose={onClose}>
-            <Box
-                sx={{ width: 250 }}
-                role="presentation"
-                onClick={onClose}
-                onKeyDown={onClose}
-            >
-                <List>
-                    <ListItem button component={Link} to="/">
-                        <ListItemIcon>
-                            <HomeIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Home" primaryTypographyProps={{ fontFamily: 'roboto' }} />
-                    </ListItem>
-                    <ListItem button component={Link} to="/contact">
-                        <ListItemIcon>
-                            <SendIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Contact" primaryTypographyProps={{ fontFamily: 'roboto' }} />
-                    </ListItem>
-                    <ListItem button component={Link} to="/request">
-                        <ListItemIcon>
-                            <GradingIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Make A Request" primaryTypographyProps={{ fontFamily: 'roboto' }} />
-                    </ListItem>
-                    <ListItem button component={Link} to="/aboutus">
-                        <ListItemIcon>
-                            <InfoIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="About Us" primaryTypographyProps={{ fontFamily: 'roboto' }} />
-                    </ListItem>
-                </List>
-            </Box>
-        </Drawer>
-    );
-};
+const CategoryCard = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(1),
+    '&:hover': {
+        backgroundColor: theme.palette.action.hover,
+    },
+}));
 
-export default function SearchAppBar() {
-
+const SearchAppBar: React.FC = () => {
+    const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
     const location = useLocation();
+    const [eastAfricaList, setEastAfricalList] = React.useState<Category[]>([]);
+    const [climbingList, setClimbingList] = React.useState<Category[]>([]);
+    const [openDropdown, setOpenDropdown] = React.useState<string | null>(null);
+    const eastAfricaRef = React.useRef<HTMLDivElement>(null);
+    const climbingRef = React.useRef<HTMLDivElement>(null);
+
 
     React.useEffect(() => {
-        // Close the sidebar when the location changes
+        getCategoryList("/east-africas")
+        getCategoryList("/climbings")
+    },[])
+
+    React.useEffect(() => {
         setIsSidebarOpen(false);
+
     }, [location]);
 
+    const getCategoryList = async (category: string) => {
+        try {
+            const response = await getData(category);
+            if(category === "/east-africas"){
+                setEastAfricalList(response.data)
+            } else if( category === "/climbings") {
+                setClimbingList(response.data)
+            }
+        } catch (error) {
+            console.error('Error fetching items', error);
+            if(category === "/east-africas"){
+                setEastAfricalList([])
+            } else if( category === "/climbings") {
+                setClimbingList([])
+            }
+        }
+    };
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     }
 
+    const handleDropdownOpen = (dropdownName: string) => {
+        setOpenDropdown(dropdownName);
+    };
+
+    const handleDropdownClose = () => {
+        setOpenDropdown(null);
+    };
+
+    const handleCategoryClick = (link: string) => {
+        navigate(link);
+        handleDropdownClose();
+    };
+
+    const renderDropdownContent = (categories: Category[]) => (
+        <DropdownContent>
+            {categories.map((category) => (
+                <CategoryCard
+                    key={category.id}
+                    onClick={() => handleCategoryClick(category.attributes.link)}
+                >
+                    <img
+                        src={`http://localhost:1337${category.attributes.mainImage.data.attributes.url}`}
+                        alt={category.attributes.name}
+                        style={{ width: 50, height: 50, objectFit: 'cover', marginRight: 8 }}
+                    />
+                    <Typography variant="subtitle1">{category.attributes.name}</Typography>
+                </CategoryCard>
+            ))}
+        </DropdownContent>
+    );
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="fixed" sx={{ backgroundColor: '#c58a60', boxShadow: 'none', height: '9vh' }}>
-                <Toolbar>
-                    <Grid container alignItems="center">
+            <AppBar position="fixed" sx={(theme: Theme) => ({
+                backgroundColor: theme.palette.primary.main,
+                boxShadow: 'none',
+                height: '9vh',
+                minHeight:'3.5rem'
+            })}>
+                <Toolbar sx={{ height: '100%', padding: 0 }}>
+                    <Grid container alignItems="center" sx={{ height: '100%' }}>
+                        <Grid item xs={3} md={1} sx={{ display: 'flex', justifyContent: 'flex-start', paddingLeft: 1 }}>
+                            <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+                                <Logo src={logoImage} alt="Logo" />
+                            </Link>
+                        </Grid>
 
-                        <Grid item xs={4} container justifyContent="left">
-                            <Box sx={{ textAlign: 'center' }}>
-                                <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                    <Logo
-                                          src={logoImage} alt="Logo" />
-                                </Link>
-
+                        <Grid item xs={6} md={10} sx={{ display: { xs: 'none', sm: 'none', md: 'flex' }, justifyContent: 'center' }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+                                <ClickAwayListener onClickAway={handleDropdownClose}>
+                                    <Box
+                                        ref={eastAfricaRef}
+                                        onMouseEnter={() => handleDropdownOpen('eastAfrica')}
+                                    >
+                                        <NavBarLink to="#" text="East Africa▾"  />
+                                        <Popper
+                                            open={openDropdown === 'eastAfrica'}
+                                            anchorEl={eastAfricaRef.current}
+                                            placement="bottom-start"
+                                            transition
+                                        >
+                                            {renderDropdownContent(eastAfricaList)}
+                                        </Popper>
+                                    </Box>
+                                </ClickAwayListener>
+                                <NavBarLink to="/contents" text="Safari" />
+                                <NavBarLink to="/contents" text="Kilimanjaro" />
+                                <ClickAwayListener onClickAway={handleDropdownClose}>
+                                    <Box
+                                        ref={climbingRef}
+                                        onMouseEnter={() => handleDropdownOpen('climbing')}
+                                    >
+                                        <NavBarLink to="#" text="Climbing▾" />
+                                        <Popper
+                                            open={openDropdown === 'climbing'}
+                                            anchorEl={climbingRef.current}
+                                            placement="bottom-start"
+                                            transition
+                                        >
+                                            {renderDropdownContent(climbingList)}
+                                        </Popper>
+                                    </Box>
+                                </ClickAwayListener>
+                                <NavBarLink to="/contents" text="Zanzibar" />
+                                <NavBarLink to="/contents" text="Day Trips" />
+                                <NavBarLink to="/contents" text="Photographic Safari" />
+                                <NavBarLink to="/contact" text="Contact" />
                             </Box>
                         </Grid>
-                        <Grid item xs={4} container justifyContent="flex-end">
-                            <NavBarLink to="/contact" text="Contact" />
 
-                        </Grid>
-                        <Grid item xs={4} container justifyContent="flex-end">
-                            <Box className="Nav-request">
-                                <Link to='/request' style={{ textDecoration: 'none', color: 'inherit' }}>
-                                    <Typography
-                                        variant="h6"
-                                        noWrap
-                                        component="a"
-                                        sx={{
-                                            mr: 2,
-                                            display: { xs: 'none', sm: 'none', md: 'flex' },
-                                            fontFamily: 'monospace',
-                                            fontWeight: 700,
-                                            fontSize: { md: '3vh' },
-                                            color: 'inherit',
-                                            textDecoration: 'none',
-                                            marginRight: '1rem',
-                                            textShadow: '3px 3px 6px rgba(0,0,0,5)',
-                                        }}>
-                                        Request
-                                    </Typography>
-                                </Link>
+                        <Grid item xs={9} md={1} sx={{ display: 'flex', justifyContent: 'flex-end', paddingRight: 2 }}>
+                            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+                                <NavBarLink to="/request" text="Request" />
                             </Box>
-
                             <IconButton
-                                className="Nav-menu-icon"
                                 size="large"
-                                edge="start"
+                                edge="end"
                                 color="inherit"
                                 aria-label="open drawer"
-                                sx={{ mr: 2,
-                                    display: { xs: 'flex', sm: 'flex', md: 'none' },
-                                }}
+                                sx={{ display: { xs: 'flex', md: 'none' } }}
                                 onClick={toggleSidebar}
                             >
                                 <MenuIcon />
@@ -147,3 +185,5 @@ export default function SearchAppBar() {
         </Box>
     );
 }
+
+export default SearchAppBar;

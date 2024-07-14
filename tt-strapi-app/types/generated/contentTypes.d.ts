@@ -590,6 +590,53 @@ export interface PluginContentReleasesReleaseAction
   };
 }
 
+export interface PluginI18NLocale extends Schema.CollectionType {
+  collectionName: 'i18n_locale';
+  info: {
+    singularName: 'locale';
+    pluralName: 'locales';
+    collectionName: 'locales';
+    displayName: 'Locale';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
+  };
+  attributes: {
+    name: Attribute.String &
+      Attribute.SetMinMax<
+        {
+          min: 1;
+          max: 50;
+        },
+        number
+      >;
+    code: Attribute.String & Attribute.Unique;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'plugin::i18n.locale',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'plugin::i18n.locale',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface PluginUsersPermissionsPermission
   extends Schema.CollectionType {
   collectionName: 'up_permissions';
@@ -741,85 +788,6 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
 }
 
-export interface PluginI18NLocale extends Schema.CollectionType {
-  collectionName: 'i18n_locale';
-  info: {
-    singularName: 'locale';
-    pluralName: 'locales';
-    collectionName: 'locales';
-    displayName: 'Locale';
-    description: '';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  pluginOptions: {
-    'content-manager': {
-      visible: false;
-    };
-    'content-type-builder': {
-      visible: false;
-    };
-  };
-  attributes: {
-    name: Attribute.String &
-      Attribute.SetMinMax<
-        {
-          min: 1;
-          max: 50;
-        },
-        number
-      >;
-    code: Attribute.String & Attribute.Unique;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'plugin::i18n.locale',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'plugin::i18n.locale',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
-export interface ApiAboutUsAboutUs extends Schema.SingleType {
-  collectionName: 'about_uses';
-  info: {
-    singularName: 'about-us';
-    pluralName: 'about-uses';
-    displayName: 'AboutUs';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    CompanyName: Attribute.String;
-    CompanyDescription: Attribute.Text;
-    CompanyImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::about-us.about-us',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::about-us.about-us',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
 export interface ApiClimbingClimbing extends Schema.CollectionType {
   collectionName: 'climbings';
   info: {
@@ -832,9 +800,25 @@ export interface ApiClimbingClimbing extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    name: Attribute.String;
-    description: Attribute.Text;
+    areaName: Attribute.String;
     mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    description: Attribute.Text;
+    link: Attribute.String;
+    kilimanjaro: Attribute.Relation<
+      'api::climbing.climbing',
+      'manyToOne',
+      'api::kilimanjaro.kilimanjaro'
+    >;
+    meru: Attribute.Relation<
+      'api::climbing.climbing',
+      'manyToOne',
+      'api::meru.meru'
+    >;
+    oldonyo_lengai: Attribute.Relation<
+      'api::climbing.climbing',
+      'manyToOne',
+      'api::oldonyo-lengai.oldonyo-lengai'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -858,7 +842,7 @@ export interface ApiDayTripDayTrip extends Schema.CollectionType {
   info: {
     singularName: 'day-trip';
     pluralName: 'day-trips';
-    displayName: 'DayTrip';
+    displayName: 'Day Trip';
     description: '';
   };
   options: {
@@ -866,8 +850,9 @@ export interface ApiDayTripDayTrip extends Schema.CollectionType {
   };
   attributes: {
     name: Attribute.String;
-    description: Attribute.Text;
-    price: Attribute.Integer;
+    cost: Attribute.Integer;
+    shortDescription: Attribute.Text;
+    longDescription: Attribute.Text;
     mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -880,6 +865,113 @@ export interface ApiDayTripDayTrip extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::day-trip.day-trip',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiEastAfricaEastAfrica extends Schema.CollectionType {
+  collectionName: 'east_africas';
+  info: {
+    singularName: 'east-africa';
+    pluralName: 'east-africas';
+    displayName: 'EastAfrica';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    areaName: Attribute.String;
+    description: Attribute.Text;
+    mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    safari: Attribute.Relation<
+      'api::east-africa.east-africa',
+      'manyToOne',
+      'api::safari.safari'
+    >;
+    link: Attribute.String;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::east-africa.east-africa',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::east-africa.east-africa',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiEmailRequestEmailRequest extends Schema.CollectionType {
+  collectionName: 'email_requests';
+  info: {
+    singularName: 'email-request';
+    pluralName: 'email-requests';
+    displayName: 'Email Request';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    adults: Attribute.Integer;
+    children: Attribute.Integer;
+    arrivalDate: Attribute.Date;
+    description: Attribute.Text;
+    email: Attribute.Email;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::email-request.email-request',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::email-request.email-request',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiKenyaKenya extends Schema.CollectionType {
+  collectionName: 'kenyas';
+  info: {
+    singularName: 'kenya';
+    pluralName: 'kenyas';
+    displayName: 'Kenya';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String;
+    cost: Attribute.Integer;
+    shortDescription: Attribute.Text;
+    longDescription: Attribute.Text;
+    mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::kenya.kenya',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::kenya.kenya',
       'oneToOne',
       'admin::user'
     > &
@@ -893,16 +985,21 @@ export interface ApiKilimanjaroKilimanjaro extends Schema.CollectionType {
     singularName: 'kilimanjaro';
     pluralName: 'kilimanjaros';
     displayName: 'Kilimanjaro';
-    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
     name: Attribute.String;
-    price: Attribute.Integer;
-    description: Attribute.Text;
+    cost: Attribute.Integer;
+    shortDescription: Attribute.Text;
+    longDescription: Attribute.Text;
     mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    climbings: Attribute.Relation<
+      'api::kilimanjaro.kilimanjaro',
+      'oneToMany',
+      'api::climbing.climbing'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -921,42 +1018,12 @@ export interface ApiKilimanjaroKilimanjaro extends Schema.CollectionType {
   };
 }
 
-export interface ApiRequestRequest extends Schema.SingleType {
-  collectionName: 'requests';
+export interface ApiMeruMeru extends Schema.CollectionType {
+  collectionName: 'merus';
   info: {
-    singularName: 'request';
-    pluralName: 'requests';
-    displayName: 'Request';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    TypeOfTrip: Attribute.Enumeration<['safari', 'climbing', 'dayTrip']>;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::request.request',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::request.request',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
-export interface ApiSafarisSafaris extends Schema.CollectionType {
-  collectionName: 'safarises';
-  info: {
-    singularName: 'safaris';
-    pluralName: 'safarises';
-    displayName: 'Safaris';
+    singularName: 'meru';
+    pluralName: 'merus';
+    displayName: 'Meru';
     description: '';
   };
   options: {
@@ -964,20 +1031,269 @@ export interface ApiSafarisSafaris extends Schema.CollectionType {
   };
   attributes: {
     name: Attribute.String;
-    price: Attribute.Integer;
-    description: Attribute.Text;
+    cost: Attribute.Integer;
+    shortDescription: Attribute.Text;
+    longDescription: Attribute.Text;
     mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    climbings: Attribute.Relation<
+      'api::meru.meru',
+      'oneToMany',
+      'api::climbing.climbing'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::meru.meru', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::meru.meru', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
+export interface ApiOldonyoLengaiOldonyoLengai extends Schema.CollectionType {
+  collectionName: 'oldonyo_lengais';
+  info: {
+    singularName: 'oldonyo-lengai';
+    pluralName: 'oldonyo-lengais';
+    displayName: 'OldonyoLengai';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String;
+    cost: Attribute.Integer;
+    shortDescription: Attribute.String;
+    longDescription: Attribute.Text;
+    mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    climbings: Attribute.Relation<
+      'api::oldonyo-lengai.oldonyo-lengai',
+      'oneToMany',
+      'api::climbing.climbing'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
-      'api::safaris.safaris',
+      'api::oldonyo-lengai.oldonyo-lengai',
       'oneToOne',
       'admin::user'
     > &
       Attribute.Private;
     updatedBy: Attribute.Relation<
-      'api::safaris.safaris',
+      'api::oldonyo-lengai.oldonyo-lengai',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiPhotographicSafariPhotographicSafari
+  extends Schema.CollectionType {
+  collectionName: 'photographic_safaris';
+  info: {
+    singularName: 'photographic-safari';
+    pluralName: 'photographic-safaris';
+    displayName: 'Photographic Safari';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String;
+    cost: Attribute.Integer;
+    shortDescription: Attribute.Text;
+    longDescription: Attribute.Text;
+    mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::photographic-safari.photographic-safari',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::photographic-safari.photographic-safari',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiRwandaRwanda extends Schema.CollectionType {
+  collectionName: 'rwandas';
+  info: {
+    singularName: 'rwanda';
+    pluralName: 'rwandas';
+    displayName: 'Rwanda';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String;
+    cost: Attribute.Integer;
+    shortDescription: Attribute.Text;
+    longDescription: Attribute.Text;
+    mainlmage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::rwanda.rwanda',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::rwanda.rwanda',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiSafariSafari extends Schema.CollectionType {
+  collectionName: 'safaris';
+  info: {
+    singularName: 'safari';
+    pluralName: 'safaris';
+    displayName: 'Safari';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String;
+    cost: Attribute.Integer;
+    shortDescription: Attribute.Text;
+    longDescription: Attribute.Text;
+    mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    east_africas: Attribute.Relation<
+      'api::safari.safari',
+      'oneToMany',
+      'api::east-africa.east-africa'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::safari.safari',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::safari.safari',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiTanzaniaTanzania extends Schema.CollectionType {
+  collectionName: 'tanzanias';
+  info: {
+    singularName: 'tanzania';
+    pluralName: 'tanzanias';
+    displayName: 'Tanzania';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String;
+    cost: Attribute.Integer;
+    shortDescription: Attribute.Text;
+    longDescription: Attribute.Text;
+    mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::tanzania.tanzania',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::tanzania.tanzania',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiUgandaUganda extends Schema.CollectionType {
+  collectionName: 'ugandas';
+  info: {
+    singularName: 'uganda';
+    pluralName: 'ugandas';
+    displayName: 'Uganda';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String;
+    cost: Attribute.Integer;
+    shortDescription: Attribute.Text;
+    longDescription: Attribute.Text;
+    mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::uganda.uganda',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::uganda.uganda',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiZanzibarZanzibar extends Schema.CollectionType {
+  collectionName: 'zanzibars';
+  info: {
+    singularName: 'zanzibar';
+    pluralName: 'zanzibars';
+    displayName: 'Zanzibar';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String;
+    cost: Attribute.Integer;
+    shortDescription: Attribute.Text;
+    longDescription: Attribute.Text;
+    mainImage: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::zanzibar.zanzibar',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::zanzibar.zanzibar',
       'oneToOne',
       'admin::user'
     > &
@@ -999,16 +1315,24 @@ declare module '@strapi/types' {
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
+      'plugin::i18n.locale': PluginI18NLocale;
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
-      'plugin::i18n.locale': PluginI18NLocale;
-      'api::about-us.about-us': ApiAboutUsAboutUs;
       'api::climbing.climbing': ApiClimbingClimbing;
       'api::day-trip.day-trip': ApiDayTripDayTrip;
+      'api::east-africa.east-africa': ApiEastAfricaEastAfrica;
+      'api::email-request.email-request': ApiEmailRequestEmailRequest;
+      'api::kenya.kenya': ApiKenyaKenya;
       'api::kilimanjaro.kilimanjaro': ApiKilimanjaroKilimanjaro;
-      'api::request.request': ApiRequestRequest;
-      'api::safaris.safaris': ApiSafarisSafaris;
+      'api::meru.meru': ApiMeruMeru;
+      'api::oldonyo-lengai.oldonyo-lengai': ApiOldonyoLengaiOldonyoLengai;
+      'api::photographic-safari.photographic-safari': ApiPhotographicSafariPhotographicSafari;
+      'api::rwanda.rwanda': ApiRwandaRwanda;
+      'api::safari.safari': ApiSafariSafari;
+      'api::tanzania.tanzania': ApiTanzaniaTanzania;
+      'api::uganda.uganda': ApiUgandaUganda;
+      'api::zanzibar.zanzibar': ApiZanzibarZanzibar;
     }
   }
 }

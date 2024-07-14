@@ -7,27 +7,32 @@ interface NavBarLinkProps {
     text: string;
 }
 
-const NavBarLink: React.FC<NavBarLinkProps> = ({ to, text }) => (
-    <Link to={to} style={{ textDecoration: 'none', color: 'inherit' }}>
-        <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            sx={{
-                mr: 2,
-                display: { xs: 'none', sm: 'flex', md: 'flex' },
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                fontSize: { xs: '2vw', md: '3vh' },
-                color: 'inherit',
-                textDecoration: 'none',
-                marginRight: '2rem',
-                textShadow: '3px 3px 6px rgba(0,0,0,5)',
-            }}
-        >
-            {text}
-        </Typography>
-    </Link>
-);
+const NavBarLink: React.FC<NavBarLinkProps> = ({ to, text }) => {
+    const specialCases = ['Contact', 'Request'];
+
+    const linkTo = specialCases.includes(text) ? to : `${to}/${encodeURIComponent(text)}`;
+
+    return (
+        <Link to={linkTo} style={{textDecoration: 'none', color: 'inherit'}}>
+            <Typography
+                variant="h6"
+                noWrap
+                component="a"
+                sx={{
+                    px: 3,
+                    display: 'flex',
+                    fontFamily: 'monospace',
+                    fontWeight: 700,
+                    fontSize: '2vh',
+                    color: 'inherit',
+                    textDecoration: 'none',
+                    textShadow: '3px 3px 6px rgba(0,0,0,0.3)',
+                }}
+            >
+                {text}
+            </Typography>
+        </Link>
+    );
+};
 
 export default NavBarLink;

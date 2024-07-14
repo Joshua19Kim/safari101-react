@@ -30,11 +30,20 @@
     height: calc(100% - 64px);
 }
 
+
+.custom-button:hover {
+    background-color: #e6b800 !important;
+}
+
+
+
 @media (max-width: 768px) {
-    .outside-container {
-        width: 100vw;
+    .outside-box-landing {
+        justify-content: center;
+
     }
-    .content-card-box {
-        width:100vw;
+    .inside-box-landing {
+        background-color: #ffd700;
+
     }
 }

@@ -1,13 +1,19 @@
 
-type Content = Safari | Climbing | DayTrip;
+type ContentsTopic = {
+    id: string,
+    title: string,
+    image: string,
+    contentLink: string,
+}
 
-type Safari = {
+type Contents = {
     id: number;
     attributes: {
-        safariName: string;
-        safariPrice: number;
-        safariDescription: string;
-        safariMainImage: {
+        name: string;
+        cost: number;
+        shortDescription: string;
+        longDescription: string;
+        mainImage: {
             data: {
                 id: number;
                 attributes: {
@@ -18,13 +24,14 @@ type Safari = {
     };
 }
 
-type Climbing = {
+type Category = {
     id: number;
     attributes: {
-        climbingName: string;
-        climbingPrice: number;
-        climbingDescription: string;
-        climbingMainImage: {
+        name: string;
+        price: number;
+        description: string;
+        link: string;
+        mainImage: {
             data: {
                 id: number;
                 attributes: {
@@ -35,20 +42,22 @@ type Climbing = {
     };
 }
 
-type DayTrip = {
-    id: number;
-    attributes: {
-        dayTripName: string;
-        dayTripPrice: number;
-        dayTripDescription: string;
-        dayTripMainImage: {
-            data: {
-                id: number;
-                attributes: {
-                    url: string;
-                };
-            };
-        };
-    };
+type TripInfo = {
+    adults: number;
+    children: number;
+    arrivalDate: string;
+    description: string;
+    email: string;
 }
+
+
+type RequestInputInteraction = {
+    adults: boolean;
+    children: boolean;
+    email: boolean;
+    arrivalDate: boolean;
+    description: boolean;
+}
+
+
 

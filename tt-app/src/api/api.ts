@@ -1,10 +1,11 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:1337/api';
+
+const API_URL = (process.env.REACT_APP_STRAPI_API_URL as string);
+const token = (process.env.REACT_APP_STRAPI_READING_SENDING_REQUEST_TOKEN as string);
 
 axios.interceptors.request.use(
     config => {
-        const token = '65625c3f8b386ed31a5aa3fe24422359a37326cea7618159b01d52798c0f702989a995ac860e31456b6b08995564709af3397ebc73d4db7646a0e2dc1eb5ad3bcea2a49df5ba26698418ca0549024cd2c3043011a8f8abb18423a68509d5509f51ddaf738e6f24b3309dd5d11e23c1aeaab3c3a594370d2132fe952c3bab1e9d'; // Adjust according to your auth logic
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -16,11 +17,36 @@ axios.interceptors.request.use(
 
 export const getData = async (endpoint: string) => {
     try {
-        const response = await axios.get(`${API_URL}/${endpoint}?populate=*`);
+        const response = await axios.get(`${API_URL}${endpoint}?populate=*`);
         return response.data;
     } catch (error) {
         console.error('Error fetching data', error);
         throw error;
     }
-};
+}
 
+export const sendEmail = async (tripInfo: TripInfo) => {
+    try {
+        const payload = { data: tripInfo };
+        const response = await fetch(`${API_URL}/email-requests`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(payload),
+        });
+
+        const responseText = await response.text();
+
+        if (response.ok) {
+            const result = JSON.parse(responseText);
+            return { success: true, message: result.message };
+        } else {
+            throw new Error(responseText || 'Failed to send request');
+        }
+    } catch (error) {
+        console.error('Error sending request:', error);
+        return { success: false, error: error };
+    }
+};

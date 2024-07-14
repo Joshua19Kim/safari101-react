@@ -1,0 +1,54 @@
+{
+  "kind": "collectionType",
+  "collectionName": "climbings",
+  "info": {
+    "singularName": "climbing",
+    "pluralName": "climbings",
+    "displayName": "Climbing",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "areaName": {
+      "type": "string"
+    },
+    "mainImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "description": {
+      "type": "text"
+    },
+    "link": {
+      "type": "string"
+    },
+    "kilimanjaro": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::kilimanjaro.kilimanjaro",
+      "inversedBy": "climbings"
+    },
+    "meru": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::meru.meru",
+      "inversedBy": "climbings"
+    },
+    "oldonyo_lengai": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::oldonyo-lengai.oldonyo-lengai",
+      "inversedBy": "climbings"
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "oldonyo_lengais",
+  "info": {
+    "singularName": "oldonyo-lengai",
+    "pluralName": "oldonyo-lengais",
+    "displayName": "OldonyoLengai",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "cost": {
+      "type": "integer"
+    },
+    "shortDescription": {
+      "type": "string"
+    },
+    "longDescription": {
+      "type": "text"
+    },
+    "mainImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "climbings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::climbing.climbing",
+      "mappedBy": "oldonyo_lengai"
+    }
+  }
+}

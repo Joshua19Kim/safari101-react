@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "kilimanjaros",
+  "info": {
+    "singularName": "kilimanjaro",
+    "pluralName": "kilimanjaros",
+    "displayName": "Kilimanjaro"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "cost": {
+      "type": "integer"
+    },
+    "shortDescription": {
+      "type": "text"
+    },
+    "longDescription": {
+      "type": "text"
+    },
+    "mainImage": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "climbings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::climbing.climbing",
+      "mappedBy": "kilimanjaro"
+    }
+  }
+}

@@ -1,13 +1,34 @@
-import {Container} from "reactstrap";
+import {Button, Container} from "reactstrap";
 import Box from "@mui/material/Box";
 import SearchAppBar from "./SearchAppBar";
-import React from "react";
+import RequestBox from "./RequestBox";
+import React, {useEffect, useState} from "react";
+import Typography from "@mui/material/Typography";
+import {Grid, TextField} from "@mui/material";
+import '../assets/css/Main.css';
+
+
 
 
 
 const backgroundImage = "mainLandingImage.jpg"
+const secondBackImage = "brightBackground.jpg"
 
-const landingPage = () => {
+const LandingPage = () => {
+    const [scrollPosition, setScrollPosition] = useState(0);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const position = window.pageYOffset;
+            setScrollPosition(position);
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
 
     return (
@@ -15,17 +36,20 @@ const landingPage = () => {
             <SearchAppBar />
 
             <Container>
+                <RequestBox image={backgroundImage} />
                 <Box sx={{
-                    width:'100vw',
-                    height:'40vh',
-                    marginTop:'9vh',
-                    backgroundImage: `url(${require(`../assets/img/${backgroundImage}`)})`,
+                    backgroundImage: `url(${require(`../assets/img/${secondBackImage}`)})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
+                    minHeight: '100vh',
+                    width: '100%',
+                    // Add any additional styling for your content here
                 }}>
-
+                    {/* Add your additional content here */}
+                    <Container>
+                        {/* Your content goes here */}
+                    </Container>
                 </Box>
-
 
 
 
@@ -43,4 +67,4 @@ const landingPage = () => {
 
 }
 
-export default landingPage;
+export default LandingPage;
