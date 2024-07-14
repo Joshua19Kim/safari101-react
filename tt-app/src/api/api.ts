@@ -1,8 +1,8 @@
 import axios from 'axios';
-import {useNavigate} from "react-router-dom";
 
-const API_URL = 'http://localhost:1337/api';
-const token = '1136c14d3f92dc6cd15f01c55e9caf9b28a8fa33c38ab18c53669f782c161ad15e86c3783f6bc52291f1ec962dc32fb29e133bfe9a51a5ba803b4ff5fe38eea1cb480829e8a6ae8b483b49ae96432e2d126aa4f96106b788240e7b8d36c8466b5f214d12320fdbcadd7a5d08258a895d430f62c459949a4b541f142c3540dd51'; // Adjust according to your auth logic
+
+const API_URL = (process.env.REACT_APP_STRAPI_API_URL as string);
+const token = (process.env.REACT_APP_STRAPI_READING_SENDING_REQUEST_TOKEN as string);
 
 axios.interceptors.request.use(
     config => {
