@@ -122,40 +122,40 @@ const SearchAppBar: React.FC = () => {
 
                         <Grid item xs={6} md={10} sx={{ display: { xs: 'none', sm: 'none', md: 'flex' }, justifyContent: 'center' }}>
                             <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
-                                <ClickAwayListener onClickAway={handleDropdownClose}>
-                                    <Box
-                                        ref={eastAfricaRef}
-                                        onMouseEnter={() => handleDropdownOpen('eastAfrica')}
-                                    >
-                                        <NavBarLink to="#" text="East Africa▾"  />
-                                        <Popper
-                                            open={openDropdown === 'eastAfrica'}
-                                            anchorEl={eastAfricaRef.current}
-                                            placement="bottom-start"
-                                            transition
-                                        >
-                                            {renderDropdownContent(eastAfricaList)}
-                                        </Popper>
-                                    </Box>
-                                </ClickAwayListener>
+                                {/*<ClickAwayListener onClickAway={handleDropdownClose}>*/}
+                                {/*    <Box*/}
+                                {/*        ref={eastAfricaRef}*/}
+                                {/*        onMouseEnter={() => handleDropdownOpen('eastAfrica')}*/}
+                                {/*    >*/}
+                                {/*        <NavBarLink to="#" text="East Africa▾"  />*/}
+                                {/*        <Popper*/}
+                                {/*            open={openDropdown === 'eastAfrica'}*/}
+                                {/*            anchorEl={eastAfricaRef.current}*/}
+                                {/*            placement="bottom-start"*/}
+                                {/*            transition*/}
+                                {/*        >*/}
+                                {/*            {renderDropdownContent(eastAfricaList)}*/}
+                                {/*        </Popper>*/}
+                                {/*    </Box>*/}
+                                {/*</ClickAwayListener>*/}
                                 <NavBarLink to="/contents" text="Safari" />
                                 <NavBarLink to="/contents" text="Kilimanjaro" />
-                                <ClickAwayListener onClickAway={handleDropdownClose}>
-                                    <Box
-                                        ref={climbingRef}
-                                        onMouseEnter={() => handleDropdownOpen('climbing')}
-                                    >
-                                        <NavBarLink to="#" text="Climbing▾" />
-                                        <Popper
-                                            open={openDropdown === 'climbing'}
-                                            anchorEl={climbingRef.current}
-                                            placement="bottom-start"
-                                            transition
-                                        >
-                                            {renderDropdownContent(climbingList)}
-                                        </Popper>
-                                    </Box>
-                                </ClickAwayListener>
+                                {/*<ClickAwayListener onClickAway={handleDropdownClose}>*/}
+                                {/*    <Box*/}
+                                {/*        ref={climbingRef}*/}
+                                {/*        onMouseEnter={() => handleDropdownOpen('climbing')}*/}
+                                {/*    >*/}
+                                {/*        <NavBarLink to="#" text="Climbing▾" />*/}
+                                {/*        <Popper*/}
+                                {/*            open={openDropdown === 'climbing'}*/}
+                                {/*            anchorEl={climbingRef.current}*/}
+                                {/*            placement="bottom-start"*/}
+                                {/*            transition*/}
+                                {/*        >*/}
+                                {/*            {renderDropdownContent(climbingList)}*/}
+                                {/*        </Popper>*/}
+                                {/*    </Box>*/}
+                                {/*</ClickAwayListener>*/}
                                 <NavBarLink to="/contents" text="Zanzibar" />
                                 <NavBarLink to="/contents" text="Day Trips" />
                                 <NavBarLink to="/contents" text="Photographic Safari" />
