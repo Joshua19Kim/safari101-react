@@ -7,6 +7,7 @@ import NavBarLink from "../assets/style/NavBarTextWithLink";
 import logoImage from '../assets/img/logo/LOGO-Main.png';
 import Sidebar from './Sidebar';
 import {getData} from "../api/api";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Logo = styled('img')(({ theme }) => ({
     height: '6vh',
@@ -31,6 +32,7 @@ const CategoryCard = styled(Box)(({ theme }) => ({
     },
 }));
 
+
 const SearchAppBar: React.FC = () => {
     const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
@@ -40,6 +42,9 @@ const SearchAppBar: React.FC = () => {
     const [openDropdown, setOpenDropdown] = React.useState<string | null>(null);
     const eastAfricaRef = React.useRef<HTMLDivElement>(null);
     const climbingRef = React.useRef<HTMLDivElement>(null);
+    const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+    const [isLoading, setIsLoading] = React.useState<boolean>(true);
+
 
 
     React.useEffect(() => {
@@ -53,6 +58,7 @@ const SearchAppBar: React.FC = () => {
     }, [location]);
 
     const getCategoryList = async (category: string) => {
+        setIsLoading(true);
         try {
             const response = await getData(category);
             if(category === "/east-africas"){
@@ -67,6 +73,8 @@ const SearchAppBar: React.FC = () => {
             } else if( category === "/climbings") {
                 setClimbingList([])
             }
+        } finally {
+            setIsLoading(false);
         }
     };
     const toggleSidebar = () => {
@@ -74,12 +82,33 @@ const SearchAppBar: React.FC = () => {
     }
 
     const handleDropdownOpen = (dropdownName: string) => {
+        if (closeTimeoutRef.current) {
+            clearTimeout(closeTimeoutRef.current);
+        }
         setOpenDropdown(dropdownName);
     };
 
-    const handleDropdownClose = () => {
-        setOpenDropdown(null);
+    const handleDropdownClose = (immediate: boolean = false) => {
+        if (immediate) {
+            if (closeTimeoutRef.current) {
+                clearTimeout(closeTimeoutRef.current);
+            }
+            setOpenDropdown(null);
+        } else {
+            closeTimeoutRef.current = setTimeout(() => {
+                setOpenDropdown(null);
+            }, 300); // 300ms delay, adjust as needed
+        }
     };
+
+    const handleNavLinkHover = (dropdownName: string | null) => {
+        if (dropdownName === null) {
+            handleDropdownClose(true);
+        } else {
+            handleDropdownOpen(dropdownName);
+        }
+    };
+
 
     const handleCategoryClick = (link: string) => {
         navigate(link);
@@ -87,22 +116,34 @@ const SearchAppBar: React.FC = () => {
     };
 
     const renderDropdownContent = (categories: Category[]) => (
-        <DropdownContent>
-            {categories.map((category) => (
-                <CategoryCard
-                    key={category.id}
-                    onClick={() => handleCategoryClick(category.attributes.link)}
-                >
-                    <img
-                        src={`http://localhost:1337${category.attributes.mainImage.data.attributes.url}`}
-                        alt={category.attributes.name}
-                        style={{ width: 50, height: 50, objectFit: 'cover', marginRight: 8 }}
-                    />
-                    <Typography variant="subtitle1">{category.attributes.name}</Typography>
-                </CategoryCard>
-            ))}
-        </DropdownContent>
+        isLoading ? (
+            <DropdownContent>
+                <CircularProgress size={24} />
+                <Typography variant="body2" sx={{ ml: 1 }}>Data is loading...</Typography>
+            </DropdownContent>
+        ) : categories.length === 0 ? (
+            <DropdownContent>
+                <Typography variant="body2">No categories available</Typography>
+            </DropdownContent>
+        ) : (
+            <DropdownContent>
+                {categories.map((category) => (
+                    <CategoryCard
+                        key={category.id}
+                        onClick={() => handleCategoryClick(category.attributes.link)}
+                    >
+                        <img
+                            src={`http://localhost:1337${category.attributes.mainImage.data.attributes.url}`}
+                            alt={category.attributes.name}
+                            style={{ width: 50, height: 50, objectFit: 'cover', marginRight: 8 }}
+                        />
+                        <Typography variant="subtitle1">{category.attributes.name}</Typography>
+                    </CategoryCard>
+                ))}
+            </DropdownContent>
+        )
     );
+
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -122,46 +163,77 @@ const SearchAppBar: React.FC = () => {
 
                         <Grid item xs={6} md={10} sx={{ display: { xs: 'none', sm: 'none', md: 'flex' }, justifyContent: 'center' }}>
                             <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
-                                {/*<ClickAwayListener onClickAway={handleDropdownClose}>*/}
-                                {/*    <Box*/}
-                                {/*        ref={eastAfricaRef}*/}
-                                {/*        onMouseEnter={() => handleDropdownOpen('eastAfrica')}*/}
-                                {/*    >*/}
-                                {/*        <NavBarLink to="#" text="East Africa▾"  />*/}
-                                {/*        <Popper*/}
-                                {/*            open={openDropdown === 'eastAfrica'}*/}
-                                {/*            anchorEl={eastAfricaRef.current}*/}
-                                {/*            placement="bottom-start"*/}
-                                {/*            transition*/}
-                                {/*        >*/}
-                                {/*            {renderDropdownContent(eastAfricaList)}*/}
-                                {/*        </Popper>*/}
-                                {/*    </Box>*/}
-                                {/*</ClickAwayListener>*/}
-                                <NavBarLink to="/contents" text="Safari" />
-                                <NavBarLink to="/contents" text="Kilimanjaro" />
-                                {/*<ClickAwayListener onClickAway={handleDropdownClose}>*/}
-                                {/*    <Box*/}
-                                {/*        ref={climbingRef}*/}
-                                {/*        onMouseEnter={() => handleDropdownOpen('climbing')}*/}
-                                {/*    >*/}
-                                {/*        <NavBarLink to="#" text="Climbing▾" />*/}
-                                {/*        <Popper*/}
-                                {/*            open={openDropdown === 'climbing'}*/}
-                                {/*            anchorEl={climbingRef.current}*/}
-                                {/*            placement="bottom-start"*/}
-                                {/*            transition*/}
-                                {/*        >*/}
-                                {/*            {renderDropdownContent(climbingList)}*/}
-                                {/*        </Popper>*/}
-                                {/*    </Box>*/}
-                                {/*</ClickAwayListener>*/}
-                                <NavBarLink to="/contents" text="Zanzibar" />
-                                <NavBarLink to="/contents" text="Day Trips" />
-                                <NavBarLink to="/contents" text="Photographic Safari" />
-                                <NavBarLink to="/contact" text="Contact" />
+                                <ClickAwayListener onClickAway={() => handleDropdownClose(true)}>
+                                    <Box
+                                        onMouseEnter={() => handleNavLinkHover('eastAfrica')}
+                                        onMouseLeave={() => handleDropdownClose()}
+                                    >
+                                        <NavBarLink to="#" text="East Africa▾" />
+                                        <Popper
+                                            open={openDropdown === 'eastAfrica'}
+                                            anchorEl={eastAfricaRef.current}
+                                            placement="bottom-start"
+                                            transition
+                                            sx={{mt:'9vh'}}
+                                        >
+                                            {({ TransitionProps }) => (
+                                                <Box
+                                                    {...TransitionProps}
+                                                    onMouseEnter={() => handleDropdownOpen('eastAfrica')}
+                                                    onMouseLeave={() => handleDropdownClose()}
+                                                >
+                                                    {renderDropdownContent(eastAfricaList)}
+                                                </Box>
+                                            )}
+                                        </Popper>
+                                    </Box>
+                                </ClickAwayListener>
+                                <Box onMouseEnter={() => handleNavLinkHover(null)}>
+                                    <NavBarLink to="/contents" text="Safari" />
+                                </Box>
+                                <Box onMouseEnter={() => handleNavLinkHover(null)}>
+                                    <NavBarLink to="/contents" text="Kilimanjaro" />
+                                </Box>
+                                <ClickAwayListener onClickAway={() => handleDropdownClose(true)}>
+                                    <Box
+                                        onMouseEnter={() => handleNavLinkHover('climbing')}
+                                        onMouseLeave={() => handleDropdownClose()}
+                                    >
+                                        <NavBarLink to="#" text="Climbing▾" />
+                                        <Popper
+                                            open={openDropdown === 'climbing'}
+                                            anchorEl={climbingRef.current}
+                                            placement="bottom"
+                                            transition
+                                            sx={{mt:'9vh'}}
+                                        >
+                                            {({ TransitionProps }) => (
+                                                <Box
+                                                    {...TransitionProps}
+                                                    onMouseEnter={() => handleDropdownOpen('climbing')}
+                                                    onMouseLeave={() => handleDropdownClose()}
+                                                >
+                                                    {renderDropdownContent(climbingList)}
+                                                </Box>
+                                            )}
+                                        </Popper>
+                                    </Box>
+                                </ClickAwayListener>
+                                <Box onMouseEnter={() => handleNavLinkHover(null)}>
+                                    <NavBarLink to="/contents" text="Zanzibar" />
+                                </Box>
+                                <Box onMouseEnter={() => handleNavLinkHover(null)}>
+                                    <NavBarLink to="/contents" text="Day Trips" />
+                                </Box>
+                                <Box onMouseEnter={() => handleNavLinkHover(null)}>
+                                    <NavBarLink to="/contents" text="Photographic Safari" />
+                                </Box>
+                                <Box onMouseEnter={() => handleNavLinkHover(null)}>
+                                    <NavBarLink to="/contact" text="Contact" />
+                                </Box>
                             </Box>
                         </Grid>
+
 
                         <Grid item xs={9} md={1} sx={{ display: 'flex', justifyContent: 'flex-end', paddingRight: 2 }}>
                             <Box sx={{ display: { xs: 'none', md: 'block' } }}>
