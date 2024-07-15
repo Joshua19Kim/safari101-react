@@ -17,7 +17,6 @@ const NavBarLink: React.FC<NavBarLinkProps> = ({ to, text }) => {
             <Typography
                 variant="h6"
                 noWrap
-                component="a"
                 sx={{
                     px: 3,
                     display: 'flex',

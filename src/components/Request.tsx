@@ -20,7 +20,6 @@ import theme from "../assets/style/theme";
 const backgroundImage = "safariBackground.jpg"
 
 
-
 const getTodayDate = () => {
     const today = new Date();
     return today.toISOString().split('T')[0];
