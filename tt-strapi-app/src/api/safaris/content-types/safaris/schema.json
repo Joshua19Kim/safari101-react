@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "safarises",
+  "info": {
+    "singularName": "safaris",
+    "pluralName": "safarises",
+    "displayName": "safaris",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "safariName": {
+      "type": "string"
+    },
+    "safariPrice": {
+      "type": "integer"
+    },
+    "safariDescription": {
+      "type": "string"
+    },
+    "safariMainImage": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "safariImages": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    }
+  }
+}
