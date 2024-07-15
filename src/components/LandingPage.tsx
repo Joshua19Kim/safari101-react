@@ -33,7 +33,7 @@ const LandingPage = () => {
 
     return (
         <>
-            <SearchAppBar />
+            {/*<SearchAppBar />*/}
 
             <Container>
                 <RequestBox image={backgroundImage} />
