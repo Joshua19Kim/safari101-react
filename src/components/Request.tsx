@@ -20,6 +20,7 @@ import theme from "../assets/style/theme";
 const backgroundImage = "safariBackground.jpg"
 
 
+
 const getTodayDate = () => {
     const today = new Date();
     return today.toISOString().split('T')[0];
@@ -51,6 +52,13 @@ const Request = () => {
     useEffect(() => {
         if (location.state !== null) {
             setTripInfo(location.state);
+            setRequestInputInteracted({
+                adults: false,
+                children: false,
+                email: false,
+                arrivalDate: false,
+                description: false,
+            });
         }
     }, [location.state]);
 
@@ -128,7 +136,7 @@ const Request = () => {
                                     defaultValue="Small"
                                     size="small"
                                     name="adults"
-                                    value={requestInputInteracted.adults ? tripInfo.adults : '2'}
+                                    value={tripInfo.adults.toString()}
                                     fullWidth
                                     InputProps={{
                                         endAdornment: <PersonIcon onClick={() => handleIconClick('adults')} style={{ cursor: 'pointer' }} />,
@@ -146,7 +154,7 @@ const Request = () => {
                                     defaultValue="Small"
                                     size="small"
                                     name="children"
-                                    value={requestInputInteracted.children ? tripInfo.children : '0'}
+                                    value={tripInfo.children.toString()}
                                     fullWidth
                                     InputProps={{
                                         endAdornment: <TbMoodKid onClick={() => handleIconClick('children')} style={{ cursor: 'pointer', width: '32px', height: '32px' }} />,
@@ -163,7 +171,6 @@ const Request = () => {
                                     id="outlined-size-small"
                                     defaultValue="Small"
                                     size="small"
-                                    label="Required"
                                     name="email"
                                     value={requestInputInteracted.email ? tripInfo.email : 'safari101@tour.com'}
                                     fullWidth
@@ -181,7 +188,7 @@ const Request = () => {
                                     size="small"
                                     name="arrivalDate"
                                     type="date"
-                                    value={requestInputInteracted.arrivalDate ? tripInfo.arrivalDate : getTodayDate()}
+                                    value={tripInfo.arrivalDate.toString()}
                                     fullWidth
                                     margin="normal"
                                     onChange={handleInputChange}
