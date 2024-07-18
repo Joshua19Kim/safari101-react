@@ -1,18 +1,18 @@
 import axios from 'axios';
 
 
-const API_URL = (process.env.REACT_APP_STRAPI_API_URL as string);
-const token = (process.env.REACT_APP_STRAPI_READING_SENDING_REQUEST_TOKEN as string);
-
-axios.interceptors.request.use(
-    config => {
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    error => Promise.reject(error)
-);
+const API_URL = (process.env.REACT_APP_SANITY_API_URL as string);
+// const token = (process.env.REACT_APP_STRAPI_READING_SENDING_REQUEST_TOKEN as string);
+//
+// axios.interceptors.request.use(
+//     config => {
+//         if (token) {
+//             config.headers.Authorization = `Bearer ${token}`;
+//         }
+//         return config;
+//     },
+//     error => Promise.reject(error)
+// );
 
 
 export const getData = async (endpoint: string) => {
@@ -32,7 +32,7 @@ export const sendEmail = async (tripInfo: TripInfo) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                // 'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(payload),
         });

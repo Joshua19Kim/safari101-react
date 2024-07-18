@@ -8,7 +8,7 @@ interface NavBarLinkProps {
 }
 
 const NavBarLink: React.FC<NavBarLinkProps> = ({ to, text }) => {
-    const specialCases = ['Contact', 'Request'];
+    const specialCases = ['Contact', "East Africa▾", "Climbing▾" ];
 
     const linkTo = specialCases.includes(text) ? to : `${to}/${encodeURIComponent(text)}`;
 

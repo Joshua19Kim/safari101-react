@@ -10,7 +10,6 @@ import {Grid, TextField, useMediaQuery} from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import ChildCareIcon from "@mui/icons-material/ChildCare";
 import EmailIcon from '@mui/icons-material/Email';
-import {sendEmail} from "../api/api";
 import {TbMoodKid} from "react-icons/tb";
 import {Theme} from "@mui/material/styles";
 import theme from "../assets/style/theme";
@@ -18,6 +17,7 @@ import theme from "../assets/style/theme";
 
 
 const backgroundImage = "safariBackground.jpg"
+
 
 
 const getTodayDate = () => {
@@ -29,7 +29,6 @@ const getTodayDate = () => {
 
 const Request = () => {
 
-    const navigate = useNavigate();
     const location = useLocation();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [tripInfo, setTripInfo] = useState<TripInfo>({
@@ -51,6 +50,13 @@ const Request = () => {
     useEffect(() => {
         if (location.state !== null) {
             setTripInfo(location.state);
+            setRequestInputInteracted({
+                adults: false,
+                children: false,
+                email: false,
+                arrivalDate: false,
+                description: false,
+            });
         }
     }, [location.state]);
 
@@ -79,15 +85,15 @@ const Request = () => {
         }));
     };
 
-    const handleSubmit = async () => {
-        const result = await sendEmail(tripInfo);
-        if (result.success) {
-            alert(result.message);
-            navigate('/');
-        } else {
-            alert(result.error);
-        }
-    }
+    // const handleSubmit = async () => {
+    //     const result = await sendEmail(tripInfo);
+    //     if (result.success) {
+    //         alert(result.message);
+    //         navigate('/');
+    //     } else {
+    //         alert(result.error);
+    //     }
+    // }
 
 
 
@@ -110,7 +116,7 @@ const Request = () => {
                         maxWidth: '60rem',
                         backgroundColor: theme.palette.primary.main,
                         marginTop: '2vh',
-                        padding: isMobile ? '0' : '3rem',
+                        padding: isMobile ? '2rem' : '3rem',
                         paddingTop: isMobile ? 'calc(56px + 1rem)' : 'calc(64px + 2rem)',
                     })}>
                         <Typography variant="h1" component="h1" gutterBottom sx={{
@@ -128,7 +134,7 @@ const Request = () => {
                                     defaultValue="Small"
                                     size="small"
                                     name="adults"
-                                    value={requestInputInteracted.adults ? tripInfo.adults : '2'}
+                                    value={tripInfo.adults.toString()}
                                     fullWidth
                                     InputProps={{
                                         endAdornment: <PersonIcon onClick={() => handleIconClick('adults')} style={{ cursor: 'pointer' }} />,
@@ -146,10 +152,10 @@ const Request = () => {
                                     defaultValue="Small"
                                     size="small"
                                     name="children"
-                                    value={requestInputInteracted.children ? tripInfo.children : '0'}
+                                    value={tripInfo.children.toString()}
                                     fullWidth
                                     InputProps={{
-                                        endAdornment: <TbMoodKid onClick={() => handleIconClick('children')} style={{ cursor: 'pointer', width: '32px', height: '32px' }} />,
+                                        endAdornment: <TbMoodKid onClick={() => handleIconClick('children')} style={{ cursor: 'pointer', width: '23px', height: '23px' }} />,
                                         inputMode: 'numeric',
                                     }}
                                     onChange={handleInputChange}
@@ -163,7 +169,6 @@ const Request = () => {
                                     id="outlined-size-small"
                                     defaultValue="Small"
                                     size="small"
-                                    label="Required"
                                     name="email"
                                     value={requestInputInteracted.email ? tripInfo.email : 'safari101@tour.com'}
                                     fullWidth
@@ -181,7 +186,7 @@ const Request = () => {
                                     size="small"
                                     name="arrivalDate"
                                     type="date"
-                                    value={requestInputInteracted.arrivalDate ? tripInfo.arrivalDate : getTodayDate()}
+                                    value={tripInfo.arrivalDate.toString()}
                                     fullWidth
                                     margin="normal"
                                     onChange={handleInputChange}
@@ -206,7 +211,7 @@ const Request = () => {
                         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
                             <Button
                                 color="warning"
-                                onClick={handleSubmit}
+                                // onClick={handleSubmit}
                                 style={{
                                     backgroundColor: '#ffd700',
                                     color: 'black',

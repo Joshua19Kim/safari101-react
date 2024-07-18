@@ -1,35 +1,51 @@
 import * as React from 'react';
 import { Theme, styled, alpha } from '@mui/material/styles';
-import {AppBar, Box, Toolbar, IconButton, Typography, Grid, Paper, Popper, ClickAwayListener} from '@mui/material';
+import {
+    AppBar,
+    Box,
+    Toolbar,
+    IconButton,
+    Typography,
+    Grid,
+    Paper,
+    Popper,
+    ClickAwayListener,
+    useMediaQuery, useTheme
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import NavBarLink from "../assets/style/NavBarTextWithLink";
 import logoImage from '../assets/img/logo/LOGO-Main.png';
 import Sidebar from './Sidebar';
-import {getData} from "../api/api";
 import CircularProgress from "@mui/material/CircularProgress";
+import {getCategories, getImage} from "../api/sanityApi";
+import {Button} from "reactstrap";
 
 const Logo = styled('img')(({ theme }) => ({
     height: '6vh',
     minHeight: '2.5rem',
     width: '8rem',
 }));
-
-const DropdownContent = styled(Paper)(({ theme }) => ({
-    padding: theme.spacing(1),
+const DropdownContent = styled(Paper)<{category: string}>(({ theme, category }) => ({
+    padding: theme.spacing(4),
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[4],
-    maxWidth: "80%",
-    width: "50rem",
+    width: "auto",
+    marginLeft: category ==="eastAfrica" ? "5rem" : category === "climbing" ? "20vw" : "auto",
+    display: 'flex',
+    flexDirection: 'row',
+
 }));
 
 const CategoryCard = styled(Box)(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
+    flexDirection: 'column',
     padding: theme.spacing(1),
     '&:hover': {
         backgroundColor: theme.palette.action.hover,
     },
+
 }));
 
 
@@ -44,12 +60,13 @@ const SearchAppBar: React.FC = () => {
     const climbingRef = React.useRef<HTMLDivElement>(null);
     const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
-
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
 
     React.useEffect(() => {
-        getCategoryList("/east-africas")
-        getCategoryList("/climbings")
+        getCategoryList("eastAfricaAreaList")
+        getCategoryList("climbingAreaList")
     },[])
 
     React.useEffect(() => {
@@ -60,17 +77,17 @@ const SearchAppBar: React.FC = () => {
     const getCategoryList = async (category: string) => {
         setIsLoading(true);
         try {
-            const response = await getData(category);
-            if(category === "/east-africas"){
-                setEastAfricalList(response.data)
-            } else if( category === "/climbings") {
-                setClimbingList(response.data)
+            const response = await getCategories(category);
+            if(category === "eastAfricaAreaList"){
+                setEastAfricalList(response)
+            } else if( category === "climbingAreaList") {
+                setClimbingList(response)
             }
         } catch (error) {
             console.error('Error fetching items', error);
-            if(category === "/east-africas"){
+            if(category === "eastAfricaAreaList"){
                 setEastAfricalList([])
-            } else if( category === "/climbings") {
+            } else if( category === "climbingAreaList") {
                 setClimbingList([])
             }
         } finally {
@@ -97,7 +114,7 @@ const SearchAppBar: React.FC = () => {
         } else {
             closeTimeoutRef.current = setTimeout(() => {
                 setOpenDropdown(null);
-            }, 300); // 300ms delay, adjust as needed
+            }, 400); // 300ms delay, adjust as needed
         }
     };
 
@@ -109,35 +126,40 @@ const SearchAppBar: React.FC = () => {
         }
     };
 
+    const moveToRequestPage = () => {
+        navigate('/request');
+    };
 
-    const handleCategoryClick = (link: string) => {
-        navigate(link);
+
+    const handleCategoryClick = (categoryName: string) => {
+        navigate(`/category/${categoryName}`);
         handleDropdownClose();
     };
 
-    const renderDropdownContent = (categories: Category[]) => (
+
+    const renderDropdownContent = (category: string, categories: Category[]) => (
         isLoading ? (
-            <DropdownContent>
+            <DropdownContent category={category}>
                 <CircularProgress size={24} />
                 <Typography variant="body2" sx={{ ml: 1 }}>Data is loading...</Typography>
             </DropdownContent>
         ) : categories.length === 0 ? (
-            <DropdownContent>
+            <DropdownContent category={category}>
                 <Typography variant="body2">No categories available</Typography>
             </DropdownContent>
         ) : (
-            <DropdownContent>
+            <DropdownContent category={category}>
                 {categories.map((category) => (
                     <CategoryCard
-                        key={category.id}
-                        onClick={() => handleCategoryClick(category.attributes.link)}
+                        key={category._id}
+                        onClick={() => handleCategoryClick(category.name)}
                     >
                         <img
-                            src={`http://localhost:1337${category.attributes.mainImage.data.attributes.url}`}
-                            alt={category.attributes.name}
-                            style={{ width: 50, height: 50, objectFit: 'cover', marginRight: 8 }}
+                            src={getImage(category.mainImage).width(400).url()}
+                            alt={category.name}
+                            style={{ width: "15vw", height: "15vh", objectFit: 'cover', marginRight: 8 }}
                         />
-                        <Typography variant="subtitle1">{category.attributes.name}</Typography>
+                        <Typography variant="subtitle1">{category.name}</Typography>
                     </CategoryCard>
                 ))}
             </DropdownContent>
@@ -171,7 +193,6 @@ const SearchAppBar: React.FC = () => {
                                         <NavBarLink to="#" text="East Africa▾" />
                                         <Popper
                                             open={openDropdown === 'eastAfrica'}
-                                            anchorEl={eastAfricaRef.current}
                                             placement="bottom-start"
                                             transition
                                             sx={{mt:'9vh'}}
@@ -182,17 +203,17 @@ const SearchAppBar: React.FC = () => {
                                                     onMouseEnter={() => handleDropdownOpen('eastAfrica')}
                                                     onMouseLeave={() => handleDropdownClose()}
                                                 >
-                                                    {renderDropdownContent(eastAfricaList)}
+                                                    {renderDropdownContent("eastAfrica", eastAfricaList)}
                                                 </Box>
                                             )}
                                         </Popper>
                                     </Box>
                                 </ClickAwayListener>
                                 <Box onMouseEnter={() => handleNavLinkHover(null)}>
-                                    <NavBarLink to="/contents" text="Safari" />
+                                    <NavBarLink to="/trips" text="Safari" />
                                 </Box>
                                 <Box onMouseEnter={() => handleNavLinkHover(null)}>
-                                    <NavBarLink to="/contents" text="Kilimanjaro" />
+                                    <NavBarLink to="/trips" text="Kilimanjaro" />
                                 </Box>
                                 <ClickAwayListener onClickAway={() => handleDropdownClose(true)}>
                                     <Box
@@ -202,7 +223,6 @@ const SearchAppBar: React.FC = () => {
                                         <NavBarLink to="#" text="Climbing▾" />
                                         <Popper
                                             open={openDropdown === 'climbing'}
-                                            anchorEl={climbingRef.current}
                                             placement="bottom"
                                             transition
                                             sx={{mt:'9vh'}}
@@ -213,20 +233,20 @@ const SearchAppBar: React.FC = () => {
                                                     onMouseEnter={() => handleDropdownOpen('climbing')}
                                                     onMouseLeave={() => handleDropdownClose()}
                                                 >
-                                                    {renderDropdownContent(climbingList)}
+                                                    {renderDropdownContent("climbing", climbingList)}
                                                 </Box>
                                             )}
                                         </Popper>
                                     </Box>
                                 </ClickAwayListener>
                                 <Box onMouseEnter={() => handleNavLinkHover(null)}>
-                                    <NavBarLink to="/contents" text="Zanzibar" />
+                                    <NavBarLink to="/trips" text="Zanzibar" />
                                 </Box>
                                 <Box onMouseEnter={() => handleNavLinkHover(null)}>
-                                    <NavBarLink to="/contents" text="Day Trips" />
+                                    <NavBarLink to="/trips" text="Day Trips" />
                                 </Box>
                                 <Box onMouseEnter={() => handleNavLinkHover(null)}>
-                                    <NavBarLink to="/contents" text="Photographic Safari" />
+                                    <NavBarLink to="/trips" text="Photographic Safari" />
                                 </Box>
                                 <Box onMouseEnter={() => handleNavLinkHover(null)}>
                                     <NavBarLink to="/contact" text="Contact" />
@@ -236,8 +256,26 @@ const SearchAppBar: React.FC = () => {
 
 
                         <Grid item xs={9} md={1} sx={{ display: 'flex', justifyContent: 'flex-end', paddingRight: 2 }}>
-                            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-                                <NavBarLink to="/request" text="Request" />
+                            <Box sx={{ backgroundColor:"ffd700" }}>
+                                <Button
+                                    color="warning"
+                                    onClick={()=> navigate('/request')}
+                                    style={{
+                                        backgroundColor: '#ffd700',
+                                        color: 'black',
+                                        border: 'none',
+                                        padding: '15px 30px',
+                                        fontSize: '1.1rem',
+                                        fontWeight: 'bold',
+                                        textTransform: 'uppercase',
+                                        cursor: 'pointer',
+                                        transition: 'background-color 0.3s ease',
+                                    }}
+                                    className="custom-button"
+                                >
+                                    Request
+                                </Button>
+
                             </Box>
                             <IconButton
                                 size="large"

@@ -2,27 +2,19 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import { Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import {getImage} from "../api/sanityApi";
 
-interface ContentCardProps {
-    content: Contents;
+interface TripCardProps {
+    trip: Trip;
 }
 
-const formatDescription = (description: string) => {
-    return description.split('##').map((item, index) => (
-        <React.Fragment key={index}>
-            {item.trim()}
-            <br />
-        </React.Fragment>
-    ));
-};
-
-const ContentCard: React.FC<ContentCardProps> = ({ content }) => {
+const TripCard: React.FC<TripCardProps> = ({ trip }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [comment, setComment] = useState('');
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    if (!content || !content.attributes || !content.attributes.mainImage) {
+    if (!trip || !trip.mainImage) {
         return null;
     }
 
@@ -34,6 +26,15 @@ const ContentCard: React.FC<ContentCardProps> = ({ content }) => {
     };
 
     const costBackgroundImage = "costBackground.png";
+
+    const renderDescription = (description: any[]) => {
+        return description.map((block, index) => (
+            <Typography key={index} variant="body2" color="text.secondary">
+                {block.children.map((child: { text: any; }) => child.text).join(' ')}
+            </Typography>
+        ));
+
+    };
 
     return (
         <>
@@ -52,8 +53,8 @@ const ContentCard: React.FC<ContentCardProps> = ({ content }) => {
                     minHeight: isMobile ? '200px' : 'auto',
                 }}>
                     <img
-                        src={`http://localhost:1337${content.attributes.mainImage.data.attributes.url}`}
-                        alt={content.attributes.name}
+                        src={getImage(trip.mainImage).width(400).url()}
+                        alt={trip.name}
                         style={{
                             width: '100%',
                             height: '100%',
@@ -79,7 +80,7 @@ const ContentCard: React.FC<ContentCardProps> = ({ content }) => {
                             ml: 3,
                         }}>
                             <Typography variant="h5" component="div">
-                                {content.attributes.name}
+                                {trip.name}
                             </Typography>
                             <Box sx={{
                                 backgroundImage: `url(${require(`../assets/img/${costBackgroundImage}`)})`,
@@ -88,13 +89,11 @@ const ContentCard: React.FC<ContentCardProps> = ({ content }) => {
                                 padding: '15px 30px',
                             }}>
                                 <Typography variant="h6" component="div">
-                                    ${content.attributes.cost}
+                                    ${trip.cost}
                                 </Typography>
                             </Box>
                         </Box>
-                        <Typography variant="body2" color="text.secondary">
-                            {formatDescription(content.attributes.shortDescription)}
-                        </Typography>
+                        {renderDescription(trip.shortDescription)}
                     </Box>
                     <Box
                         sx={{
@@ -126,19 +125,20 @@ const ContentCard: React.FC<ContentCardProps> = ({ content }) => {
             </Box>
 
             <Modal isOpen={isModalOpen} toggle={toggleModal}>
-                <ModalHeader toggle={toggleModal}>{content.attributes.name}</ModalHeader>
+                <ModalHeader toggle={toggleModal}>{trip.name}</ModalHeader>
                 <ModalBody>
                     <img
-                        src={`http://localhost:1337${content.attributes.mainImage.data.attributes.url}`}
-                        alt={content.attributes.name}
+                        src={getImage(trip.mainImage).width(400).url()}
+                        alt={trip.name}
                         style={{ width: '100%', height: '200px', objectFit: 'cover' }}
                     />
                     <Typography variant="h6" component="h3">
-                        ${content.attributes.cost}
+                        From
                     </Typography>
-                    <Typography variant="body1" style={{ marginTop: '1rem' }}>
-                        {content.attributes.longDescription}
+                    <Typography variant="h6" component="h3">
+                        From ${trip.cost}
                     </Typography>
+                    {renderDescription(trip.longDescription)}
                     <textarea
                         className="form-control mt-3"
                         rows={4}
@@ -161,4 +161,4 @@ const ContentCard: React.FC<ContentCardProps> = ({ content }) => {
     );
 };
 
-export default ContentCard;
+export default TripCard;
