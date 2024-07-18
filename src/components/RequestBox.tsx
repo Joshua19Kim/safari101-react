@@ -74,7 +74,7 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
     return (
         <Box sx={{
             width: '100%',
-            height: '28rem',
+            height: isMobile ? '23rem' : '28rem',
             marginTop: '9vh',
             minWidth: '23rem',
             backgroundImage: `url(${require(`../assets/img/${image}`)})`,
@@ -89,6 +89,7 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
             <Box sx={(theme: Theme) => ({
                 backgroundColor: theme.palette.primary.main,
                 minWidth: '23rem',
+                height: isMobile ? '100%' : 'auto',
                 width: isMobile ? '100%' : '23rem',
                 padding: '1rem',
                 boxShadow: '0 4px 8px rgba(0,0,0,0.1)',

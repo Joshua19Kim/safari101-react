@@ -9,7 +9,7 @@ import LandingPage from "./components/LandingPage"
 import Contact from "./components/Contact";
 import AboutUs from "./components/AboutUs";
 import Request from "./components/Request";
-import ContentsPage from "./components/ContentsPage";
+import TripsPage from "./components/TripsPage";
 import CategoryPage from "./components/CategoryPage";
 
 
@@ -23,7 +23,7 @@ function App() {
                     <Routes>
                       <Route path="/" element={<LandingPage/>}/>
                         <Route path="/category/:categoryName" element={<CategoryPage/>}/>
-                        <Route path="/contents/:contentsTopic" element={<ContentsPage/>}/>
+                        <Route path="/trips/:activity" element={<TripsPage/>}/>
                         <Route path="/contact" element={<Contact/>}/>
                         <Route path="/aboutus" element={<AboutUs/>}/>
                         <Route path="/request" element={<Request/>}/>

@@ -10,7 +10,6 @@ import {Grid, TextField, useMediaQuery} from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import ChildCareIcon from "@mui/icons-material/ChildCare";
 import EmailIcon from '@mui/icons-material/Email';
-import {sendEmail} from "../api/api";
 import {TbMoodKid} from "react-icons/tb";
 import {Theme} from "@mui/material/styles";
 import theme from "../assets/style/theme";
@@ -30,7 +29,6 @@ const getTodayDate = () => {
 
 const Request = () => {
 
-    const navigate = useNavigate();
     const location = useLocation();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [tripInfo, setTripInfo] = useState<TripInfo>({
@@ -87,15 +85,15 @@ const Request = () => {
         }));
     };
 
-    const handleSubmit = async () => {
-        const result = await sendEmail(tripInfo);
-        if (result.success) {
-            alert(result.message);
-            navigate('/');
-        } else {
-            alert(result.error);
-        }
-    }
+    // const handleSubmit = async () => {
+    //     const result = await sendEmail(tripInfo);
+    //     if (result.success) {
+    //         alert(result.message);
+    //         navigate('/');
+    //     } else {
+    //         alert(result.error);
+    //     }
+    // }
 
 
 
@@ -118,7 +116,7 @@ const Request = () => {
                         maxWidth: '60rem',
                         backgroundColor: theme.palette.primary.main,
                         marginTop: '2vh',
-                        padding: isMobile ? '0' : '3rem',
+                        padding: isMobile ? '2rem' : '3rem',
                         paddingTop: isMobile ? 'calc(56px + 1rem)' : 'calc(64px + 2rem)',
                     })}>
                         <Typography variant="h1" component="h1" gutterBottom sx={{
@@ -157,7 +155,7 @@ const Request = () => {
                                     value={tripInfo.children.toString()}
                                     fullWidth
                                     InputProps={{
-                                        endAdornment: <TbMoodKid onClick={() => handleIconClick('children')} style={{ cursor: 'pointer', width: '32px', height: '32px' }} />,
+                                        endAdornment: <TbMoodKid onClick={() => handleIconClick('children')} style={{ cursor: 'pointer', width: '23px', height: '23px' }} />,
                                         inputMode: 'numeric',
                                     }}
                                     onChange={handleInputChange}
@@ -213,7 +211,7 @@ const Request = () => {
                         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
                             <Button
                                 color="warning"
-                                onClick={handleSubmit}
+                                // onClick={handleSubmit}
                                 style={{
                                     backgroundColor: '#ffd700',
                                     color: 'black',

@@ -1,45 +1,40 @@
 
-type ContentsTopic = {
+type ActivityTopic = {
     id: string,
-    title: string,
     image: string,
-    contentLink: string,
 }
 
-type Contents = {
-    id: number;
-    attributes: {
-        name: string;
-        cost: number;
-        shortDescription: string;
-        longDescription: string;
-        mainImage: {
-            data: {
-                id: number;
-                attributes: {
-                    url: string;
-                };
-            };
-        };
+type CategoryTopic = {
+    id: string,
+    image: string,
+}
+
+
+type Trip = {
+    _id: string;
+    name: string;
+    cost: number;
+    shortDescription: any[]; // You might want to type this more specifically
+    longDescription: any[]; // You might want to type this more specifically
+    mainImage: any; // You might want to type this more specifically
+    slug: {
+        current: string;
     };
+    AreaReference: any; // You might want to type this more specifically
+    ActivityReference: any; // You might want to type this more specifically
+    ClimbingAreaReference: any; // You might want to type this more specifically
 }
 
 type Category = {
-    id: number;
-    attributes: {
-        name: string;
-        price: number;
-        description: string;
-        link: string;
-        mainImage: {
-            data: {
-                id: number;
-                attributes: {
-                    url: string;
-                };
-            };
-        };
+    _id: number;
+    name: string;
+    shortDescription: any[];
+    mainImage: any;
+    slug: {
+        current: string;
     };
+    link: string;
+
 }
 
 type TripInfo = {
