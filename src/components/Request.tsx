@@ -1,18 +1,17 @@
 import SearchAppBar from "./SearchAppBar";
 import React, {useEffect, useState} from "react";
 import '../assets/css/Main.css';
-import {Background} from "../assets/style/styledComponents";
 import Box from "@mui/material/Box";
 import {useLocation, useNavigate} from 'react-router-dom';
-import {Button, Container} from "reactstrap";
+import {Button} from "reactstrap";
 import Typography from "@mui/material/Typography";
 import {Grid, TextField, useMediaQuery} from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
-import ChildCareIcon from "@mui/icons-material/ChildCare";
 import EmailIcon from '@mui/icons-material/Email';
 import {TbMoodKid} from "react-icons/tb";
 import {Theme} from "@mui/material/styles";
 import theme from "../assets/style/theme";
+import {sendEmail} from "../api/sanityApi";
 
 
 
@@ -28,20 +27,20 @@ const getTodayDate = () => {
 
 
 const Request = () => {
-
+    const navigate = useNavigate();
     const location = useLocation();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [tripInfo, setTripInfo] = useState<TripInfo>({
         adults: 2,
         children: 0,
-        email: "safari101@tour.com",
+        clientEmail: "safari101@tour.com",
         arrivalDate: getTodayDate(),
         description: "Please describe your plan!",
     })
     const [requestInputInteracted, setRequestInputInteracted] = useState<RequestInputInteraction>({
         adults: false,
         children: false,
-        email: false,
+        clientEmail: false,
         arrivalDate: false,
         description: false,
     });
@@ -53,7 +52,7 @@ const Request = () => {
             setRequestInputInteracted({
                 adults: false,
                 children: false,
-                email: false,
+                clientEmail: false,
                 arrivalDate: false,
                 description: false,
             });
@@ -85,15 +84,15 @@ const Request = () => {
         }));
     };
 
-    // const handleSubmit = async () => {
-    //     const result = await sendEmail(tripInfo);
-    //     if (result.success) {
-    //         alert(result.message);
-    //         navigate('/');
-    //     } else {
-    //         alert(result.error);
-    //     }
-    // }
+    const handleSubmit = async () => {
+        const result = await sendEmail(tripInfo);
+        if (result.success) {
+            alert(result.message);
+            navigate('/');
+        } else {
+            alert(result.error);
+        }
+    }
 
 
 
@@ -170,11 +169,11 @@ const Request = () => {
                                     defaultValue="Small"
                                     size="small"
                                     name="email"
-                                    value={requestInputInteracted.email ? tripInfo.email : 'safari101@tour.com'}
+                                    value={requestInputInteracted.clientEmail ? tripInfo.clientEmail : 'safari101@tour.com'}
                                     fullWidth
                                     InputProps={{ endAdornment: <EmailIcon /> }}
                                     onChange={handleInputChange}
-                                    onFocus={() => handleFieldFocus('email')}
+                                    onFocus={() => handleFieldFocus('clientEmail')}
                                     margin="normal"
                                 />
                             </Grid>
@@ -211,7 +210,7 @@ const Request = () => {
                         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
                             <Button
                                 color="warning"
-                                // onClick={handleSubmit}
+                                onClick={handleSubmit}
                                 style={{
                                     backgroundColor: '#ffd700',
                                     color: 'black',
@@ -235,18 +234,3 @@ const Request = () => {
     )
 }
 export default Request;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
