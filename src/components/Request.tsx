@@ -1,4 +1,3 @@
-import SearchAppBar from "./SearchAppBar";
 import React, {useEffect, useState} from "react";
 import '../assets/css/Main.css';
 import Box from "@mui/material/Box";
@@ -44,6 +43,8 @@ const Request = () => {
         arrivalDate: false,
         description: false,
     });
+
+    const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
 
 
     useEffect(() => {
@@ -98,7 +99,6 @@ const Request = () => {
 
     return (
             <>
-                <SearchAppBar />
                 <Box sx={{
                     display: 'flex',
                     alignItems: 'center',

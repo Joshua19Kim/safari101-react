@@ -1,4 +1,3 @@
-import SearchAppBar from "./SearchAppBar";
 import React, {useEffect, useState} from "react";
 import Box from "@mui/material/Box";
 import RequestBox from "./RequestBox";
@@ -74,7 +73,6 @@ const CategoryPage = () => {
     if (!currentCategory) {
         return (
             <>
-                <SearchAppBar />
                 <Container>
                     <Box sx={{mt:'10rem'}}>
                         <h1>Topic not found</h1>
@@ -87,7 +85,6 @@ const CategoryPage = () => {
 
     return (
         <>
-            <SearchAppBar />
             <Container>
                 <RequestBox image={currentCategory.image} />
                 <Box sx={{

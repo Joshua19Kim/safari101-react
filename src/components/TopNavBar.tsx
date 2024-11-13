@@ -49,7 +49,7 @@ const CategoryCard = styled(Box)(({ theme }) => ({
 }));
 
 
-const SearchAppBar: React.FC = () => {
+const TopNavBar: React.FC = () => {
     const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
     const location = useLocation();
@@ -296,4 +296,4 @@ const SearchAppBar: React.FC = () => {
     );
 }
 
-export default SearchAppBar;
+export default TopNavBar;
