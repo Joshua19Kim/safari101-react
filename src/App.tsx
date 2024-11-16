@@ -11,6 +11,8 @@ import AboutUs from "./components/AboutUs";
 import Request from "./components/Request";
 import TripsPage from "./components/TripsPage";
 import CategoryPage from "./components/CategoryPage";
+import TopNavBar from "./components/TopNavBar";
+
 
 
 function App() {
@@ -19,6 +21,7 @@ function App() {
           <CssBaseline />
               <div className="App">
                 <Router>
+                    <TopNavBar />
                   <div>
                     <Routes>
                       <Route path="/" element={<LandingPage/>}/>

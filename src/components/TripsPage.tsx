@@ -1,4 +1,3 @@
-import SearchAppBar from "./SearchAppBar";
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import RequestBox from "./RequestBox";
@@ -56,7 +55,6 @@ const TripsPage = () => {
     if (!currentTopic) {
         return (
             <>
-                <SearchAppBar />
                 <Container>
                     <Box sx={{mt:'10rem'}}>
                         <h1>Topic not found</h1>
@@ -68,7 +66,6 @@ const TripsPage = () => {
 
     return (
         <>
-            <SearchAppBar />
             <Container>
                 <RequestBox image={currentTopic.image} />
                 <Box sx={{

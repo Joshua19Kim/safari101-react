@@ -42,14 +42,14 @@ type TripInfo = {
     children: number;
     arrivalDate: string;
     description: string;
-    email: string;
+    clientEmail: string;
 }
 
 
 type RequestInputInteraction = {
     adults: boolean;
     children: boolean;
-    email: boolean;
+    clientEmail: boolean;
     arrivalDate: boolean;
     description: boolean;
 }

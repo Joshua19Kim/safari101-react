@@ -39,7 +39,7 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
     const [requestInputInteracted, setRequestInputInteracted] = useState<RequestInputInteraction>({
         adults: false,
         children: false,
-        email: false,
+        clientEmail: false,
         arrivalDate: false,
         description: false,
     });

@@ -2,11 +2,13 @@ import {createClient} from '@sanity/client';
 import imageUrlBuilder from '@sanity/image-url';
 
 
+
 export const client = createClient({
-    projectId: 'oeam3q7c',
-    dataset: 'production',
+    projectId: process.env.REACT_APP_SANITY_PROJECT_ID,
+    dataset: process.env.REACT_APP_SANITY_DATASET,
     useCdn: true, // set to `false` to bypass the edge cache
-    apiVersion: '2023-05-03', // use current date (YYYY-MM-DD) to target the latest API version
+    apiVersion: process.env.REACT_APP_SANITY_API_VERSION, // use current date (YYYY-MM-DD) to target the latest API version
+    token: process.env.REACT_APP_SANITY_TOKEN
 });
 
 const imageBuilder = imageUrlBuilder(client);
@@ -16,7 +18,7 @@ export function getImage(source) {
 }
 
 
-export async function getTrips() {
+export async function getAllTrips() {
     return await client.fetch('*[_type == "trip"]')
 }
 export async function getCategories(category){
@@ -78,11 +80,17 @@ export async function getTripWithClimbingArea(climbingArea) {
 
 
 
-// export async function createPost(post: Post) {
-//     const result = client.create(post)
-//     return result
-// }
-
-// export async function updateDocumentTitle(_id, title) {
-//     return client.patch(_id).set({title})
-// }
+export const sendEmail = async (tripInfo) => {
+    try {
+        const result = await client.create({
+            _type: 'emailRequest',
+            ...tripInfo,
+            createdAt: new Date().toISOString()
+        });
+        console.log('Email request created:', result);
+        return result;
+    } catch (error) {
+        console.error('Error creating email request:', error);
+        throw error;
+    }
+};
