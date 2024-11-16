@@ -1,26 +1,35 @@
-import { NextApiRequest, NextApiResponse } from 'next'
+import { VercelRequest, VercelResponse } from '@vercel/node'
 import * as emailjs from '@emailjs/nodejs'
 
-// Webhook secret for security (should match what you set in Sanity webhook settings)
-const WEBHOOK_SECRET = process.env.REACT_APP_SANITY_WEBHOOK_SECRET
-
-// Initialize EmailJS configuration
 const emailjsConfig = {
     publicKey: process.env.REACT_APP_EMAILJS_PUBLIC_KEY,
     privateKey: process.env.REACT_APP_EMAILJS_PRIVATE_KEY,
 }
-console.log("Sanity Webhook was processed!")
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    // Only accept POST requests
+
+export default async function handler(
+    req: VercelRequest,
+    res: VercelResponse
+) {
+    // Enable CORS
+    res.setHeader('Access-Control-Allow-Credentials', 'true')
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS')
+    res.setHeader(
+        'Access-Control-Allow-Headers',
+        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+    )
+
+    // Handle OPTIONS request
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end()
+    }
+
+    // Only allow POST requests
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method not allowed' })
     }
 
-    // Verify webhook signature
-    const signature = req.headers['sanity-webhook-signature']
-    if (signature !== WEBHOOK_SECRET) {
-        return res.status(401).json({ message: 'Unauthorized' })
-    }
+    console.log('Webhook received:', req.body)
 
     try {
         const {
@@ -34,6 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         // Verify this is an emailRequest document
         if (_type !== 'emailRequest') {
+            console.log('Invalid document type:', _type)
             return res.status(400).json({ message: 'Invalid document type' })
         }
 
@@ -51,14 +61,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             emailjsConfig
         )
 
-        // Update the Sanity document to mark email as sent
+        console.log('Email sent successfully')
+
+        // Update Sanity document
         const sanityResponse = await fetch(
-            `https://${process.env.SANITY_STUDIO_PROJECT_ID}.api.sanity.io/v2021-06-07/data/mutate/production`,
+            `https://${process.env.REACT_APP_SANITY_PROJECT_ID}.api.sanity.io/v2021-06-07/data/mutate/production`,
             {
                 method: 'POST',
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Bearer ${process.env.SANITY_STUDIO_TOKEN}`
+                    Authorization: `Bearer ${process.env.REACT_APP_SANITY_TOKEN}`
                 },
                 body: JSON.stringify({
                     mutations: [
@@ -77,9 +89,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             throw new Error('Failed to update Sanity document')
         }
 
-        return res.status(200).json({ message: 'Email sent successfully' })
+        console.log('Sanity document updated')
+        return res.status(200).json({ message: 'Webhook processed successfully' })
     } catch (error) {
         console.error('Webhook error:', error)
-        return res.status(500).json({ message: 'Failed to process webhook' })
+        return res.status(500).json({
+            message: 'Failed to process webhook',
+            error: error instanceof Error ? error.message : 'Unknown error'
+        })
     }
 }
