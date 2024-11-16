@@ -9,7 +9,7 @@ const emailjsConfig = {
     publicKey: process.env.REACT_APP_EMAILJS_PUBLIC_KEY,
     privateKey: process.env.REACT_APP_EMAILJS_PRIVATE_KEY,
 }
-
+console.log("Sanity Webhook was processed!")
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     // Only accept POST requests
     if (req.method !== 'POST') {
