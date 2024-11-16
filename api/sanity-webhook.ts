@@ -1,16 +1,28 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import * as emailjs from '@emailjs/nodejs'
 
-const emailjsConfig = {
-    publicKey: process.env.REACT_APP_EMAILJS_PUBLIC_KEY,
-    privateKey: process.env.REACT_APP_EMAILJS_PRIVATE_KEY,
+// Check and provide type safety for EmailJS config
+interface EmailJSConfig {
+    publicKey: string;
+    privateKey: string;
+}
+
+// Validate environment variables
+const emailjsConfig: EmailJSConfig = {
+    publicKey: process.env.REACT_APP_EMAILJS_PUBLIC_KEY || '',
+    privateKey: process.env.REACT_APP_EMAILJS_PRIVATE_KEY || ''
+}
+
+// Validate required environment variables
+if (!emailjsConfig.publicKey || !emailjsConfig.privateKey) {
+    console.error('Missing required EmailJS configuration')
 }
 
 export default async function handler(
     req: VercelRequest,
     res: VercelResponse
 ) {
-    // Enable CORS
+    // CORS headers
     res.setHeader('Access-Control-Allow-Credentials', 'true')
     res.setHeader('Access-Control-Allow-Origin', '*')
     res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS')
@@ -19,14 +31,17 @@ export default async function handler(
         'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
     )
 
-    // Handle OPTIONS request
     if (req.method === 'OPTIONS') {
         return res.status(200).end()
     }
 
-    // Only allow POST requests
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method not allowed' })
+    }
+
+    // Validate EmailJS configuration
+    if (!emailjsConfig.publicKey || !emailjsConfig.privateKey) {
+        return res.status(500).json({ message: 'EmailJS configuration is missing' })
     }
 
     console.log('Webhook received:', req.body)
@@ -41,36 +56,55 @@ export default async function handler(
             createdAt
         } = req.body
 
-        // Verify this is an emailRequest document
         if (_type !== 'emailRequest') {
             console.log('Invalid document type:', _type)
             return res.status(400).json({ message: 'Invalid document type' })
         }
 
-        // Send email using EmailJS
+        // Validate required environment variables for EmailJS
+        const serviceId = process.env.REACT_APP_EMAILJS_SERVICE_ID
+        const templateId = process.env.REACT_APP_EMAILJS_TEMPLATE_ID
+        const ownerEmail = process.env.REACT_APP_WEBSITE_OWNER_EMAIL
+
+        if (!serviceId || !templateId || !ownerEmail) {
+            throw new Error('Missing required EmailJS configuration')
+        }
+
+        // Send email
         await emailjs.send(
-            process.env.REACT_APP_EMAILJS_SERVICE_ID!,
-            process.env.REACT_APP_EMAILJS_TEMPLATE_ID!,
+            serviceId,
+            templateId,
             {
-                to_email: process.env.REACT_APP_WEBSITE_OWNER_EMAIL!,
+                to_email: ownerEmail,
                 client_email: clientEmail,
                 arrival_date: arrivalDate,
                 description,
                 created_at: createdAt
             },
-            emailjsConfig
+            {
+                publicKey: emailjsConfig.publicKey,
+                privateKey: emailjsConfig.privateKey
+            }
         )
 
         console.log('Email sent successfully')
 
-        // Update Sanity document
+        // Validate Sanity configuration
+        const projectId = process.env.REACT_APP_SANITY_PROJECT_ID
+        const token = process.env.REACT_APP_SANITY_TOKEN
+
+        if (!projectId || !token) {
+            throw new Error('Missing Sanity configuration')
+        }
+
+        // Update Sanity
         const sanityResponse = await fetch(
-            `https://${process.env.REACT_APP_SANITY_PROJECT_ID}.api.sanity.io/v2021-06-07/data/mutate/production`,
+            `https://${projectId}.api.sanity.io/v2021-06-07/data/mutate/production`,
             {
                 method: 'POST',
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: `Bearer ${process.env.REACT_APP_SANITY_TOKEN}`
+                    Authorization: `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     mutations: [
