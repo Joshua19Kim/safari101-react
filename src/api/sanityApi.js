@@ -4,11 +4,11 @@ import imageUrlBuilder from '@sanity/image-url';
 
 
 export const client = createClient({
-    projectId: 'oeam3q7c',
-    dataset: 'production',
+    projectId: process.env.REACT_APP_SANITY_PROJECT_ID,
+    dataset: process.env.REACT_APP_SANITY_DATASET,
     useCdn: true, // set to `false` to bypass the edge cache
-    apiVersion: '2023-05-03', // use current date (YYYY-MM-DD) to target the latest API version
-    token: 'skFHryZvzViwBV4ckw7IZlEdoecOxinBDHRZaVfmJSk0rVA3JiNhTeEoWrzM4hylXfp7ySJmjLK7di6al02q3oB56btk1Eu2jo7hTFA2ndaE6UAd85nn48iaJUhDfQqnN8CuyXszMPnkcycaXeFVv6AxZFSxUnKfKJou4fxHj06IZT0XlD8U'
+    apiVersion: process.env.REACT_APP_SANITY_API_VERSION, // use current date (YYYY-MM-DD) to target the latest API version
+    token: process.env.REACT_APP_SANITY_TOKEN
 });
 
 const imageBuilder = imageUrlBuilder(client);
@@ -94,15 +94,3 @@ export const sendEmail = async (tripInfo) => {
         throw error;
     }
 };
-
-
-
-
-// export async function createPost(post) {
-//     const result = client.create(post)
-//     return result
-// }
-
-// export async function updateDocumentTitle(_id, title) {
-//     return client.patch(_id).set({title})
-// }

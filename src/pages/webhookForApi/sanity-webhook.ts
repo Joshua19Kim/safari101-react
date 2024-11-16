@@ -2,12 +2,12 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import * as emailjs from '@emailjs/nodejs'
 
 // Webhook secret for security (should match what you set in Sanity webhook settings)
-const WEBHOOK_SECRET = process.env.SANITY_WEBHOOK_SECRET
+const WEBHOOK_SECRET = process.env.REACT_APP_SANITY_WEBHOOK_SECRET
 
 // Initialize EmailJS configuration
 const emailjsConfig = {
-    publicKey: process.env.EMAILJS_PUBLIC_KEY,
-    privateKey: process.env.EMAILJS_PRIVATE_KEY,
+    publicKey: process.env.REACT_APP_EMAILJS_PUBLIC_KEY,
+    privateKey: process.env.REACT_APP_EMAILJS_PRIVATE_KEY,
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -39,10 +39,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         // Send email using EmailJS
         await emailjs.send(
-            process.env.EMAILJS_SERVICE_ID!,
-            process.env.EMAILJS_TEMPLATE_ID!,
+            process.env.REACT_APP_EMAILJS_SERVICE_ID!,
+            process.env.REACT_APP_EMAILJS_TEMPLATE_ID!,
             {
-                to_email: process.env.WEBSITE_OWNER_EMAIL!,
+                to_email: process.env.REACT_APP_WEBSITE_OWNER_EMAIL!,
                 client_email: clientEmail,
                 arrival_date: arrivalDate,
                 description,
@@ -53,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         // Update the Sanity document to mark email as sent
         const sanityResponse = await fetch(
-            `https://${process.env.SANITY_PROJECT_ID}.api.sanity.io/v2021-06-07/data/mutate/production`,
+            `https://${process.env.SANITY_STUDIO_PROJECT_ID}.api.sanity.io/v2021-06-07/data/mutate/production`,
             {
                 method: 'POST',
                 headers: {
