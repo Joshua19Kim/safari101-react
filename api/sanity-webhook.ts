@@ -6,6 +6,7 @@ interface EmailJSConfig {
     publicKey: string;
     privateKey: string;
 }
+console.log("Start!!!")
 
 // Validate environment variables
 const emailjsConfig: EmailJSConfig = {
@@ -22,6 +23,19 @@ export default async function handler(
     req: VercelRequest,
     res: VercelResponse
 ) {
+    console.log('Request headers:', req.headers)
+    console.log('Request body:', req.body)
+
+    const webhookSecret = process.env.SANITY_WEBHOOK_SECRET
+    if (webhookSecret) {
+        const signature = req.headers['sanity-webhook-signature']
+        if (signature !== webhookSecret) {
+            console.error('Invalid webhook signature')
+            return res.status(401).json({ message: 'Unauthorized' })
+        }
+    }
+
+
     // CORS headers
     res.setHeader('Access-Control-Allow-Credentials', 'true')
     res.setHeader('Access-Control-Allow-Origin', '*')
