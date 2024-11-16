@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emailjs/nodejs": "^5.0.2",
+    "@emailjs/nodejs": "^2.2.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.20",
@@ -22,12 +22,12 @@
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
     "next": "^15.0.3",
-    "react": "^18.3.1",
+    "react": "^18.2.0",
     "react-bootstrap": "^2.10.3",
+    "react-scripts": "5.0.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.2.1",
     "react-router-dom": "^6.24.0",
-    "react-scripts": "5.0.1",
     "reactstrap": "^9.2.2",
     "web-vitals": "^2.1.4"
   },
@@ -35,7 +35,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "vercel-build": "npm run build"
   },
   "eslintConfig": {
     "extends": [
@@ -46,8 +47,11 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/node": "^22.9.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
     "file-loader": "^6.2.0",
-    "typescript": "^5.6.3"
+    "@vercel/node": "^3.0.0",
+    "typescript": "4.9.5"
   },
   "browserslist": {
     "production": [
