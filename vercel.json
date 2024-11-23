@@ -4,7 +4,10 @@
     {
       "src": "package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "build" }
+      "config": {
+        "distDir": "build",
+        "generateSourceMaps": true
+      }
     },
     {
       "src": "api/**/*.ts",
@@ -15,11 +18,19 @@
     {
       "src": "/api/sanity-webhook",
       "methods": ["GET", "POST", "OPTIONS"],
-      "dest": "api/sanity-webhook.ts"
+      "dest": "/api/sanity-webhook.ts"
     },
     {
       "src": "/api/(.*)",
-      "dest": "api/$1"
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/static/(.*)",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable",
+        "Access-Control-Allow-Origin": "*"
+      },
+      "dest": "/static/$1"
     },
     {
       "src": "/(.*)",
