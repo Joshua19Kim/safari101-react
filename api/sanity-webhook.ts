@@ -28,7 +28,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         if (req.method !== 'POST') {
             return res.status(405).json({ error: 'Method not allowed' });
         }
-        console.log("1")
+        console.log("headers from sanity" + req.headers)
+        console.log("x-sanity-signature :" + req.headers['x-sanity-signature'] as string)
         const signature = req.headers['x-sanity-signature'] as string;
         if (!signature) {
             console.log("1.5")
