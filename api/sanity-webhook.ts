@@ -23,6 +23,7 @@ if (!emailjsConfig.publicKey || !emailjsConfig.privateKey) {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     try {
+        console.log("1")
         console.log('Request received:', req.method, req.body);
 
         if (req.method !== 'POST') {
@@ -33,15 +34,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         if (!signature) {
             return res.status(401).json({ error: 'Missing signature' });
         }
-
+        console.log("2")
         // Reconstruct the raw request body (required for signature verification)
         const rawBody = JSON.stringify(req.body);
-
+        console.log("3")
         // Verify the signature
         const hmac = crypto.createHmac('sha256', webhookSecret as string);
         hmac.update(rawBody, 'utf8');
         const computedSignature = hmac.digest('hex');
-
+        console.log("4")
         if (computedSignature !== signature) {
             console.error('Invalid webhook signature');
             return res.status(401).json({ error: 'Invalid webhook signature' });
