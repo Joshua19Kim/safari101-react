@@ -23,36 +23,54 @@ if (!emailjsConfig.publicKey || !emailjsConfig.privateKey) {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     try {
-        console.log('Request received:', req.method, req.body);
+        console.log('Request received:', req.method);
 
+        // Only allow POST requests
         if (req.method !== 'POST') {
             return res.status(405).json({ error: 'Method not allowed' });
         }
-        console.log("headers from sanity" + req.headers)
-        console.log("x-sanity-signature :" + JSON.stringify(req.headers, null, 2))
-        const signature = req.headers['sanity-webhook-signature'] as string;
-        if (!signature) {
-            console.log("1.5")
+
+        // Log headers for debugging
+        console.log('Headers from Sanity:', JSON.stringify(req.headers, null, 2));
+
+        // Get the signature from the correct header
+        const sanitySignature = req.headers['sanity-webhook-signature'] as string;
+
+        if (!sanitySignature) {
+            console.error('Missing sanity-webhook-signature header');
             return res.status(401).json({ error: 'Missing signature' });
         }
-        console.log("2")
-        // Reconstruct the raw request body (required for signature verification)
+
+        console.log('sanity-webhook-signature:', sanitySignature);
+
+        // Parse the payload (body)
         const rawBody = JSON.stringify(req.body);
-        console.log("3")
-        // Verify the signature
+
+        // Validate the signature
         const hmac = crypto.createHmac('sha256', webhookSecret as string);
-        console.log("tttt : " + hmac)
         hmac.update(rawBody, 'utf8');
         const computedSignature = hmac.digest('hex');
-        console.log("4")
-        if (computedSignature !== signature) {
+
+        console.log('Computed signature:', computedSignature);
+
+        // Extract timestamp and version from the signature for additional security (optional)
+        const [timestampAndVersion, sanityHash] = sanitySignature.split(',');
+        if (!timestampAndVersion || !sanityHash) {
+            console.error('Invalid signature format');
+            return res.status(401).json({ error: 'Invalid signature format' });
+        }
+
+        const computedHash = `t=${timestampAndVersion.split('=')[1]},v1=${computedSignature}`;
+        console.log('Expected signature format:', computedHash);
+
+        if (computedHash !== sanitySignature) {
             console.error('Invalid webhook signature');
             return res.status(401).json({ error: 'Invalid webhook signature' });
         }
 
         // Handle the webhook payload
         const data = req.body;
-        console.log('Payload:', data);
+        console.log('Payload:', JSON.stringify(data, null, 2));
 
 
 
