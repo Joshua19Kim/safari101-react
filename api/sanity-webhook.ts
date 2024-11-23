@@ -29,7 +29,7 @@ if (!emailjsConfig.publicKey || !emailjsConfig.privateKey) {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     try {
         console.log('Request received:', req.method);
-
+        console.log('Headers:', JSON.stringify(req.headers, null, 2));
         // Only allow POST requests
         if (req.method !== 'POST') {
             return res.status(405).json({ error: 'Method not allowed' });
