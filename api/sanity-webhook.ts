@@ -71,7 +71,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const serviceId = process.env.EMAILJS_SERVICE_ID
         const templateId = process.env.EMAILJS_TEMPLATE_ID
         const ownerEmail = process.env.WEBSITE_OWNER_EMAIL
-
+        console.log("TEST:" + serviceId + " : " + templateId + " : " + ownerEmail)
         if (!serviceId || !templateId || !ownerEmail) {
             throw new Error('Missing required EmailJS configuration')
         }
