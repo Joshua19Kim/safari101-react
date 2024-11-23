@@ -63,10 +63,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             .update(payload)
             .digest('hex');
 
-        if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(computedSignature))) {
+        const signatureBuffer = Buffer.from(signature, 'hex');
+        const computedSignatureBuffer = Buffer.from(computedSignature, 'hex');
+
+        if (!crypto.timingSafeEqual(signatureBuffer, computedSignatureBuffer)) {
             console.error('Invalid webhook signature');
             return res.status(401).json({ error: 'Invalid webhook signature' });
         }
+
         console.log('Webhook signature verified successfully.');
 
         const data = JSON.parse(rawBody.toString());
