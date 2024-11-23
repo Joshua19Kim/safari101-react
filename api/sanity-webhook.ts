@@ -41,6 +41,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         console.log("3")
         // Verify the signature
         const hmac = crypto.createHmac('sha256', webhookSecret as string);
+        console.log("tttt : " + hmac)
         hmac.update(rawBody, 'utf8');
         const computedSignature = hmac.digest('hex');
         console.log("4")
