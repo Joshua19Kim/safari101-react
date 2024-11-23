@@ -26,7 +26,7 @@ export default async function handler(
     console.log('Request headers:', req.headers)
     console.log('Request body:', req.body)
 
-    const webhookSecret = process.env.SANITY_WEBHOOK_SECRET
+    const webhookSecret = process.env.REACT_APP_SANITY_WEBHOOK_SECRET
     if (webhookSecret) {
         const signature = req.headers['sanity-webhook-signature']
         if (signature !== webhookSecret) {
