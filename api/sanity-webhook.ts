@@ -2,13 +2,6 @@ import crypto from 'crypto';
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import * as emailjs from '@emailjs/nodejs'
 
-const SANITY_WEBHOOK_SECRET = process.env.SANITY_WEBHOOK_SECRET!;
-export const config = {
-    api: {
-        bodyParser: false, // Disable automatic body parsing
-    },
-};
-
 // Check and provide type safety for EmailJS config
 interface EmailJSConfig {
     publicKey: string;
@@ -28,81 +21,56 @@ if (!emailjsConfig.publicKey || !emailjsConfig.privateKey) {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     try {
+        console.log('Request received:', req.method);
 
-        // const { isValidSignature, body } = await parseBody(
-        //     req,
-        //     process.env.SANITY_WEBHOOK_SECRET
-        // )
-        //
-        // if (!isValidSignature) {
-        //     const message = 'Invalid signature'
-        //     return new Response(JSON.stringify({ message }), { status: 401 })
-        // }
-        //
-        //
-        //
-        // console.log('Request received:', req.method);
-        // console.log('Headers:', JSON.stringify(req.headers, null, 2));
-        // // Only allow POST requests
-        // if (req.method !== 'POST') {
-        //     return res.status(405).json({ error: 'Method not allowed' });
-        // }
-        //
-        // // Collect the raw body for HMAC validation
-        // const rawBody = await new Promise<Buffer>((resolve, reject) => {
-        //     const chunks: Buffer[] = [];
-        //     req.on('data', (chunk) => chunks.push(chunk));
-        //     req.on('end', () => resolve(Buffer.concat(chunks)));
-        //     req.on('error', reject);
-        // });
-        //
-        // console.log('Raw body:', rawBody.toString('utf8'));
-        //
-        // // Extract the `sanity-webhook-signature` header
-        // const sanitySignature = req.headers['sanity-webhook-signature'] as string;
-        // if (!sanitySignature) {
-        //     console.error('Missing sanity-webhook-signature header');
-        //     return res.status(401).json({ error: 'Missing signature' });
-        // }
-        //
-        // console.log('Sanity Webhook Signature:', sanitySignature);
-        //
-        // // Parse the timestamp and v1 signature
-        // const signatureParts = sanitySignature.split(',');
-        // const timestampPart = signatureParts.find((part) => part.startsWith('t='));
-        // const v1SignaturePart = signatureParts.find((part) => part.startsWith('v1='));
-        //
-        // if (!timestampPart || !v1SignaturePart) {
-        //     console.error('Invalid signature format');
-        //     return res.status(401).json({ error: 'Invalid signature format' });
-        // }
-        //
-        // const timestamp = timestampPart.split('=')[1];
-        // const sanityHash = v1SignaturePart.split('=')[1];
-        //
-        // console.log('Timestamp:', timestamp);
-        // console.log('Sanity Hash:', sanityHash);
-        //
-        // // Compute the HMAC
-        // const hmac = crypto.createHmac('sha256', SANITY_WEBHOOK_SECRET);
-        // hmac.update(rawBody);
-        // const computedSignature = hmac.digest('hex');
-        //
-        // console.log('Computed Signature:', computedSignature);
-        //
-        // // Compare computed signature with the one sent by Sanity
-        // if (sanityHash !== computedSignature) {
-        //     console.error('Invalid webhook signature');
-        //     return res.status(401).json({ error: 'Invalid webhook signature' });
-        // }
-        //
-        // console.log('Webhook signature verified successfully.');
-        //
-        // // Handle the webhook payload
-        // const data = req.body;
-        // console.log('Payload:', JSON.stringify(data, null, 2));
+        // Only allow POST requests
+        if (req.method !== 'POST') {
+            return res.status(405).json({ error: 'Method not allowed' });
+        }
 
+        // Collect the raw body for HMAC validation
+        const rawBody = await new Promise<Buffer>((resolve, reject) => {
+            const chunks: Buffer[] = [];
+            req.on('data', (chunk) => chunks.push(chunk));
+            req.on('end', () => resolve(Buffer.concat(chunks)));
+            req.on('error', reject);
+        });
 
+        console.log('Raw body:', rawBody.toString('utf8'));
+
+        // Extract the `sanity-webhook-signature` header
+        const sanitySignature = req.headers['sanity-webhook-signature'] as string;
+        if (!sanitySignature) {
+            console.error('Missing sanity-webhook-signature header');
+            return res.status(401).json({ error: 'Missing signature' });
+        }
+
+        console.log('Sanity Webhook Signature:', sanitySignature);
+
+        const [timestampStr, signatureStr] = sanitySignature.split(',');
+        const timestamp = timestampStr.split('=')[1];
+        const signature = signatureStr.split('=')[1];
+
+        const SANITY_WEBHOOK_SECRET = process.env.SANITY_WEBHOOK_SECRET;
+        if (!SANITY_WEBHOOK_SECRET) {
+            console.error('Missing SANITY_WEBHOOK_SECRET environment variable');
+            return res.status(500).json({ error: 'Server configuration error' });
+        }
+
+        const payload = `${timestamp}.${rawBody}`;
+        const computedSignature = crypto
+            .createHmac('sha256', SANITY_WEBHOOK_SECRET)
+            .update(payload)
+            .digest('hex');
+
+        if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(computedSignature))) {
+            console.error('Invalid webhook signature');
+            return res.status(401).json({ error: 'Invalid webhook signature' });
+        }
+        console.log('Webhook signature verified successfully.');
+
+        const data = JSON.parse(rawBody.toString());
+        console.log('Payload:', JSON.stringify(data, null, 2));
 
         const {
             _id,
