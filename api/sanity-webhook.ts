@@ -30,7 +30,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
         console.log("headers from sanity" + req.headers)
         console.log("x-sanity-signature :" + JSON.stringify(req.headers, null, 2))
-        const signature = req.headers['x-sanity-signature'] as string;
+        const signature = req.headers['sanity-webhook-signature'] as string;
         if (!signature) {
             console.log("1.5")
             return res.status(401).json({ error: 'Missing signature' });
