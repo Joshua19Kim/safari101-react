@@ -1,5 +1,8 @@
+import crypto from 'crypto';
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import * as emailjs from '@emailjs/nodejs'
+
+const webhookSecret = process.env.SANITY_WEBHOOK_SECRET
 
 // Check and provide type safety for EmailJS config
 interface EmailJSConfig {
@@ -19,48 +22,38 @@ if (!emailjsConfig.publicKey || !emailjsConfig.privateKey) {
     console.error('Missing required EmailJS configuration')
 }
 
-export default async function handler(
-    req: VercelRequest,
-    res: VercelResponse
-) {
-    console.log('Request headers:', req.headers)
-    console.log('Request body:', req.body)
-
-    const webhookSecret = process.env.REACT_APP_SANITY_WEBHOOK_SECRET
-    if (webhookSecret) {
-        const signature = req.headers['sanity-webhook-signature']
-        if (signature !== webhookSecret) {
-            console.error('Invalid webhook signature')
-            return res.status(401).json({ message: 'Unauthorized' })
-        }
-    }
-
-
-    // CORS headers
-    res.setHeader('Access-Control-Allow-Credentials', 'true')
-    res.setHeader('Access-Control-Allow-Origin', '*')
-    res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS')
-    res.setHeader(
-        'Access-Control-Allow-Headers',
-        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-    )
-
-    if (req.method === 'OPTIONS') {
-        return res.status(200).end()
-    }
-
-    if (req.method !== 'POST') {
-        return res.status(405).json({ message: 'Method not allowed' })
-    }
-
-    // Validate EmailJS configuration
-    if (!emailjsConfig.publicKey || !emailjsConfig.privateKey) {
-        return res.status(500).json({ message: 'EmailJS configuration is missing' })
-    }
-
-    console.log('Webhook received:', req.body)
-
+export default async function handler(req: VercelRequest, res: VercelResponse) {
     try {
+        console.log('Request received:', req.method, req.body);
+
+        if (req.method !== 'POST') {
+            return res.status(405).json({ error: 'Method not allowed' });
+        }
+
+        const signature = req.headers['x-sanity-signature'] as string;
+        if (!signature) {
+            return res.status(401).json({ error: 'Missing signature' });
+        }
+
+        // Reconstruct the raw request body (required for signature verification)
+        const rawBody = JSON.stringify(req.body);
+
+        // Verify the signature
+        const hmac = crypto.createHmac('sha256', webhookSecret as string);
+        hmac.update(rawBody, 'utf8');
+        const computedSignature = hmac.digest('hex');
+
+        if (computedSignature !== signature) {
+            console.error('Invalid webhook signature');
+            return res.status(401).json({ error: 'Invalid webhook signature' });
+        }
+
+        // Handle the webhook payload
+        const data = req.body;
+        console.log('Payload:', data);
+
+
+
         const {
             _id,
             _type,
@@ -139,11 +132,11 @@ export default async function handler(
 
         console.log('Sanity document updated')
         return res.status(200).json({ message: 'Webhook processed successfully' })
+
     } catch (error) {
-        console.error('Webhook error:', error)
-        return res.status(500).json({
-            message: 'Failed to process webhook',
-            error: error instanceof Error ? error.message : 'Unknown error'
-        })
+        console.error('Error in webhook function:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
+
+
 }
