@@ -9,12 +9,11 @@ interface EmailJSConfig {
     publicKey: string;
     privateKey: string;
 }
-console.log("Start!!!")
 
 // Validate environment variables
 const emailjsConfig: EmailJSConfig = {
-    publicKey: process.env.REACT_APP_EMAILJS_PUBLIC_KEY || '',
-    privateKey: process.env.REACT_APP_EMAILJS_PRIVATE_KEY || ''
+    publicKey: process.env.EMAILJS_PUBLIC_KEY || '',
+    privateKey: process.env.EMAILJS_PRIVATE_KEY || ''
 }
 
 // Validate required environment variables
@@ -69,9 +68,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
 
         // Validate required environment variables for EmailJS
-        const serviceId = process.env.REACT_APP_EMAILJS_SERVICE_ID
-        const templateId = process.env.REACT_APP_EMAILJS_TEMPLATE_ID
-        const ownerEmail = process.env.REACT_APP_WEBSITE_OWNER_EMAIL
+        const serviceId = process.env.EMAILJS_SERVICE_ID
+        const templateId = process.env.EMAILJS_TEMPLATE_ID
+        const ownerEmail = process.env.WEBSITE_OWNER_EMAIL
 
         if (!serviceId || !templateId || !ownerEmail) {
             throw new Error('Missing required EmailJS configuration')
