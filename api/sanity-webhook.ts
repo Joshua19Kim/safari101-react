@@ -1,16 +1,15 @@
 import crypto from 'crypto';
-import { VercelRequest, VercelResponse } from '@vercel/node'
-import * as emailjs from '@emailjs/nodejs'
+import { VercelRequest, VercelResponse } from '@vercel/node';
+import formData from 'form-data';
+import Mailgun from 'mailgun.js';
 
-interface EmailJSConfig {
-    publicKey: string;
-    privateKey: string;
-}
-
-const emailjsConfig: EmailJSConfig = {
-    publicKey: process.env.EMAILJS_PUBLIC_KEY || '',
-    privateKey: process.env.EMAILJS_PRIVATE_KEY || ''
-}
+// Initialize Mailgun
+const mailgun = new Mailgun(formData);
+const mg = mailgun.client({
+    username: 'api',
+    key: process.env.MAILGUN_API_KEY || '',
+    url: process.env.MAILGUN_URL || 'https://api.mailgun.net' // or 'https://api.eu.mailgun.net' for EU
+});
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     try {
@@ -97,43 +96,40 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(400).json({ message: 'Invalid document type' })
         }
 
-        const serviceId = process.env.EMAILJS_SERVICE_ID
-        const templateId = process.env.EMAILJS_TEMPLATE_ID
-        const ownerEmail = process.env.WEBSITE_OWNER_EMAIL
+        const ownerEmail = process.env.WEBSITE_OWNER_EMAIL;
+        const mailgunDomain = process.env.MAILGUN_DOMAIN;
 
-        if (!serviceId || !templateId || !ownerEmail) {
-            throw new Error('Missing required EmailJS configuration')
+        if (!ownerEmail || !mailgunDomain) {
+            throw new Error('Missing email configuration');
         }
 
-        // Initialize EmailJS with your public key
-        emailjs.init({
-            publicKey: emailjsConfig.publicKey,
-            privateKey: emailjsConfig.privateKey
-        });
-
+        // Send email using Mailgun
         try {
-            await emailjs.send(
-                serviceId,
-                templateId,
-                {
-                    to_email: ownerEmail,
-                    client_email: clientEmail,
-                    arrival_date: arrivalDate,
-                    description,
-                    created_at: createdAt
-                }
-            );
-            console.log('Email sent successfully');
+            const emailData = {
+                from: `Tour Booking <noreply@${mailgunDomain}>`,
+                to: ownerEmail,
+                subject: 'New Tour Booking Request',
+                html: `
+                    <h2>New Booking Request</h2>
+                    <p><strong>Client Email:</strong> ${clientEmail}</p>
+                    <p><strong>Arrival Date:</strong> ${arrivalDate}</p>
+                    <p><strong>Description:</strong> ${description}</p>
+                    <p><strong>Request Time:</strong> ${new Date(createdAt).toLocaleString()}</p>
+                `
+            };
+
+            const emailResponse = await mg.messages.create(mailgunDomain, emailData);
+            console.log('Email sent successfully:', emailResponse);
         } catch (error) {
-            console.error('EmailJS error:', error);
+            console.error('Mailgun error:', error);
             throw new Error('Failed to send email');
         }
 
-        const projectId = process.env.REACT_APP_SANITY_PROJECT_ID
-        const token = process.env.REACT_APP_SANITY_TOKEN
+        const projectId = process.env.REACT_APP_SANITY_PROJECT_ID;
+        const token = process.env.REACT_APP_SANITY_TOKEN;
 
         if (!projectId || !token) {
-            throw new Error('Missing Sanity configuration')
+            throw new Error('Missing Sanity configuration');
         }
 
         const sanityResponse = await fetch(
@@ -155,14 +151,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                     ]
                 })
             }
-        )
+        );
 
         if (!sanityResponse.ok) {
-            throw new Error('Failed to update Sanity document')
+            throw new Error('Failed to update Sanity document');
         }
 
-        console.log('Sanity document updated')
-        return res.status(200).json({ message: 'Webhook processed successfully' })
+        console.log('Sanity document updated');
+        return res.status(200).json({ message: 'Webhook processed successfully' });
 
     } catch (error) {
         console.error('Error in webhook function:', error);
