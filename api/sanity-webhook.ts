@@ -12,14 +12,8 @@ const emailjsConfig: EmailJSConfig = {
     privateKey: process.env.EMAILJS_PRIVATE_KEY || ''
 }
 
-if (!emailjsConfig.publicKey || !emailjsConfig.privateKey) {
-    console.error('Missing required EmailJS configuration')
-}
-
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     try {
-        console.log('Request received:', req.method);
-
         if (req.method !== 'POST') {
             return res.status(405).json({ error: 'Method not allowed' });
         }
@@ -37,7 +31,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(401).json({ error: 'Missing signature' });
         }
 
-        // Convert to string if it's an array
         const signatureStr = Array.isArray(sanitySignature) ? sanitySignature[0] : sanitySignature;
         console.log('Raw signature header:', signatureStr);
 
@@ -50,15 +43,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             for (const part of parts) {
                 const [key, value] = part.trim().split('=');
                 if (key === 't') timestamp = value;
-                if (key === 'v1') signature = value; // Changed from 'h' to 'v1'
+                if (key === 'v1') signature = value;
             }
         } catch (error) {
             console.error('Error parsing signature:', error);
             return res.status(401).json({ error: 'Error parsing signature' });
         }
-
-        console.log('Parsed timestamp:', timestamp);
-        console.log('Parsed signature:', signature);
 
         if (!timestamp || !signature) {
             console.error('Missing required signature components');
@@ -71,34 +61,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(500).json({ error: 'Server configuration error' });
         }
 
-        // Convert secret to base64 if it isn't already
-        const secretBuffer = Buffer.from(SANITY_WEBHOOK_SECRET, 'base64');
-
-        const payload = `${timestamp}.${rawBody}`;
+        // Compute signature using the raw body string
+        const bodyString = rawBody.toString('utf8');
+        const signaturePayload = `${timestamp}.${bodyString}`;
 
         const computedSignature = crypto
-            .createHmac('sha256', secretBuffer)
-            .update(payload)
+            .createHmac('sha256', SANITY_WEBHOOK_SECRET)
+            .update(signaturePayload)
             .digest('base64')
-            .replace(/\+/g, '-')
             .replace(/\//g, '_')
+            .replace(/\+/g, '-')
             .replace(/=+$/, '');
 
+        console.log('Parsed signature:', signature);
+        console.log('Parsed timestamp:', timestamp);
         console.log('Computed signature:', computedSignature);
         console.log('Received signature:', signature);
+        console.log('Signature payload:', signaturePayload);
 
-        const signaturesMatch = signature === computedSignature;
-
-        if (!signaturesMatch) {
+        if (signature !== computedSignature) {
             console.error('Signature mismatch');
             return res.status(401).json({ error: 'Invalid webhook signature' });
         }
 
-        console.log('Webhook signature verified successfully.');
-
         let data;
         try {
-            data = JSON.parse(rawBody.toString());
+            data = JSON.parse(bodyString);
         } catch (error) {
             console.error('Error parsing webhook body:', error);
             return res.status(400).json({ error: 'Invalid JSON body' });
