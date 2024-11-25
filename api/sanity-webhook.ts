@@ -32,9 +32,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
 
         const signatureStr = Array.isArray(sanitySignature) ? sanitySignature[0] : sanitySignature;
-        console.log('Raw signature header:', signatureStr);
 
-        // Parse the signature header
         let timestamp: string | undefined;
         let signature: string | undefined;
 
@@ -61,7 +59,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(500).json({ error: 'Server configuration error' });
         }
 
-        // Compute signature using the raw body string
         const bodyString = rawBody.toString('utf8');
         const signaturePayload = `${timestamp}.${bodyString}`;
 
@@ -72,12 +69,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             .replace(/\//g, '_')
             .replace(/\+/g, '-')
             .replace(/=+$/, '');
-
-        console.log('Parsed signature:', signature);
-        console.log('Parsed timestamp:', timestamp);
-        console.log('Computed signature:', computedSignature);
-        console.log('Received signature:', signature);
-        console.log('Signature payload:', signaturePayload);
 
         if (signature !== computedSignature) {
             console.error('Signature mismatch');
@@ -114,23 +105,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             throw new Error('Missing required EmailJS configuration')
         }
 
-        await emailjs.send(
-            serviceId,
-            templateId,
-            {
-                to_email: ownerEmail,
-                client_email: clientEmail,
-                arrival_date: arrivalDate,
-                description,
-                created_at: createdAt
-            },
-            {
-                publicKey: emailjsConfig.publicKey,
-                privateKey: emailjsConfig.privateKey
-            }
-        )
+        // Initialize EmailJS with your public key
+        emailjs.init({
+            publicKey: emailjsConfig.publicKey,
+            privateKey: emailjsConfig.privateKey
+        });
 
-        console.log('Email sent successfully')
+        try {
+            await emailjs.send(
+                serviceId,
+                templateId,
+                {
+                    to_email: ownerEmail,
+                    client_email: clientEmail,
+                    arrival_date: arrivalDate,
+                    description,
+                    created_at: createdAt
+                }
+            );
+            console.log('Email sent successfully');
+        } catch (error) {
+            console.error('EmailJS error:', error);
+            throw new Error('Failed to send email');
+        }
 
         const projectId = process.env.REACT_APP_SANITY_PROJECT_ID
         const token = process.env.REACT_APP_SANITY_TOKEN
@@ -169,6 +166,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     } catch (error) {
         console.error('Error in webhook function:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({
+            error: 'Internal server error',
+            details: error instanceof Error ? error.message : 'Unknown error'
+        });
     }
 }
