@@ -47,9 +47,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         console.log('Sanity Webhook Signature:', sanitySignature);
 
-        const [timestampStr, signatureStr] = sanitySignature.split(',');
-        const timestamp = timestampStr.split('=')[1];
-        const signature = signatureStr.split('=')[1];
+        // Parse the signature header
+        const signatureParts = Object.fromEntries(
+            sanitySignature.split(',').map(part => {
+                const [key, value] = part.split('=');
+                return [key, value];
+            })
+        );
+
+        const timestamp = signatureParts.t;
+        const signature = signatureParts.h;
+
+        if (!timestamp || !signature) {
+            console.error('Invalid signature format');
+            return res.status(401).json({ error: 'Invalid signature format' });
+        }
 
         const SANITY_WEBHOOK_SECRET = process.env.SANITY_WEBHOOK_SECRET;
         if (!SANITY_WEBHOOK_SECRET) {
@@ -57,16 +69,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(500).json({ error: 'Server configuration error' });
         }
 
+        // Create the payload string
         const payload = `${timestamp}.${rawBody}`;
+
+        // Calculate the expected signature
         const computedSignature = crypto
             .createHmac('sha256', SANITY_WEBHOOK_SECRET)
             .update(payload)
             .digest('hex');
 
-        const signatureBuffer = Buffer.from(signature, 'hex');
-        const computedSignatureBuffer = Buffer.from(computedSignature, 'hex');
+        // Compare signatures using a constant-time comparison
+        const signaturesMatch = signature === computedSignature;
 
-        if (!crypto.timingSafeEqual(signatureBuffer, computedSignatureBuffer)) {
+        if (!signaturesMatch) {
             console.error('Invalid webhook signature');
             return res.status(401).json({ error: 'Invalid webhook signature' });
         }
@@ -83,23 +98,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             arrivalDate,
             description,
             createdAt
-        } = req.body
+        } = data; // Changed from req.body to data
 
         if (_type !== 'emailRequest') {
             console.log('Invalid document type:', _type)
             return res.status(400).json({ message: 'Invalid document type' })
         }
 
-        // Validate required environment variables for EmailJS
+        // Rest of your code remains the same...
         const serviceId = process.env.EMAILJS_SERVICE_ID
         const templateId = process.env.EMAILJS_TEMPLATE_ID
         const ownerEmail = process.env.WEBSITE_OWNER_EMAIL
-        console.log("TEST:" + serviceId + " : " + templateId + " : " + ownerEmail)
+
         if (!serviceId || !templateId || !ownerEmail) {
             throw new Error('Missing required EmailJS configuration')
         }
 
-        // Send email
         await emailjs.send(
             serviceId,
             templateId,
@@ -118,7 +132,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         console.log('Email sent successfully')
 
-        // Validate Sanity configuration
         const projectId = process.env.REACT_APP_SANITY_PROJECT_ID
         const token = process.env.REACT_APP_SANITY_TOKEN
 
@@ -126,7 +139,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             throw new Error('Missing Sanity configuration')
         }
 
-        // Update Sanity
         const sanityResponse = await fetch(
             `https://${projectId}.api.sanity.io/v2021-06-07/data/mutate/production`,
             {
