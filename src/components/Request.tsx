@@ -44,9 +44,6 @@ const Request = () => {
         description: false,
     });
 
-    const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
-
-
     useEffect(() => {
         if (location.state !== null) {
             setTripInfo(location.state);
@@ -59,8 +56,6 @@ const Request = () => {
             });
         }
     }, [location.state]);
-
-
 
     const handleInputChange = (e: any) => {
         const { name, value } = e.target;

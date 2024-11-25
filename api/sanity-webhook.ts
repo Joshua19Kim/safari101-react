@@ -8,7 +8,7 @@ const mailgun = new Mailgun(formData);
 const mg = mailgun.client({
     username: 'api',
     key: process.env.MAILGUN_API_KEY || '',
-    url: process.env.MAILGUN_URL || 'https://api.mailgun.net' // or 'https://api.eu.mailgun.net' for EU
+    url: process.env.MAILGUN_URL || 'https://api.mailgun.net'
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
