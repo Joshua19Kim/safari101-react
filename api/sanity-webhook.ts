@@ -24,17 +24,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(405).json({ error: 'Method not allowed' });
         }
 
-        // Log all headers for debugging
-        console.log('Request headers:', req.headers);
-
         const rawBody = await new Promise<Buffer>((resolve, reject) => {
             const chunks: Buffer[] = [];
             req.on('data', (chunk) => chunks.push(chunk));
             req.on('end', () => resolve(Buffer.concat(chunks)));
             req.on('error', reject);
         });
-
-        console.log('Raw body:', rawBody.toString('utf8'));
 
         const sanitySignature = req.headers['sanity-webhook-signature'];
         if (!sanitySignature) {
@@ -46,7 +41,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const signatureStr = Array.isArray(sanitySignature) ? sanitySignature[0] : sanitySignature;
         console.log('Raw signature header:', signatureStr);
 
-        // Parse the signature header more carefully
+        // Parse the signature header
         let timestamp: string | undefined;
         let signature: string | undefined;
 
@@ -55,11 +50,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             for (const part of parts) {
                 const [key, value] = part.trim().split('=');
                 if (key === 't') timestamp = value;
-                if (key === 'h') signature = value;
+                if (key === 'v1') signature = value; // Changed from 'h' to 'v1'
             }
         } catch (error) {
             console.error('Error parsing signature:', error);
-            console.error('Signature string:', signatureStr);
             return res.status(401).json({ error: 'Error parsing signature' });
         }
 
@@ -68,8 +62,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         if (!timestamp || !signature) {
             console.error('Missing required signature components');
-            console.error('Timestamp:', timestamp);
-            console.error('Signature:', signature);
             return res.status(401).json({ error: 'Invalid signature format' });
         }
 
@@ -79,13 +71,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(500).json({ error: 'Server configuration error' });
         }
 
+        // Convert secret to base64 if it isn't already
+        const secretBuffer = Buffer.from(SANITY_WEBHOOK_SECRET, 'base64');
+
         const payload = `${timestamp}.${rawBody}`;
-        console.log('Payload for signature:', payload);
 
         const computedSignature = crypto
-            .createHmac('sha256', SANITY_WEBHOOK_SECRET)
+            .createHmac('sha256', secretBuffer)
             .update(payload)
-            .digest('hex');
+            .digest('base64')
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '');
 
         console.log('Computed signature:', computedSignature);
         console.log('Received signature:', signature);
@@ -94,8 +91,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         if (!signaturesMatch) {
             console.error('Signature mismatch');
-            console.error('Computed:', computedSignature);
-            console.error('Received:', signature);
             return res.status(401).json({ error: 'Invalid webhook signature' });
         }
 
@@ -108,8 +103,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             console.error('Error parsing webhook body:', error);
             return res.status(400).json({ error: 'Invalid JSON body' });
         }
-
-        console.log('Parsed payload:', JSON.stringify(data, null, 2));
 
         const {
             _id,
@@ -125,7 +118,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(400).json({ message: 'Invalid document type' })
         }
 
-        // Rest of the code remains the same...
         const serviceId = process.env.EMAILJS_SERVICE_ID
         const templateId = process.env.EMAILJS_TEMPLATE_ID
         const ownerEmail = process.env.WEBSITE_OWNER_EMAIL
