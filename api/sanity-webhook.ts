@@ -86,6 +86,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             _id,
             _type,
             clientEmail,
+            adults,
+            children,
             arrivalDate,
             description,
             createdAt
@@ -112,6 +114,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 html: `
                     <h2>New Booking Request</h2>
                     <p><strong>Client Email:</strong> ${clientEmail}</p>
+                    <p><strong>Number of Adults:</strong> ${adults}</p>
+                    <p><strong>Number of Children:</strong> ${children}</p>
                     <p><strong>Arrival Date:</strong> ${arrivalDate}</p>
                     <p><strong>Description:</strong> ${description}</p>
                     <p><strong>Request Time:</strong> ${new Date(createdAt).toLocaleString()}</p>
