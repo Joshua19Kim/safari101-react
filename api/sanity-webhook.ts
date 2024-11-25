@@ -2,19 +2,16 @@ import crypto from 'crypto';
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import * as emailjs from '@emailjs/nodejs'
 
-// Check and provide type safety for EmailJS config
 interface EmailJSConfig {
     publicKey: string;
     privateKey: string;
 }
 
-// Validate environment variables
 const emailjsConfig: EmailJSConfig = {
     publicKey: process.env.EMAILJS_PUBLIC_KEY || '',
     privateKey: process.env.EMAILJS_PRIVATE_KEY || ''
 }
 
-// Validate required environment variables
 if (!emailjsConfig.publicKey || !emailjsConfig.privateKey) {
     console.error('Missing required EmailJS configuration')
 }
@@ -23,12 +20,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     try {
         console.log('Request received:', req.method);
 
-        // Only allow POST requests
         if (req.method !== 'POST') {
             return res.status(405).json({ error: 'Method not allowed' });
         }
 
-        // Collect the raw body for HMAC validation
+        // Log all headers for debugging
+        console.log('Request headers:', req.headers);
+
         const rawBody = await new Promise<Buffer>((resolve, reject) => {
             const chunks: Buffer[] = [];
             req.on('data', (chunk) => chunks.push(chunk));
@@ -38,28 +36,40 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         console.log('Raw body:', rawBody.toString('utf8'));
 
-        // Extract the `sanity-webhook-signature` header
-        const sanitySignature = req.headers['sanity-webhook-signature'] as string;
+        const sanitySignature = req.headers['sanity-webhook-signature'];
         if (!sanitySignature) {
             console.error('Missing sanity-webhook-signature header');
             return res.status(401).json({ error: 'Missing signature' });
         }
 
-        console.log('Sanity Webhook Signature:', sanitySignature);
+        // Convert to string if it's an array
+        const signatureStr = Array.isArray(sanitySignature) ? sanitySignature[0] : sanitySignature;
+        console.log('Raw signature header:', signatureStr);
 
-        // Parse the signature header
-        const signatureParts = Object.fromEntries(
-            sanitySignature.split(',').map(part => {
-                const [key, value] = part.split('=');
-                return [key, value];
-            })
-        );
+        // Parse the signature header more carefully
+        let timestamp: string | undefined;
+        let signature: string | undefined;
 
-        const timestamp = signatureParts.t;
-        const signature = signatureParts.h;
+        try {
+            const parts = signatureStr.split(',');
+            for (const part of parts) {
+                const [key, value] = part.trim().split('=');
+                if (key === 't') timestamp = value;
+                if (key === 'h') signature = value;
+            }
+        } catch (error) {
+            console.error('Error parsing signature:', error);
+            console.error('Signature string:', signatureStr);
+            return res.status(401).json({ error: 'Error parsing signature' });
+        }
+
+        console.log('Parsed timestamp:', timestamp);
+        console.log('Parsed signature:', signature);
 
         if (!timestamp || !signature) {
-            console.error('Invalid signature format');
+            console.error('Missing required signature components');
+            console.error('Timestamp:', timestamp);
+            console.error('Signature:', signature);
             return res.status(401).json({ error: 'Invalid signature format' });
         }
 
@@ -69,27 +79,37 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(500).json({ error: 'Server configuration error' });
         }
 
-        // Create the payload string
         const payload = `${timestamp}.${rawBody}`;
+        console.log('Payload for signature:', payload);
 
-        // Calculate the expected signature
         const computedSignature = crypto
             .createHmac('sha256', SANITY_WEBHOOK_SECRET)
             .update(payload)
             .digest('hex');
 
-        // Compare signatures using a constant-time comparison
+        console.log('Computed signature:', computedSignature);
+        console.log('Received signature:', signature);
+
         const signaturesMatch = signature === computedSignature;
 
         if (!signaturesMatch) {
-            console.error('Invalid webhook signature');
+            console.error('Signature mismatch');
+            console.error('Computed:', computedSignature);
+            console.error('Received:', signature);
             return res.status(401).json({ error: 'Invalid webhook signature' });
         }
 
         console.log('Webhook signature verified successfully.');
 
-        const data = JSON.parse(rawBody.toString());
-        console.log('Payload:', JSON.stringify(data, null, 2));
+        let data;
+        try {
+            data = JSON.parse(rawBody.toString());
+        } catch (error) {
+            console.error('Error parsing webhook body:', error);
+            return res.status(400).json({ error: 'Invalid JSON body' });
+        }
+
+        console.log('Parsed payload:', JSON.stringify(data, null, 2));
 
         const {
             _id,
@@ -98,14 +118,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             arrivalDate,
             description,
             createdAt
-        } = data; // Changed from req.body to data
+        } = data;
 
-        if (_type !== 'emailRequest') {
+        if (!_type || _type !== 'emailRequest') {
             console.log('Invalid document type:', _type)
             return res.status(400).json({ message: 'Invalid document type' })
         }
 
-        // Rest of your code remains the same...
+        // Rest of the code remains the same...
         const serviceId = process.env.EMAILJS_SERVICE_ID
         const templateId = process.env.EMAILJS_TEMPLATE_ID
         const ownerEmail = process.env.WEBSITE_OWNER_EMAIL
@@ -171,6 +191,4 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         console.error('Error in webhook function:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-
-
 }
