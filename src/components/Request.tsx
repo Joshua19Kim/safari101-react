@@ -11,29 +11,31 @@ import {TbMoodKid} from "react-icons/tb";
 import {Theme} from "@mui/material/styles";
 import theme from "../assets/style/theme";
 import {sendEmail} from "../api/sanityApi";
-
-
+import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
+import {DatePicker} from "@mui/x-date-pickers/DatePicker";
+import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 
 const backgroundImage = "safariBackground.jpg"
-
-
 
 const getTodayDate = () => {
     const today = new Date();
     return today.toISOString().split('T')[0];
 };
 
-
-
 const Request = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const [formErrors, setFormErrors] = useState({
+        fieldErrors: '',
+        descriptionError: ''
+    });
+
     const [tripInfo, setTripInfo] = useState<TripInfo>({
-        adults: 2,
-        children: 0,
+        adults: '2',
+        children: '0',
         clientEmail: "safari101@tour.com",
-        arrivalDate: getTodayDate(),
+        arrivalDate: new Date(),
         description: "Please describe your plan!",
     })
     const [requestInputInteracted, setRequestInputInteracted] = useState<RequestInputInteraction>({
@@ -46,7 +48,15 @@ const Request = () => {
 
     useEffect(() => {
         if (location.state !== null) {
-            setTripInfo(location.state);
+            const incomingState = location.state;
+            const incomingDate = incomingState.arrivalDate instanceof Date
+                ? new Date(incomingState.arrivalDate.setHours(12, 0, 0, 0))
+                : new Date(new Date(incomingState.arrivalDate).setHours(12, 0, 0, 0));
+
+            setTripInfo({
+                ...incomingState,
+                arrivalDate: incomingDate
+            });
             setRequestInputInteracted({
                 adults: false,
                 children: false,
@@ -63,169 +73,233 @@ const Request = () => {
             const numValue = value.replace(/\D/g, '');
             setTripInfo(prev => ({ ...prev, [name]: numValue }));
         } else {
-            setTripInfo(prev => ({ ...prev, [name]: value }));
+            // Fixed: Use the correct field name for email
+            const fieldName = name === 'email' ? 'clientEmail' : name;
+            setTripInfo(prev => ({ ...prev, [fieldName]: value }));
         }
     };
 
     const handleFieldFocus = (field: keyof RequestInputInteraction) => {
         if (!requestInputInteracted[field]) {
             setRequestInputInteracted(prev => ({ ...prev, [field]: true }));
-            setTripInfo(prev => ({ ...prev, [field]: field === 'adults' ? '' : field === 'children' ? '' : '' }));
+            if (field === 'adults') {
+                setTripInfo(prev => ({ ...prev, adults: '' }));
+            } else if (field === 'children') {
+                setTripInfo(prev => ({ ...prev, children: '' }));
+            } else if (field === 'clientEmail') {
+                setTripInfo(prev => ({ ...prev, clientEmail: '' }));
+            } else if (field === 'description') {
+                setTripInfo(prev => ({ ...prev, description: '' }));
+            }
         }
     };
+
     const handleIconClick = (field: any) => {
         setTripInfo(prev => ({
             ...prev,
             [field]: field === 'adults' ? 2 : 0
         }));
     };
+    const handleDateChange = (newValue: Date | null) => {
+        setTripInfo(prev => ({
+            ...prev,
+            arrivalDate: newValue
+        }));
+    };
 
     const handleSubmit = async () => {
-        const result = await sendEmail(tripInfo);
+        const formattedTripInfo = {
+            ...tripInfo,
+            arrivalDate: tripInfo.arrivalDate
+                ? tripInfo.arrivalDate.toISOString()
+                : new Date().toISOString(),
+        };
+
+        const result = await sendEmail(formattedTripInfo);
         if (result.success) {
             alert(result.message);
             navigate('/');
         } else {
             alert(result.error);
         }
-    }
-
-
+    };
 
     return (
-            <>
-                <Box sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    minWidth: '20rem',
-                    backgroundImage: `url(${require(`../assets/img/${backgroundImage}`)})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    minHeight: '100vh',
-                    padding: isMobile ? '0' : '2rem',
-                }}>
-                    <Box sx={(theme: Theme) => ({
-                        width: '100%',
-                        maxWidth: '60rem',
-                        backgroundColor: theme.palette.primary.main,
-                        marginTop: '2vh',
-                        padding: isMobile ? '2rem' : '3rem',
-                        paddingTop: isMobile ? 'calc(56px + 1rem)' : 'calc(64px + 2rem)',
-                    })}>
-                        <Typography variant="h1" component="h1" gutterBottom sx={{
-                            fontWeight: 'bold',
-                            color: '#ffd700',
-                            mb: '3rem',
-                        }}>
-                            Request
-                        </Typography>
-                        <Grid container spacing={isMobile ? 2 : 3}>
-                            <Grid item xs={12} sm={6} md={2}>
-                                <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>ADULTS</Typography>
-                                <TextField
-                                    id="outlined-size-small"
-                                    defaultValue="Small"
-                                    size="small"
-                                    name="adults"
-                                    value={tripInfo.adults.toString()}
-                                    fullWidth
-                                    InputProps={{
-                                        endAdornment: <PersonIcon onClick={() => handleIconClick('adults')} style={{ cursor: 'pointer' }} />,
-                                        inputMode: 'numeric',
-                                    }}
-                                    onChange={handleInputChange}
-                                    onFocus={() => handleFieldFocus('adults')}
-                                    margin="normal"
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={2}>
-                                <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>CHILDREN</Typography>
-                                <TextField
-                                    id="outlined-size-small"
-                                    defaultValue="Small"
-                                    size="small"
-                                    name="children"
-                                    value={tripInfo.children.toString()}
-                                    fullWidth
-                                    InputProps={{
-                                        endAdornment: <TbMoodKid onClick={() => handleIconClick('children')} style={{ cursor: 'pointer', width: '23px', height: '23px' }} />,
-                                        inputMode: 'numeric',
-                                    }}
-                                    onChange={handleInputChange}
-                                    onFocus={() => handleFieldFocus('children')}
-                                    margin="normal"
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={5}>
-                                <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>YOUR EMAIL</Typography>
-                                <TextField
-                                    id="outlined-size-small"
-                                    defaultValue="Small"
-                                    size="small"
-                                    name="email"
-                                    value={requestInputInteracted.clientEmail ? tripInfo.clientEmail : 'safari101@tour.com'}
-                                    fullWidth
-                                    InputProps={{ endAdornment: <EmailIcon /> }}
-                                    onChange={handleInputChange}
-                                    onFocus={() => handleFieldFocus('clientEmail')}
-                                    margin="normal"
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={3}>
-                                <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>ARRIVAL DATE</Typography>
-                                <TextField
-                                    id="outlined-size-small"
-                                    defaultValue="Small"
-                                    size="small"
-                                    name="arrivalDate"
-                                    type="date"
-                                    value={tripInfo.arrivalDate.toString()}
-                                    fullWidth
-                                    margin="normal"
-                                    onChange={handleInputChange}
-                                    onFocus={() => handleFieldFocus('arrivalDate')}
-                                    InputLabelProps={{ shrink: true }}
-                                    InputProps={{ inputProps: { min: getTodayDate() } }}
-                                />
-                            </Grid>
-                        </Grid>
-                        <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left', mt: '1rem' }}>TRIP DESCRIPTION</Typography>
-                        <TextField
-                            name="description"
-                            multiline
-                            rows={5}
-                            fullWidth
-                            inputProps={{ maxLength: 1000 }}
-                            value={requestInputInteracted.description ? tripInfo.description : 'Please describe your plan!'}
-                            onChange={handleInputChange}
-                            onFocus={() => handleFieldFocus('description')}
-                            sx={{ mt: 2, mb: 3 }}
-                        />
-                        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-                            <Button
-                                color="warning"
-                                onClick={handleSubmit}
-                                style={{
-                                    backgroundColor: '#ffd700',
-                                    color: 'black',
-                                    border: 'none',
-                                    padding: isMobile ? '10px 20px' : '15px 30px',
-                                    fontSize: isMobile ? '1rem' : '1.1rem',
-                                    fontWeight: 'bold',
-                                    textTransform: 'uppercase',
-                                    cursor: 'pointer',
-                                    transition: 'background-color 0.3s ease',
+        <>
+            <Box sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minWidth: '20rem',
+                backgroundImage: `url(${require(`../assets/img/${backgroundImage}`)})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                minHeight: '100vh',
+                padding: isMobile ? '0' : '2rem',
+            }}>
+                <Box sx={(theme: Theme) => ({
+                    width: '100%',
+                    maxWidth: '60rem',
+                    backgroundColor: theme.palette.primary.main,
+                    marginTop: '2vh',
+                    padding: isMobile ? '2rem' : '3rem',
+                    paddingTop: isMobile ? 'calc(56px + 1rem)' : 'calc(64px + 2rem)',
+                })}>
+                    <Typography variant="h1" component="h1" gutterBottom sx={{
+                        fontWeight: 'bold',
+                        color: '#ffd700',
+                        mb: '3rem',
+                    }}>
+                        Request
+                    </Typography>
+                    <Grid container spacing={isMobile ? 2 : 3}>
+                        <Grid item xs={12} sm={6} md={2}>
+                            <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>ADULTS</Typography>
+                            <TextField
+                                id="outlined-size-small"
+                                defaultValue="Small"
+                                size="small"
+                                name="adults"
+                                value={tripInfo.adults.toString()}
+                                fullWidth
+                                InputProps={{
+                                    endAdornment: <PersonIcon onClick={() => handleIconClick('adults')} style={{ cursor: 'pointer' }} />,
+                                    inputMode: 'numeric',
                                 }}
-                                className="custom-button"
-                            >
-                                SUBMIT REQUEST
-                            </Button>
-                        </Box>
-                    </Box>
+                                onChange={handleInputChange}
+                                onFocus={() => handleFieldFocus('adults')}
+                                margin="normal"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={2}>
+                            <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>CHILDREN</Typography>
+                            <TextField
+                                id="outlined-size-small"
+                                defaultValue="Small"
+                                size="small"
+                                name="children"
+                                value={tripInfo.children.toString()}
+                                fullWidth
+                                InputProps={{
+                                    endAdornment: <TbMoodKid onClick={() => handleIconClick('children')} style={{ cursor: 'pointer', width: '23px', height: '23px' }} />,
+                                    inputMode: 'numeric',
+                                }}
+                                onChange={handleInputChange}
+                                onFocus={() => handleFieldFocus('children')}
+                                margin="normal"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={5}>
+                            <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>YOUR EMAIL</Typography>
+                            <TextField
+                                id="outlined-size-small"
+                                size="small"
+                                name="email"
+                                value={tripInfo.clientEmail}
+                                fullWidth
+                                InputProps={{ endAdornment: <EmailIcon /> }}
+                                onChange={handleInputChange}
+                                onFocus={() => handleFieldFocus('clientEmail')}
+                                margin="normal"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3}>
+                            <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>
+                                ARRIVAL DATE
+                            </Typography>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    value={tripInfo.arrivalDate}
+                                    onChange={handleDateChange}  // Use the new handler
+                                    minDate={new Date()}
+                                    slotProps={{
+                                        textField: {
+                                            fullWidth: true,
+                                            size: "small",
+                                            margin: "normal",
+                                            sx: {
+                                                '& .MuiInputBase-root': {
+                                                    color: 'black',
+                                                },
+                                                '& .MuiSvgIcon-root': {
+                                                    color: 'black',
+                                                },
+                                            }
+                                        },
+                                        popper: {
+                                            sx: {
+                                                '& .MuiPaper-root': {
+                                                    color: 'black',
+                                                }
+                                            }
+                                        }
+                                    }}
+                                />
+                            </LocalizationProvider>
 
+
+                        </Grid>
+                    </Grid>
+
+                    {formErrors.fieldErrors && (
+                        <Typography sx={{
+                            color: 'red',
+                            mt: 2,
+                            textAlign: 'left',
+                            fontSize: '0.875rem'
+                        }}>
+                            {formErrors.fieldErrors}
+                        </Typography>
+                    )}
+
+                    <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left', mt: '1rem' }}>TRIP DESCRIPTION</Typography>
+                    <TextField
+                        name="description"
+                        multiline
+                        rows={5}
+                        fullWidth
+                        inputProps={{ maxLength: 1000 }}
+                        value={tripInfo.description}
+                        onChange={handleInputChange}
+                        onFocus={() => handleFieldFocus('description')}
+                        sx={{ mt: 2, mb: 3 }}
+                    />
+
+                    {formErrors.descriptionError && (
+                        <Typography sx={{
+                            color: 'red',
+                            mb: 2,
+                            textAlign: 'left',
+                            fontSize: '0.875rem'
+                        }}>
+                            {formErrors.descriptionError}
+                        </Typography>
+                    )}
+
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+                        <Button
+                            color="warning"
+                            onClick={handleSubmit}
+                            style={{
+                                backgroundColor: '#ffd700',
+                                color: 'black',
+                                border: 'none',
+                                padding: isMobile ? '10px 20px' : '15px 30px',
+                                fontSize: isMobile ? '1rem' : '1.1rem',
+                                fontWeight: 'bold',
+                                textTransform: 'uppercase',
+                                cursor: 'pointer',
+                                transition: 'background-color 0.3s ease',
+                                borderRadius: '20px',
+                            }}
+                            className="custom-button"
+                        >
+                            SUBMIT REQUEST
+                        </Button>
+                    </Box>
                 </Box>
-            </>
+            </Box>
+        </>
     )
 }
 export default Request;

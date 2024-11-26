@@ -37,13 +37,17 @@ type Category = {
 
 }
 
+
+type SimpleTripInfo = {
+    adults: string;
+    children: string;
+    arrivalDate: Date | null;
+}
+
 type TripInfo = {
-    adults: number;
-    children: number;
-    arrivalDate: string;
     description: string;
     clientEmail: string;
-}
+} & SimpleTripInfo
 
 
 type RequestInputInteraction = {

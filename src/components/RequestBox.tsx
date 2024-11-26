@@ -9,32 +9,26 @@ import PersonIcon from "@mui/icons-material/Person";
 import { Button } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+
 
 
 interface BackGroundImage {
     image: string;
 }
 
-interface TripInfo {
-    adults: number;
-    children: number;
-    arrivalDate: string;
-}
-
-const getTodayDate = (): string => {
-    const today = new Date();
-    return today.toISOString().split('T')[0];
-};
 
 export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
     const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const [tripInfo, setTripInfo] = useState<TripInfo>({
-        adults: 2,
-        children: 0,
-        arrivalDate: getTodayDate(),
+    const [simpleTripInfo, setTripInfo] = useState<SimpleTripInfo>({
+        adults: '2',
+        children: '0',
+        arrivalDate: new Date(),
     });
     const [requestInputInteracted, setRequestInputInteracted] = useState<RequestInputInteraction>({
         adults: false,
@@ -63,12 +57,30 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
     const handleIconClick = (field: 'adults' | 'children') => {
         setTripInfo(prev => ({
             ...prev,
-            [field]: field === 'adults' ? 2 : 0
+            [field]: field === 'adults' ? '2' : '0'
         }));
     };
 
+    const handleDateChange = (newValue: Date | null) => {
+        if (newValue) {
+            setTripInfo(prev => ({
+                ...prev,
+                arrivalDate: newValue
+            }));
+        }
+    };
+
     const handleSubmit = () => {
-        navigate('/request', { state: tripInfo });
+        const dateToSend = simpleTripInfo.arrivalDate instanceof Date
+            ? new Date(simpleTripInfo.arrivalDate.setHours(12, 0, 0, 0))
+            : new Date(new Date().setHours(12, 0, 0, 0));
+
+        const formattedTripInfo = {
+            adults: simpleTripInfo.adults,
+            children: simpleTripInfo.children,
+            arrivalDate: dateToSend
+        };
+        navigate('/request', { state: formattedTripInfo });
     };
 
     return (
@@ -93,6 +105,7 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
                 width: isMobile ? '100%' : '23rem',
                 padding: '1rem',
                 boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                borderRadius: '20px',
             })}>
                 <Typography variant="h5" component="h2" sx={{ color: 'white', mb: 2, textAlign: 'center' }}>
                     LET'S PLAN YOUR OWN ITINERARY!
@@ -108,7 +121,7 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
                                 endAdornment: <PersonIcon onClick={() => handleIconClick('adults')} style={{ cursor: 'pointer' }} />,
                                 inputMode: 'numeric',
                             }}
-                            value={tripInfo.adults}
+                            value={simpleTripInfo.adults}
                             onChange={handleInputChange}
                             onFocus={() => handleFieldFocus('adults')}
                         />
@@ -122,7 +135,7 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
                                 endAdornment: <TbMoodKid onClick={() => handleIconClick('children')} style={{ cursor: 'pointer', width: '32px', height: '32px' }} />,
                                 inputMode: 'numeric',
                             }}
-                            value={tripInfo.children}
+                            value={simpleTripInfo.children}
                             onChange={handleInputChange}
                             onFocus={() => handleFieldFocus('children')}
                         />
@@ -131,18 +144,29 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
 
                 <Box sx={{ mt: 2, mb: 2 }}>
                     <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>EXPECTED ARRIVAL DATE</Typography>
-                    <TextField
-                        type="date"
-                        name="arrivalDate"
-                        fullWidth
-                        value={tripInfo.arrivalDate}
-                        onChange={handleInputChange}
-                        InputProps={{
-                            inputProps: { min: getTodayDate() }
-                        }}
-                        onFocus={() => handleFieldFocus('arrivalDate')}
-
-                    />
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DatePicker
+                            value={simpleTripInfo.arrivalDate}
+                            onChange={handleDateChange}
+                            minDate={new Date()}
+                            slotProps={{
+                                textField: {
+                                    fullWidth: true,
+                                    InputProps: {
+                                        sx: { color: 'black' }
+                                    },
+                                    sx: {
+                                        '& .MuiInputBase-root': {
+                                            color: 'black',
+                                        },
+                                        '& .MuiSvgIcon-root': {
+                                            color: 'black',
+                                        },
+                                    }
+                                }
+                            }}
+                        />
+                    </LocalizationProvider>
                 </Box>
 
                 <Box
@@ -165,6 +189,7 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
                             textTransform: 'uppercase',
                             cursor: 'pointer',
                             transition: 'background-color 0.3s ease',
+                            borderRadius:'20px',
                         }}
                         className="custom-button"
                     >

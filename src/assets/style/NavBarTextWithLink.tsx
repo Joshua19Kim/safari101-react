@@ -25,7 +25,7 @@ const NavBarLink: React.FC<NavBarLinkProps> = ({ to, text }) => {
                     fontSize: '2vh',
                     color: 'inherit',
                     textDecoration: 'none',
-                    textShadow: '3px 3px 6px rgba(0,0,0,0.3)',
+                    // textShadow: '3px 3px 6px rgba(0,0,0,0.3)',
                 }}
             >
                 {text}

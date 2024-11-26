@@ -248,15 +248,15 @@ const TopNavBar: React.FC = () => {
                                 <Box onMouseEnter={() => handleNavLinkHover(null)}>
                                     <NavBarLink to="/trips" text="Photographic Safari" />
                                 </Box>
-                                <Box onMouseEnter={() => handleNavLinkHover(null)}>
-                                    <NavBarLink to="/contact" text="Contact" />
-                                </Box>
+                                {/*<Box onMouseEnter={() => handleNavLinkHover(null)}>*/}
+                                {/*    <NavBarLink to="/contact" text="Contact" />*/}
+                                {/*</Box>*/}
                             </Box>
                         </Grid>
 
 
                         <Grid item xs={9} md={1} sx={{ display: 'flex', justifyContent: 'flex-end', paddingRight: 2 }}>
-                            <Box sx={{ backgroundColor:"ffd700" }}>
+                            <Box sx={{ backgroundColor:"ffd700"}}>
                                 <Button
                                     color="warning"
                                     onClick={()=> navigate('/request')}
@@ -264,12 +264,13 @@ const TopNavBar: React.FC = () => {
                                         backgroundColor: '#ffd700',
                                         color: 'black',
                                         border: 'none',
-                                        padding: '15px 30px',
+                                        padding: '10px 30px',
                                         fontSize: '1.1rem',
                                         fontWeight: 'bold',
                                         textTransform: 'uppercase',
                                         cursor: 'pointer',
                                         transition: 'background-color 0.3s ease',
+                                        borderRadius:"20px"
                                     }}
                                     className="custom-button"
                                 >
