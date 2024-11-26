@@ -85,7 +85,7 @@ export const sendEmail = async (tripInfo) => {
         const result = await client.create({
             _type: 'emailRequest',
             ...tripInfo,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString().split('T')[0],
         });
         console.log('Email request created:', result);
         return result;

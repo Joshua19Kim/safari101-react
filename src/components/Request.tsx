@@ -111,8 +111,8 @@ const Request = () => {
         const formattedTripInfo = {
             ...tripInfo,
             arrivalDate: tripInfo.arrivalDate
-                ? tripInfo.arrivalDate.toISOString()
-                : new Date().toISOString(),
+                ? tripInfo.arrivalDate.toISOString().split('T')[0]
+                : getTodayDate(),
         };
 
         const result = await sendEmail(formattedTripInfo);
