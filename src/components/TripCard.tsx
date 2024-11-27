@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
-import { Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Typography, useMediaQuery, useTheme } from "@mui/material";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import {getImage} from "../api/sanityApi";
 
@@ -106,7 +106,7 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
                             color="warning"
                             onClick={toggleModal}
                             style={{
-                                backgroundColor: '#ffd700',
+                                backgroundColor: theme.palette.customButtonColor.main,
                                 color: 'black',
                                 border: 'none',
                                 padding: '15px 30px',
@@ -115,6 +115,7 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
                                 textTransform: 'uppercase',
                                 cursor: 'pointer',
                                 transition: 'background-color 0.3s ease',
+                                borderRadius:"15px"
                             }}
                             className="custom-button"
                         >

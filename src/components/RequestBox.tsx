@@ -89,7 +89,8 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
             height: isMobile ? '23rem' : '28rem',
             marginTop: '9vh',
             minWidth: '23rem',
-            backgroundImage: `url(${require(`../assets/img/${image}`)})`,
+            backgroundColor: theme.palette.customBackgroundColor.main,
+            backgroundImage: isMobile ? 'none' : `url(${require(`../assets/img/${image}`)})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',
@@ -99,21 +100,20 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
             padding: isMobile ? '0' : '2rem',
         }}>
             <Box sx={(theme: Theme) => ({
-                backgroundColor: theme.palette.primary.main,
+                backgroundColor: theme.palette.customBackgroundColor.main,
                 minWidth: '23rem',
                 height: isMobile ? '100%' : 'auto',
                 width: isMobile ? '100%' : '23rem',
                 padding: '1rem',
-                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
                 borderRadius: '20px',
             })}>
-                <Typography variant="h5" component="h2" sx={{ color: 'white', mb: 2, textAlign: 'center' }}>
+                <Typography variant="h5" component="h2" sx={{ color: 'black', mb: 2, fontWeight:'bold', textAlign: 'center' }}>
                     LET'S PLAN YOUR OWN ITINERARY!
                 </Typography>
 
                 <Grid container spacing={2}>
                     <Grid item xs={6}>
-                        <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>ADULTS</Typography>
+                        <Typography sx={{ color: theme.palette.customFontColor.main, fontWeight: 'bold', textAlign: 'left' }}>ADULTS</Typography>
                         <TextField
                             fullWidth
                             name="adults"
@@ -127,7 +127,7 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
                         />
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>CHILDREN</Typography>
+                        <Typography sx={{ color: theme.palette.customFontColor.main, fontWeight: 'bold', textAlign: 'left' }}>CHILDREN</Typography>
                         <TextField
                             fullWidth
                             name="children"
@@ -143,7 +143,7 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
                 </Grid>
 
                 <Box sx={{ mt: 2, mb: 2 }}>
-                    <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>EXPECTED ARRIVAL DATE</Typography>
+                    <Typography sx={{ color: theme.palette.customFontColor.main, fontWeight: 'bold', textAlign: 'left' }}>EXPECTED ARRIVAL DATE</Typography>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DatePicker
                             value={simpleTripInfo.arrivalDate}
@@ -180,7 +180,7 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
                         color="warning"
                         onClick={handleSubmit}
                         style={{
-                            backgroundColor: '#ffd700',
+                            backgroundColor: theme.palette.customButtonColor.main,
                             color: 'black',
                             border: 'none',
                             padding: '15px 30px',

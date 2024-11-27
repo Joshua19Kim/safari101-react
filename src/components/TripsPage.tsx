@@ -7,6 +7,7 @@ import { getTripWithActivity } from "../api/sanityApi";
 import CircularProgress from '@mui/material/CircularProgress';
 import { Typography } from "@mui/material";
 import TripCard from "./TripCard";
+import theme from "../assets/style/theme";
 
 const contentsBackgroundImage = "brightBackground.jpg";
 
@@ -69,9 +70,10 @@ const TripsPage = () => {
             <Container>
                 <RequestBox image={currentTopic.image} />
                 <Box sx={{
-                    backgroundImage: `url(${require(`../assets/img/${contentsBackgroundImage}`)})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
+                    // backgroundImage: `url(${require(`../assets/img/${contentsBackgroundImage}`)})`,
+                    // backgroundSize: 'cover',
+                    // backgroundPosition: 'center',
+                    backgroundColor: theme.palette.customBackgroundColor.main,
                     minHeight: '100vh',
                     width: '100%',
                     display: 'flex',

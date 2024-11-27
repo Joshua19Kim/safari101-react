@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Theme, styled, alpha } from '@mui/material/styles';
+import { Theme, styled } from '@mui/material/styles';
 import {
     AppBar,
     Box,
@@ -21,15 +21,15 @@ import CircularProgress from "@mui/material/CircularProgress";
 import {getCategories, getImage} from "../api/sanityApi";
 import {Button} from "reactstrap";
 
-const Logo = styled('img')(({ theme }) => ({
+const Logo = styled('img')({
     height: '6vh',
     minHeight: '2.5rem',
     width: '8rem',
-}));
+})
 const DropdownContent = styled(Paper)<{category: string}>(({ theme, category }) => ({
     padding: theme.spacing(4),
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[4],
+    backgroundColor: theme.palette.customBackgroundColor.main,
+    // boxShadow: theme.shadows[4],
     width: "auto",
     marginLeft: category ==="eastAfrica" ? "5rem" : category === "climbing" ? "20vw" : "auto",
     display: 'flex',
@@ -56,8 +56,6 @@ const TopNavBar: React.FC = () => {
     const [eastAfricaList, setEastAfricalList] = React.useState<Category[]>([]);
     const [climbingList, setClimbingList] = React.useState<Category[]>([]);
     const [openDropdown, setOpenDropdown] = React.useState<string | null>(null);
-    const eastAfricaRef = React.useRef<HTMLDivElement>(null);
-    const climbingRef = React.useRef<HTMLDivElement>(null);
     const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
     const theme = useTheme();
@@ -126,10 +124,6 @@ const TopNavBar: React.FC = () => {
         }
     };
 
-    const moveToRequestPage = () => {
-        navigate('/request');
-    };
-
 
     const handleCategoryClick = (categoryName: string) => {
         navigate(`/category/${categoryName}`);
@@ -159,7 +153,13 @@ const TopNavBar: React.FC = () => {
                             alt={category.name}
                             style={{ width: "15vw", height: "15vh", objectFit: 'cover', marginRight: 8 }}
                         />
-                        <Typography variant="subtitle1">{category.name}</Typography>
+                        <Typography variant="subtitle1"
+                                    sx={{
+                                        fontWeight: "bold",
+                                        fontSize: "1.5rem",
+                                    }}>
+                            {category.name}
+                        </Typography>
                     </CategoryCard>
                 ))}
             </DropdownContent>
@@ -170,7 +170,7 @@ const TopNavBar: React.FC = () => {
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="fixed" sx={(theme: Theme) => ({
-                backgroundColor: theme.palette.primary.main,
+                backgroundColor: theme.palette.customBackgroundColor.main,
                 boxShadow: 'none',
                 height: '9vh',
                 minHeight:'3.5rem'
@@ -261,7 +261,7 @@ const TopNavBar: React.FC = () => {
                                     color="warning"
                                     onClick={()=> navigate('/request')}
                                     style={{
-                                        backgroundColor: '#ffd700',
+                                        backgroundColor: theme.palette.customButtonColor.main,
                                         color: 'black',
                                         border: 'none',
                                         padding: '10px 30px',
@@ -270,7 +270,7 @@ const TopNavBar: React.FC = () => {
                                         textTransform: 'uppercase',
                                         cursor: 'pointer',
                                         transition: 'background-color 0.3s ease',
-                                        borderRadius:"20px"
+                                        borderRadius:"15px"
                                     }}
                                     className="custom-button"
                                 >

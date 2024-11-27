@@ -3,24 +3,36 @@ import { createTheme, ThemeOptions } from '@mui/material/styles';
 // Extend the default theme type to include our custom color
 declare module '@mui/material/styles' {
     interface Palette {
-        customColor: Palette['primary'];
+        customButtonColor: Palette['primary'];
+        customFontColor: Palette['primary'];
+        customBackgroundColor: Palette['primary'];
+
     }
     interface PaletteOptions {
-        customColor?: PaletteOptions['primary'];
+        customButtonColor?: PaletteOptions['primary'];
+        customFontColor?: PaletteOptions['primary'];
+        customBackgroundColor?: PaletteOptions['primary'];
+
     }
 }
 
 const themeOptions: ThemeOptions = {
     palette: {
         primary: {
-            main: '#c58a60',
+            main: '#ffffff', //#c58a60
         },
         secondary: {
             main: '#F5C19D',
         },
-        customColor: {
-            main: '#ffd700',
+        customButtonColor: {
+            main: '#f5c738',
         },
+        customFontColor: {
+            main: '#0b1234',
+        },
+        customBackgroundColor: {
+            main: '#f6ede6',
+        }
     },
     typography: {
         fontFamily: 'Arial, sans-serif',

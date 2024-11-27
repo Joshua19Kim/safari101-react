@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import RequestBox from "./RequestBox";
 import React, {useEffect, useState} from "react";
 import '../assets/css/Main.css';
+import theme from "../assets/style/theme";
 
 
 
@@ -34,9 +35,10 @@ const LandingPage = () => {
             <Container>
                 <RequestBox image={backgroundImage} />
                 <Box sx={{
-                    backgroundImage: `url(${require(`../assets/img/${secondBackImage}`)})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
+                    // backgroundImage: `url(${require(`../assets/img/${secondBackImage}`)})`,
+                    // backgroundSize: 'cover',
+                    // backgroundPosition: 'center',
+                    backgroundColor: theme.palette.customBackgroundColor.main,
                     minHeight: '100vh',
                     width: '100%',
                     // Add any additional styling for your content here

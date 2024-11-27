@@ -15,7 +15,7 @@ import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 
-const backgroundImage = "safariBackground.jpg"
+const backgroundImage = "rwanda.jpg"
 
 const getTodayDate = () => {
     const today = new Date();
@@ -131,6 +131,7 @@ const Request = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 minWidth: '20rem',
+                // backgroundColor: '#f7f9fc',
                 backgroundImage: `url(${require(`../assets/img/${backgroundImage}`)})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
@@ -140,21 +141,22 @@ const Request = () => {
                 <Box sx={(theme: Theme) => ({
                     width: '100%',
                     maxWidth: '60rem',
-                    backgroundColor: theme.palette.primary.main,
+                    backgroundColor: theme.palette.customBackgroundColor.main,
                     marginTop: '2vh',
+                    borderRadius: '15px',
                     padding: isMobile ? '2rem' : '3rem',
                     paddingTop: isMobile ? 'calc(56px + 1rem)' : 'calc(64px + 2rem)',
                 })}>
                     <Typography variant="h1" component="h1" gutterBottom sx={{
                         fontWeight: 'bold',
-                        color: '#ffd700',
+                        color: theme.palette.customFontColor.main,
                         mb: '3rem',
                     }}>
                         Request
                     </Typography>
                     <Grid container spacing={isMobile ? 2 : 3}>
                         <Grid item xs={12} sm={6} md={2}>
-                            <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>ADULTS</Typography>
+                            <Typography sx={{ color: theme.palette.customFontColor.main, fontWeight: 'bold', textAlign: 'left' }}>ADULTS</Typography>
                             <TextField
                                 id="outlined-size-small"
                                 defaultValue="Small"
@@ -172,7 +174,7 @@ const Request = () => {
                             />
                         </Grid>
                         <Grid item xs={12} sm={6} md={2}>
-                            <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>CHILDREN</Typography>
+                            <Typography sx={{ color: theme.palette.customFontColor.main, fontWeight: 'bold', textAlign: 'left' }}>CHILDREN</Typography>
                             <TextField
                                 id="outlined-size-small"
                                 defaultValue="Small"
@@ -190,7 +192,7 @@ const Request = () => {
                             />
                         </Grid>
                         <Grid item xs={12} sm={6} md={5}>
-                            <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>YOUR EMAIL</Typography>
+                            <Typography sx={{ color: theme.palette.customFontColor.main, fontWeight: 'bold', textAlign: 'left' }}>YOUR EMAIL</Typography>
                             <TextField
                                 id="outlined-size-small"
                                 size="small"
@@ -204,7 +206,7 @@ const Request = () => {
                             />
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left' }}>
+                            <Typography sx={{ color: theme.palette.customFontColor.main, fontWeight: 'bold', textAlign: 'left' }}>
                                 ARRIVAL DATE
                             </Typography>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -252,7 +254,7 @@ const Request = () => {
                         </Typography>
                     )}
 
-                    <Typography sx={{ color: '#ffd700', fontWeight: 'bold', textAlign: 'left', mt: '1rem' }}>TRIP DESCRIPTION</Typography>
+                    <Typography sx={{ color: theme.palette.customFontColor.main, fontWeight: 'bold', textAlign: 'left', mt: '1rem' }}>TRIP DESCRIPTION</Typography>
                     <TextField
                         name="description"
                         multiline
@@ -281,7 +283,7 @@ const Request = () => {
                             color="warning"
                             onClick={handleSubmit}
                             style={{
-                                backgroundColor: '#ffd700',
+                                backgroundColor: theme.palette.customButtonColor.main,
                                 color: 'black',
                                 border: 'none',
                                 padding: isMobile ? '10px 20px' : '15px 30px',
