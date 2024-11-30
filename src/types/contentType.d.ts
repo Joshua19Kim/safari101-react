@@ -14,15 +14,15 @@ type Trip = {
     _id: string;
     name: string;
     cost: number;
-    shortDescription: any[]; // You might want to type this more specifically
-    longDescription: any[]; // You might want to type this more specifically
-    mainImage: any; // You might want to type this more specifically
+    shortDescription: any[];
+    longDescription: any[];
+    mainImage: any;
     slug: {
         current: string;
     };
-    AreaReference: any; // You might want to type this more specifically
-    ActivityReference: any; // You might want to type this more specifically
-    ClimbingAreaReference: any; // You might want to type this more specifically
+    AreaReference: any;
+    ActivityReference: any;
+    ClimbingAreaReference: any;
 }
 
 type Category = {

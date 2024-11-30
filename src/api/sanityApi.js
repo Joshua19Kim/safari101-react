@@ -87,10 +87,20 @@ export const sendEmail = async (tripInfo) => {
             ...tripInfo,
             createdAt: new Date().toISOString().split('T')[0],
         });
-        console.log('Email request created:', result);
-        return result;
+        return {
+            success: true,
+            message: "Your request has been successfully submitted!"
+        };
     } catch (error) {
-        console.error('Error creating email request:', error);
-        throw error;
+        if (error.details && error.details.validation) {
+            return {
+                success: false,
+                error: error.details.validation.map(err => err.message).join('. ')
+            };
+        }
+        return {
+            success: false,
+            error: "Failed to submit your request. Please try again."
+        };
     }
 };
