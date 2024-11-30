@@ -219,12 +219,14 @@ const Request = () => {
             }}>
                 <Box sx={(theme: Theme) => ({
                     width: '100%',
-                    maxWidth: '60rem',
+                    maxWidth: '55rem',
                     backgroundColor: theme.palette.customBackgroundColor.main,
                     marginTop: '2vh',
                     borderRadius: '15px',
                     padding: isMobile ? '2rem' : '3rem',
-                    paddingTop: isMobile ? 'calc(56px + 1rem)' : 'calc(64px + 2rem)',
+                    paddingTop: isMobile ? '5rem' : '2rem',
+                    paddingBottom: isMobile ? '10rem' : '2rem',
+
                 })}>
                     <Typography variant="h1" component="h1" gutterBottom sx={{
                         fontWeight: 'bold',
