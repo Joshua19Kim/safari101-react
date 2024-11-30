@@ -89,15 +89,10 @@ export const sendEmail = async (tripInfo) => {
         });
         return {
             success: true,
-            message: "Your request has been successfully submitted!"
+            message: "Your request has been successfully submitted!",
+            error: null
         };
     } catch (error) {
-        if (error.details && error.details.validation) {
-            return {
-                success: false,
-                error: error.details.validation.map(err => err.message).join('. ')
-            };
-        }
         return {
             success: false,
             error: "Failed to submit your request. Please try again."

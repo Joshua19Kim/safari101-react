@@ -26,6 +26,7 @@ const Request = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [formErrors, setFormErrors] = useState({
         fieldErrors: '',
         descriptionError: ''
@@ -129,21 +130,77 @@ const Request = () => {
         }));
     };
 
-    const handleSubmit = async () => {
-        const formattedTripInfo = {
-            ...tripInfo,
-            arrivalDate: tripInfo.arrivalDate
-                ? tripInfo.arrivalDate.toISOString().split('T')[0]
-                : getTodayDate(),
-            selectedOptions: tripInfo.selectedOptions.join(', ') // Convert array to string
-        };
+    const validateForm = () => {
+        let isValid = true;
+        let fieldErrors = [];
+        let descriptionError = '';
 
-        const result = await sendEmail(formattedTripInfo);
-        if (result.success) {
-            alert(result.message);
-            navigate('/');
-        } else {
-            alert(result.error);
+        // Adult validation
+        if (parseInt(tripInfo.adults) <= 0) {
+            fieldErrors.push('There should be at least one adult');
+            isValid = false;
+        }
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (tripInfo.clientEmail === "safari101@tour.com" || !tripInfo.clientEmail.trim()) {
+            fieldErrors.push('Your email has to be entered');
+            isValid = false;
+        } else if (!emailRegex.test(tripInfo.clientEmail)) {
+            fieldErrors.push('Please enter a valid email');
+            isValid = false;
+        }
+
+        // Description validation
+        if (tripInfo.description === "Please describe your plan!" || !tripInfo.description.trim()) {
+            descriptionError = 'Please describe your trip for a request';
+            isValid = false;
+        }
+
+        setFormErrors({
+            fieldErrors: fieldErrors.join('. '),
+            descriptionError
+        });
+
+        return isValid;
+    };
+
+    const handleSubmit = async () => {
+        if (!validateForm()) {
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            const formattedTripInfo = {
+                ...tripInfo,
+                arrivalDate: tripInfo.arrivalDate
+                    ? tripInfo.arrivalDate.toISOString().split('T')[0]
+                    : getTodayDate(),
+                selectedOptions: tripInfo.selectedOptions.join(', ')
+            };
+
+            const result = await sendEmail(formattedTripInfo);
+            if (result.success) {
+                setFormErrors({
+                    fieldErrors: '',
+                    descriptionError: ''
+                });
+                alert(result.message);
+                navigate('/');
+            } else {
+                setFormErrors({
+                    ...formErrors,
+                    fieldErrors: result.error || 'An error occurred while submitting your request' // Provide default error message
+                });
+            }
+        } catch (error) {
+            setFormErrors({
+                ...formErrors,
+                fieldErrors: 'An unexpected error occurred. Please try again.'
+            });
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -266,16 +323,21 @@ const Request = () => {
                     </Grid>
 
                     {formErrors.fieldErrors && (
-                        <Typography sx={{
-                            color: 'red',
-                            mt: 2,
-                            textAlign: 'left',
-                            fontSize: '0.875rem'
-                        }}>
+                        <Typography
+                            sx={{
+                                color: 'red',
+                                mt: 2,
+                                textAlign: 'left',
+                                fontSize: '0.875rem',
+                                backgroundColor: 'rgba(255,0,0,0.1)',
+                                padding: '0.5rem',
+                                borderRadius: '4px',
+                                marginBottom: '1rem'
+                            }}
+                        >
                             {formErrors.fieldErrors}
                         </Typography>
                     )}
-
 
                     <Box sx={{ mt: 4, mb: 2 }}>
                         <Typography
@@ -345,12 +407,17 @@ const Request = () => {
                     />
 
                     {formErrors.descriptionError && (
-                        <Typography sx={{
-                            color: 'red',
-                            mb: 2,
-                            textAlign: 'left',
-                            fontSize: '0.875rem'
-                        }}>
+                        <Typography
+                            sx={{
+                                color: 'red',
+                                mb: 2,
+                                textAlign: 'left',
+                                fontSize: '0.875rem',
+                                backgroundColor: 'rgba(255,0,0,0.1)',
+                                padding: '0.5rem',
+                                borderRadius: '4px'
+                            }}
+                        >
                             {formErrors.descriptionError}
                         </Typography>
                     )}
@@ -359,6 +426,7 @@ const Request = () => {
                         <Button
                             color="warning"
                             onClick={handleSubmit}
+                            disabled={isSubmitting}
                             style={{
                                 backgroundColor: theme.palette.customButtonColor.main,
                                 color: theme.palette.customButtonFontColor.main,
@@ -367,13 +435,14 @@ const Request = () => {
                                 fontSize: isMobile ? '1rem' : '1.1rem',
                                 fontWeight: 'bold',
                                 textTransform: 'uppercase',
-                                cursor: 'pointer',
+                                cursor: isSubmitting ? 'not-allowed' : 'pointer',
                                 transition: 'background-color 0.3s ease',
                                 borderRadius: '20px',
+                                opacity: isSubmitting ? 0.7 : 1,
                             }}
                             className="custom-button"
                         >
-                            SUBMIT REQUEST
+                            {isSubmitting ? 'SUBMITTING...' : 'SUBMIT REQUEST'}
                         </Button>
                     </Box>
                 </Box>
