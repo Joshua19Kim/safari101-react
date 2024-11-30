@@ -39,6 +39,9 @@ const LandingPage = () => {
 
     useEffect(() => {
         const calculateVisibility = (element: HTMLElement) => {
+            if (isMobile) {
+                return true;
+            }
             const rect = element.getBoundingClientRect();
             const windowHeight = window.innerHeight;
 
@@ -123,21 +126,22 @@ const LandingPage = () => {
     }) => {
         const positionStyles = {
             left: {
-                alignItems: 'flex-start',
-                textAlign: 'left',
-                padding: '0 0 0 10%',
+                alignItems: isMobile ? 'center' : 'flex-start',
+                textAlign: isMobile ? 'center' : 'left',
+                padding: isMobile ? '0 1rem' : '0 0 0 10%',
             },
             center: {
                 alignItems: 'center',
                 textAlign: 'center',
-                padding: '0 20%',
+                padding: isMobile ? '0 1rem' : '0 20%',
             },
             right: {
-                alignItems: 'flex-end',
-                textAlign: 'right',
-                padding: '0 10% 0 0',
+                alignItems: isMobile ? 'center' : 'flex-end',
+                textAlign: isMobile ? 'center' : 'right',
+                padding: isMobile ? '0 1rem' : '0 10% 0 0',
             },
         };
+
 
         const polygonStyles = {
             first: {
@@ -199,16 +203,16 @@ const LandingPage = () => {
                     flexDirection: 'column',
                     justifyContent: 'center',
                     ...positionStyles[position],
-                    opacity: isVisible ? 1 : 0,
+                    opacity: isMobile ? 1 : (isVisible ? 1 : 0), // Always visible on mobile
                     transition: 'opacity 1s ease-in-out',
                 }}
             >
                 <Box
                     sx={{
                         position: 'relative',
-                        maxWidth: '500px',
-                        padding: '2.5rem 2rem 2rem',
-                        marginBottom: '2rem',
+                        maxWidth: isMobile ? '100%' : '500px',
+                        padding: isMobile ? '1.5rem 1rem' : '2.5rem 2rem 2rem',
+                        marginBottom: isMobile ? '1rem' : '2rem',
                         ...polygonStyles[styleVariant],
                         '&::after': {
                             content: '""',
@@ -224,10 +228,10 @@ const LandingPage = () => {
                     }}
                 >
                     <Typography
-                        variant="h4"
+                        variant={isMobile ? "h5" : "h4"}
                         sx={{
                             color: 'white',
-                            mb: 2,
+                            mb: isMobile ? 1 : 2,
                             fontWeight: 'bold',
                             textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
                         }}
@@ -238,7 +242,8 @@ const LandingPage = () => {
                         variant="body1"
                         sx={{
                             color: 'white',
-                            mb: 3,
+                            mb: isMobile ? 2 : 3,
+                            fontSize: isMobile ? '0.9rem' : '1rem',
                         }}
                     >
                         {description}
@@ -249,6 +254,8 @@ const LandingPage = () => {
                         sx={{
                             backgroundColor: theme.palette.customButtonColor.main,
                             color: theme.palette.customButtonFontColor.main,
+                            padding: isMobile ? '8px 16px' : '10px 20px',
+                            fontSize: isMobile ? '0.9rem' : '1rem',
                             '&:hover': {
                                 backgroundColor: theme.palette.customButtonColor.dark,
                             },
