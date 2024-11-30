@@ -4,12 +4,14 @@ import { createTheme, ThemeOptions } from '@mui/material/styles';
 declare module '@mui/material/styles' {
     interface Palette {
         customButtonColor: Palette['primary'];
+        customButtonFontColor: Palette['primary'];
         customFontColor: Palette['primary'];
         customBackgroundColor: Palette['primary'];
 
     }
     interface PaletteOptions {
         customButtonColor?: PaletteOptions['primary'];
+        customButtonFontColor?: PaletteOptions['primary'];
         customFontColor?: PaletteOptions['primary'];
         customBackgroundColor?: PaletteOptions['primary'];
 
@@ -19,16 +21,20 @@ declare module '@mui/material/styles' {
 const themeOptions: ThemeOptions = {
     palette: {
         primary: {
-            main: '#ffffff', //#c58a60
+            main: '#c58a60', //#c58a60
         },
         secondary: {
             main: '#F5C19D',
         },
         customButtonColor: {
-            main: '#f5c738',
+            main: '#4a6c98',
+            dark: '#314865'
+        },
+        customButtonFontColor: {
+            main: '#ffff24',
         },
         customFontColor: {
-            main: '#0b1234',
+            main: '#3b5375',
         },
         customBackgroundColor: {
             main: '#f6ede6',

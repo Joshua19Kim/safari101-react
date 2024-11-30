@@ -90,6 +90,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             children,
             arrivalDate,
             description,
+            selectedOptions,
             createdAt
         } = data;
 
@@ -117,6 +118,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                     <p><strong>Number of Adults:</strong> ${adults}</p>
                     <p><strong>Number of Children:</strong> ${children}</p>
                     <p><strong>Arrival Date:</strong> ${arrivalDate}</p>
+                    <p><strong>Selected Preferred Options:</strong> ${selectedOptions}</p>
                     <p><strong>Description:</strong> ${description}</p>
                     <p><strong>Request Time:</strong> ${new Date(createdAt).toLocaleString()}</p>
                 `

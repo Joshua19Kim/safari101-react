@@ -32,7 +32,7 @@
 
 
 .custom-button:hover {
-    background-color: #e6b800 !important;
+    background-color: theme-palette-customButtonColor-dark !important;
 }
 
 

@@ -7,6 +7,7 @@ import {getTripWithClimbingArea, getTripWithEastAfricaArea} from "../api/sanityA
 import CircularProgress from "@mui/material/CircularProgress";
 import TripCard from "./TripCard";
 import {Typography} from "@mui/material";
+import theme from "../assets/style/theme";
 
 
 const secondBackImage = "brightBackground.jpg"
@@ -88,9 +89,10 @@ const CategoryPage = () => {
             <Container>
                 <RequestBox image={currentCategory.image} />
                 <Box sx={{
-                    backgroundImage: `url(${require(`../assets/img/${secondBackImage}`)})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
+                    // backgroundImage: `url(${require(`../assets/img/${secondBackImage}`)})`,
+                    // backgroundSize: 'cover',
+                    // backgroundPosition: 'center',
+                    backgroundColor: theme.palette.customBackgroundColor.main,
                     minHeight: '100vh',
                     width: '100%',
                     display: 'flex',

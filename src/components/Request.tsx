@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import {useLocation, useNavigate} from 'react-router-dom';
 import {Button} from "reactstrap";
 import Typography from "@mui/material/Typography";
-import {Grid, TextField, useMediaQuery} from "@mui/material";
+import {Autocomplete, Chip, Grid, TextField, useMediaQuery} from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from '@mui/icons-material/Email';
 import {TbMoodKid} from "react-icons/tb";
@@ -31,12 +31,28 @@ const Request = () => {
         descriptionError: ''
     });
 
+    const OPTIONS = [
+        'Uganda',
+        'Tanzania',
+        'Rwanda',
+        'Kenya',
+        'Kilimanjaro',
+        'Oldnoyo Lengai',
+        'Meru',
+        'Zanzibar',
+        'Safari',
+        'Climbing',
+        'Day Trips',
+        'Photographic Safari'
+    ];
+
     const [tripInfo, setTripInfo] = useState<TripInfo>({
         adults: '2',
         children: '0',
         clientEmail: "safari101@tour.com",
         arrivalDate: new Date(),
         description: "Please describe your plan!",
+        selectedOptions: [],
     })
     const [requestInputInteracted, setRequestInputInteracted] = useState<RequestInputInteraction>({
         adults: false,
@@ -67,13 +83,19 @@ const Request = () => {
         }
     }, [location.state]);
 
+    const handleOptionsChange = (event: any, newValue: string[]) => {
+        setTripInfo(prev => ({
+            ...prev,
+            selectedOptions: newValue
+        }));
+    };
+
     const handleInputChange = (e: any) => {
         const { name, value } = e.target;
         if (name === 'adults' || name === 'children') {
             const numValue = value.replace(/\D/g, '');
             setTripInfo(prev => ({ ...prev, [name]: numValue }));
         } else {
-            // Fixed: Use the correct field name for email
             const fieldName = name === 'email' ? 'clientEmail' : name;
             setTripInfo(prev => ({ ...prev, [fieldName]: value }));
         }
@@ -113,6 +135,7 @@ const Request = () => {
             arrivalDate: tripInfo.arrivalDate
                 ? tripInfo.arrivalDate.toISOString().split('T')[0]
                 : getTodayDate(),
+            selectedOptions: tripInfo.selectedOptions.join(', ') // Convert array to string
         };
 
         const result = await sendEmail(formattedTripInfo);
@@ -131,7 +154,6 @@ const Request = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 minWidth: '20rem',
-                // backgroundColor: '#f7f9fc',
                 backgroundImage: `url(${require(`../assets/img/${backgroundImage}`)})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
@@ -254,6 +276,61 @@ const Request = () => {
                         </Typography>
                     )}
 
+
+                    <Box sx={{ mt: 4, mb: 2 }}>
+                        <Typography
+                            sx={{
+                                color: theme.palette.customFontColor.main,
+                                fontWeight: 'bold',
+                                textAlign: 'left',
+                                mb: 1
+                            }}
+                        >
+                            PREFERRED AREAS & ACTIVITIES
+                        </Typography>
+                        <Autocomplete
+                            multiple
+                            id="preferences-dropdown"
+                            options={OPTIONS}
+                            value={tripInfo.selectedOptions}
+                            onChange={handleOptionsChange}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    variant="outlined"
+                                    size="small"
+                                    placeholder="Select your preferences"
+                                />
+                            )}
+                            renderTags={(value: readonly string[], getTagProps) =>
+                                value.map((option: string, index: number) => (
+                                    <Chip
+                                        {...getTagProps({ index })}
+                                        label={option}
+                                        sx={{
+                                            backgroundColor: theme.palette.customButtonColor.main,
+                                            color: theme.palette.customButtonFontColor.main,
+                                            '& .MuiChip-deleteIcon': {
+                                                color: theme.palette.customButtonFontColor.main,
+                                                '&:hover': {
+                                                    color: theme.palette.customButtonFontColor.light,
+                                                },
+                                            },
+                                        }}
+                                    />
+                                ))
+                            }
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    backgroundColor: 'white',
+                                }
+                            }}
+                        />
+                    </Box>
+
+
+
+
                     <Typography sx={{ color: theme.palette.customFontColor.main, fontWeight: 'bold', textAlign: 'left', mt: '1rem' }}>TRIP DESCRIPTION</Typography>
                     <TextField
                         name="description"
@@ -284,7 +361,7 @@ const Request = () => {
                             onClick={handleSubmit}
                             style={{
                                 backgroundColor: theme.palette.customButtonColor.main,
-                                color: 'black',
+                                color: theme.palette.customButtonFontColor.main,
                                 border: 'none',
                                 padding: isMobile ? '10px 20px' : '15px 30px',
                                 fontSize: isMobile ? '1rem' : '1.1rem',

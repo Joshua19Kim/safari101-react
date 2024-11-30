@@ -47,6 +47,7 @@ type SimpleTripInfo = {
 type TripInfo = {
     description: string;
     clientEmail: string;
+    selectedOptions: string[];
 } & SimpleTripInfo
 
 

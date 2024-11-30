@@ -262,7 +262,7 @@ const TopNavBar: React.FC = () => {
                                     onClick={()=> navigate('/request')}
                                     style={{
                                         backgroundColor: theme.palette.customButtonColor.main,
-                                        color: 'black',
+                                        color: theme.palette.customButtonFontColor.main,
                                         border: 'none',
                                         padding: '10px 30px',
                                         fontSize: '1.1rem',

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import '../assets/css/Main.css';
 import Box from "@mui/material/Box";
 import { Theme } from '@mui/material/styles';
@@ -7,7 +7,7 @@ import { Grid, TextField, useMediaQuery, useTheme } from "@mui/material";
 import { TbMoodKid } from "react-icons/tb";
 import PersonIcon from "@mui/icons-material/Person";
 import { Button } from "reactstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -23,7 +23,9 @@ interface BackGroundImage {
 export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
     const navigate = useNavigate();
     const theme = useTheme();
+    const location = useLocation();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const [boxHeight, setBoxHeight] = useState('50rem');
 
     const [simpleTripInfo, setTripInfo] = useState<SimpleTripInfo>({
         adults: '2',
@@ -83,10 +85,40 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
         navigate('/request', { state: formattedTripInfo });
     };
 
+    // Main landing page effect (Auto-adjustment for box height)
+    useEffect(() => {
+        const handleScroll = () => {
+            if (!isMobile && location.pathname ==='/') {
+                const scrollPosition = window.scrollY;
+                const maxScroll = 40; //Can adjust the speed of change of height
+                const minHeight = 28;
+                const maxHeight = 50;
+
+                const newHeight = Math.max(
+                    minHeight,
+                    maxHeight - (scrollPosition/ maxScroll) * (maxHeight - minHeight)
+                );
+                setBoxHeight(`${newHeight}rem`);
+            }
+        }
+        if (!isMobile && location.pathname === '/') {
+            window.addEventListener('scroll', handleScroll, { passive: true });
+            handleScroll();
+        } else {
+            setBoxHeight(isMobile ? '23rem' : '28rem');
+        }
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+
+    }, [isMobile, location.pathname]);
+
+
     return (
         <Box sx={{
             width: '100%',
-            height: isMobile ? '23rem' : '28rem',
+            height: boxHeight,
             marginTop: '9vh',
             minWidth: '23rem',
             backgroundColor: theme.palette.customBackgroundColor.main,
@@ -181,7 +213,7 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
                         onClick={handleSubmit}
                         style={{
                             backgroundColor: theme.palette.customButtonColor.main,
-                            color: 'black',
+                            color: theme.palette.customButtonFontColor.main,
                             border: 'none',
                             padding: '15px 30px',
                             fontSize: '1.1rem',
