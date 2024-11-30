@@ -136,7 +136,7 @@ const Request = () => {
         let descriptionError = '';
 
         // Adult validation
-        if (parseInt(tripInfo.adults) <= 0) {
+        if (parseInt(tripInfo.adults) <= 0 || tripInfo.adults == '') {
             fieldErrors.push('There should be at least one adult');
             isValid = false;
         }
