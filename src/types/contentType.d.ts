@@ -57,6 +57,7 @@ type RequestInputInteraction = {
     clientEmail: boolean;
     arrivalDate: boolean;
     description: boolean;
+    selectedOptions: boolean;
 }
 
 

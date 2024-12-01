@@ -38,16 +38,13 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
         clientEmail: false,
         arrivalDate: false,
         description: false,
+        selectedOptions: false,
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        if (name === 'adults' || name === 'children') {
-            const numValue = value.replace(/\D/g, '');
-            setTripInfo(prev => ({ ...prev, [name]: numValue }));
-        } else {
-            setTripInfo(prev => ({ ...prev, [name]: value }));
-        }
+        setTripInfo(prev => ({ ...prev, [name]: value.replace(/\D/g, '') }));
+
     };
     const handleFieldFocus = (field: keyof RequestInputInteraction) => {
         if (!requestInputInteracted[field]) {
@@ -85,7 +82,6 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
         navigate('/request', { state: formattedTripInfo });
     };
 
-    // Main landing page effect (Auto-adjustment for box height)
     useEffect(() => {
         const handleScroll = () => {
             if (!isMobile && location.pathname ==='/') {

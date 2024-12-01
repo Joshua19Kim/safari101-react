@@ -61,6 +61,7 @@ const Request = () => {
         clientEmail: false,
         arrivalDate: false,
         description: false,
+        selectedOptions: false,
     });
 
     useEffect(() => {
@@ -72,7 +73,8 @@ const Request = () => {
 
             setTripInfo({
                 ...incomingState,
-                arrivalDate: incomingDate
+                arrivalDate: incomingDate,
+                selectedOptions: [],
             });
             setRequestInputInteracted({
                 adults: false,
@@ -80,6 +82,7 @@ const Request = () => {
                 clientEmail: false,
                 arrivalDate: false,
                 description: false,
+                selectedOptions: false,
             });
         }
     }, [location.state]);
