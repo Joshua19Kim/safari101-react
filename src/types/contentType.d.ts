@@ -48,6 +48,9 @@ type TripInfo = {
     description: string;
     clientEmail: string;
     selectedOptions: string[];
+    selectedTripName: string;
+    selectedTripPrice: string;
+    selectedTripDescription: string;
 } & SimpleTripInfo
 
 
@@ -58,6 +61,9 @@ type RequestInputInteraction = {
     arrivalDate: boolean;
     description: boolean;
     selectedOptions: boolean;
+    selectedTripName: boolean;
+    selectedTripPrice: boolean;
+    selectedTripDescription: boolean;
 }
 
 

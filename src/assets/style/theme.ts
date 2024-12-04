@@ -7,6 +7,7 @@ declare module '@mui/material/styles' {
         customButtonFontColor: Palette['primary'];
         customFontColor: Palette['primary'];
         customBackgroundColor: Palette['primary'];
+        priceColor: Palette['primary'];
 
     }
     interface PaletteOptions {
@@ -14,6 +15,7 @@ declare module '@mui/material/styles' {
         customButtonFontColor?: PaletteOptions['primary'];
         customFontColor?: PaletteOptions['primary'];
         customBackgroundColor?: PaletteOptions['primary'];
+        priceColor?: PaletteOptions['primary'];
 
     }
 }
@@ -38,6 +40,9 @@ const themeOptions: ThemeOptions = {
         },
         customBackgroundColor: {
             main: '#f6ede6',
+        },
+        priceColor: {
+            main: '#00bf63'
         }
     },
     typography: {

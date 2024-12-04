@@ -91,6 +91,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             arrivalDate,
             description,
             selectedOptions,
+            selectedTripName,
+            selectedTripPrice,
+            selectedTripDescription,
             createdAt
         } = data;
 
@@ -121,6 +124,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                     <p><strong>Selected Preferred Options:</strong> ${selectedOptions}</p>
                     <p><strong>Description:</strong> ${description}</p>
                     <p><strong>Request Time:</strong> ${new Date(createdAt).toLocaleString()}</p>
+                    <p><strong>Selected Trip Name by User:</strong> ${selectedTripName}</p>
+                    <p><strong>Selected Trip Price by User:</strong> ${selectedTripPrice}</p>
+                    <p><strong>Selected Trip Description by User:</strong> ${selectedTripDescription}</p>
                 `
             };
 

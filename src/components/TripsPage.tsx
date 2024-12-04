@@ -70,9 +70,6 @@ const TripsPage = () => {
             <Container>
                 <RequestBox image={currentTopic.image} />
                 <Box sx={{
-                    // backgroundImage: `url(${require(`../assets/img/${contentsBackgroundImage}`)})`,
-                    // backgroundSize: 'cover',
-                    // backgroundPosition: 'center',
                     backgroundColor: theme.palette.customBackgroundColor.main,
                     minHeight: '100vh',
                     width: '100%',
@@ -86,15 +83,24 @@ const TripsPage = () => {
                         maxWidth: '60rem',
                         display: 'flex',
                         flexDirection: 'column',
-                        alignItems: 'center',
+                        alignItems: 'stretch',
                     }}>
                         {isLoading ? (
-                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+                            <Box sx={{ display: 'flex',
+                                justifyContent: 'center',
+                                height: '50vh'
+                            }}>
                                 <CircularProgress />
                             </Box>
                         ) : tripsList.length > 0 ? (
                             tripsList.map((trip) => (
-                                <Box key={trip._id} sx={{ width: '100%', mb: 3 }}>
+                                <Box key={trip._id}
+                                     sx={{
+                                         width: '100%',
+                                         mb: 3,
+                                         display: 'flex',
+                                         justifyContent: 'center',
+                                }}>
                                     <TripCard trip={trip} />
                                 </Box>
                             ))

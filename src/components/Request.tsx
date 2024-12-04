@@ -54,6 +54,9 @@ const Request = () => {
         arrivalDate: new Date(),
         description: "Please describe your plan!",
         selectedOptions: [],
+        selectedTripName: '',
+        selectedTripPrice: '',
+        selectedTripDescription: '',
     })
     const [requestInputInteracted, setRequestInputInteracted] = useState<RequestInputInteraction>({
         adults: false,
@@ -62,6 +65,9 @@ const Request = () => {
         arrivalDate: false,
         description: false,
         selectedOptions: false,
+        selectedTripName: false,
+        selectedTripPrice: false,
+        selectedTripDescription: false,
     });
 
     useEffect(() => {
@@ -73,8 +79,13 @@ const Request = () => {
 
             setTripInfo({
                 ...incomingState,
+                clientEmail: "safari101@tour.com",
                 arrivalDate: incomingDate,
+                description: "Please describe your plan!",
                 selectedOptions: [],
+                selectedTripName: '',
+                selectedTripPrice: '',
+                selectedTripDescription: '',
             });
             setRequestInputInteracted({
                 adults: false,
@@ -83,6 +94,9 @@ const Request = () => {
                 arrivalDate: false,
                 description: false,
                 selectedOptions: false,
+                selectedTripName: false,
+                selectedTripPrice: false,
+                selectedTripDescription: false,
             });
         }
     }, [location.state]);

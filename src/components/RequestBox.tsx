@@ -25,7 +25,13 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
     const theme = useTheme();
     const location = useLocation();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMainLanding = !isMobile && location.pathname === '/';
+    const [isScrolledDown, setIsScrolledDown] = useState(false);
+
     const [boxHeight, setBoxHeight] = useState('50rem');
+
+    const mainMessage = "Discover the Untamed Spirit of Africa";
+    const subMessage = "Your Journey to Adventure Begins Here";
 
     const [simpleTripInfo, setTripInfo] = useState<SimpleTripInfo>({
         adults: '2',
@@ -39,6 +45,9 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
         arrivalDate: false,
         description: false,
         selectedOptions: false,
+        selectedTripName: false,
+        selectedTripPrice: false,
+        selectedTripDescription: false,
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,11 +91,13 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
         navigate('/request', { state: formattedTripInfo });
     };
 
+
+
     useEffect(() => {
         const handleScroll = () => {
-            if (!isMobile && location.pathname ==='/') {
+            if (isMainLanding) {
                 const scrollPosition = window.scrollY;
-                const maxScroll = 40; //Can adjust the speed of change of height
+                const maxScroll = 80; //Can adjust the speed of change of height
                 const minHeight = 28;
                 const maxHeight = 50;
 
@@ -95,9 +106,16 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
                     maxHeight - (scrollPosition/ maxScroll) * (maxHeight - minHeight)
                 );
                 setBoxHeight(`${newHeight}rem`);
+
+                if(newHeight >= 46) {
+                    setIsScrolledDown(true);
+                } else {
+                    setIsScrolledDown(false);
+                }
+
             }
         }
-        if (!isMobile && location.pathname === '/') {
+        if (isMainLanding) {
             window.addEventListener('scroll', handleScroll, { passive: true });
             handleScroll();
         } else {
@@ -126,7 +144,64 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
             alignItems: 'center',
             justifyContent: isMobile? 'center': 'flex-start',
             padding: isMobile ? '0' : '2rem',
+            position: 'relative'
         }}>
+            {isMainLanding && isScrolledDown && (
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        bottom: '10%',
+                        right: '5%',
+                        textAlign: 'right',
+                        color: 'white',
+                        textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+                    }}
+                >
+                    <Typography
+                        variant="h2"
+                        sx={{
+                            fontWeight: 'bold',
+                            fontFamily: 'serif',
+                            marginBottom: '1rem',
+                            opacity: 0,  // Start with opacity 0
+                            animation: 'fadeIn 1s ease-out forwards',  // Add fade-in animation
+                            '@keyframes fadeIn': {
+                                from: {
+                                    opacity: 0,
+                                    transform: 'translateY(20px)'  // Optional: add slight upward movement
+                                },
+                                to: {
+                                    opacity: 1,
+                                    transform: 'translateY(0)'
+                                }
+                            },
+                        }}
+                    >
+                        {mainMessage}
+                    </Typography>
+                    <Typography
+                        variant="h4"
+                        sx={{
+                            fontStyle: 'italic',
+                            opacity: 0,
+                            animation: 'fadeIn 1s ease-out forwards',
+                            animationDelay: '0.5s',
+                            '@keyframes fadeIn': {
+                                from: {
+                                    opacity: 0,
+                                    transform: 'translateY(20px)'
+                                },
+                                to: {
+                                    opacity: 1,
+                                    transform: 'translateY(0)'
+                                }
+                            },
+                        }}
+                    >
+                        {subMessage}
+                    </Typography>
+                </Box>
+            )}
             <Box sx={(theme: Theme) => ({
                 backgroundColor: theme.palette.customBackgroundColor.main,
                 minWidth: '23rem',
@@ -134,6 +209,7 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
                 width: isMobile ? '100%' : '23rem',
                 padding: '1rem',
                 borderRadius: '20px',
+                mb: isMainLanding ? '10rem' : '0rem',
             })}>
                 <Typography variant="h5" component="h2" sx={{ color: 'black', mb: 2, fontWeight:'bold', textAlign: 'center' }}>
                     LET'S PLAN YOUR OWN ITINERARY!
@@ -141,7 +217,13 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
 
                 <Grid container spacing={2}>
                     <Grid item xs={6}>
-                        <Typography sx={{ color: theme.palette.customFontColor.main, fontWeight: 'bold', textAlign: 'left' }}>ADULTS</Typography>
+                        <Typography sx={{
+                            color: theme.palette.customFontColor.main,
+                            fontWeight: 'bold',
+                            textAlign: 'left'
+                        }}>
+                            ADULTS
+                        </Typography>
                         <TextField
                             fullWidth
                             name="adults"
@@ -155,7 +237,13 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
                         />
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography sx={{ color: theme.palette.customFontColor.main, fontWeight: 'bold', textAlign: 'left' }}>CHILDREN</Typography>
+                        <Typography sx={{
+                            color: theme.palette.customFontColor.main,
+                            fontWeight: 'bold',
+                            textAlign: 'left'
+                        }}>
+                            CHILDREN
+                        </Typography>
                         <TextField
                             fullWidth
                             name="children"
@@ -171,7 +259,13 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
                 </Grid>
 
                 <Box sx={{ mt: 2, mb: 2 }}>
-                    <Typography sx={{ color: theme.palette.customFontColor.main, fontWeight: 'bold', textAlign: 'left' }}>EXPECTED ARRIVAL DATE</Typography>
+                    <Typography sx={{
+                        color: theme.palette.customFontColor.main,
+                        fontWeight: 'bold',
+                        textAlign: 'left'
+                    }}>
+                        EXPECTED ARRIVAL DATE
+                    </Typography>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DatePicker
                             value={simpleTripInfo.arrivalDate}
