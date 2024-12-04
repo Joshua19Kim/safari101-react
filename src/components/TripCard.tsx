@@ -71,6 +71,17 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
             selectedTripPrice: '',
             selectedTripDescription: '',
         });
+        setRequestInputInteracted({
+            adults: false,
+            children: false,
+            clientEmail: false,
+            arrivalDate: false,
+            description: false,
+            selectedOptions: false,
+            selectedTripName: false,
+            selectedTripPrice: false,
+            selectedTripDescription: false,
+        })
         setFormErrors({
             fieldErrors: '',
             descriptionError: ''
@@ -172,24 +183,22 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
 
         setIsSubmitting(true);
         try {
-            // Add trip details to description
-            const tripDetails = `
-                    User's Additional Description: ${tripInfo.description}
-                    Selected Trip: ${trip.name}
-                    Price: $${trip.cost}
-                    Trip Details: ${trip.longDescription.map(block =>
-                                    block.children.map((child: { text: any; }) => child.text).join(' ')
-                                ).join('\n')}`;
+            const formattedDescription = trip.longDescription
+                .map(block =>
+                    block.children
+                        .map((child: { text: any; }) => child.text)
+                        .join(' ')
+                )
+                .join('\n\n');
 
             const formattedTripInfo = {
                 ...tripInfo,
-                description: tripDetails,
                 arrivalDate: tripInfo.arrivalDate
                     ? tripInfo.arrivalDate.toISOString().split('T')[0]
                     : getTodayDate(),
                 selectedTripName: trip.name,
-                selectedTripPrice: trip.cost,
-                selectedTripDescription: trip.longDescription,
+                selectedTripPrice: "$" + trip.cost,
+                selectedTripDescription: formattedDescription,
             };
 
             const result = await sendEmail(formattedTripInfo);
