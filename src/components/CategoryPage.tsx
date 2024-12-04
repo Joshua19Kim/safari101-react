@@ -89,9 +89,6 @@ const CategoryPage = () => {
             <Container>
                 <RequestBox image={currentCategory.image} />
                 <Box sx={{
-                    // backgroundImage: `url(${require(`../assets/img/${secondBackImage}`)})`,
-                    // backgroundSize: 'cover',
-                    // backgroundPosition: 'center',
                     backgroundColor: theme.palette.customBackgroundColor.main,
                     minHeight: '100vh',
                     width: '100%',

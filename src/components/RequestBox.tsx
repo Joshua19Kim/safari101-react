@@ -133,7 +133,7 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
         <Box sx={{
             width: '100%',
             height: boxHeight,
-            marginTop: '9vh',
+            marginTop: '4rem',
             minWidth: '23rem',
             backgroundColor: theme.palette.customBackgroundColor.main,
             backgroundImage: isMobile ? 'none' : `url(${require(`../assets/img/${image}`)})`,

@@ -21,15 +21,36 @@ import CircularProgress from "@mui/material/CircularProgress";
 import {getCategories, getImage} from "../api/sanityApi";
 import {Button} from "reactstrap";
 
+interface BaseNavLink {
+    text: string;
+    path: string;
+    hasDropdown: boolean;
+}
+
+interface DropdownNavLink extends BaseNavLink {
+    hasDropdown: true;
+    dropdownKey: 'eastAfrica' | 'climbing';
+}
+
+interface SimpleNavLink extends BaseNavLink {
+    hasDropdown: false;
+    dropdownKey?: never;
+}
+
+interface SidebarProps {
+    isOpen: boolean;
+    onClose: () => void;
+}
+
+type NavLink = DropdownNavLink | SimpleNavLink;
+
 const Logo = styled('img')({
-    height: '6vh',
-    minHeight: '2.5rem',
+    height: '3rem',
     width: '8rem',
 })
 const DropdownContent = styled(Paper)<{category: string}>(({ theme, category }) => ({
-    padding: theme.spacing(4),
+    padding: theme.spacing(1),
     backgroundColor: theme.palette.customBackgroundColor.main,
-    // boxShadow: theme.shadows[4],
     width: "auto",
     marginLeft: category ==="eastAfrica" ? "5rem" : category === "climbing" ? "20vw" : "auto",
     display: 'flex',
@@ -48,19 +69,72 @@ const CategoryCard = styled(Box)(({ theme }) => ({
 
 }));
 
+const NavLinks: NavLink[] = [
+    {
+        text: "East Africa▾",
+        path: "#",
+        hasDropdown: true,
+        dropdownKey: 'eastAfrica'
+    },
+    {
+        text: "Safari",
+        path: "/trips",
+        hasDropdown: false
+    },
+    {
+        text: "Kilimanjaro",
+        path: "/trips",
+        hasDropdown: false
+    },
+    {
+        text: "Climbing▾",
+        path: "#",
+        hasDropdown: true,
+        dropdownKey: 'climbing'
+    },
+    {
+        text: "Zanzibar",
+        path: "/trips",
+        hasDropdown: false
+    },
+    {
+        text: "Day Trips",
+        path: "/trips",
+        hasDropdown: false
+    },
+    {
+        text: "Photographic Safari",
+        path: "/trips",
+        hasDropdown: false
+    }
+];
+
 
 const TopNavBar: React.FC = () => {
     const navigate = useNavigate();
-    const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
     const location = useLocation();
-    const [eastAfricaList, setEastAfricalList] = React.useState<Category[]>([]);
-    const [climbingList, setClimbingList] = React.useState<Category[]>([]);
+    const theme = useTheme();
+    const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
     const [openDropdown, setOpenDropdown] = React.useState<string | null>(null);
     const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+    // Create breakpoints for different screen sizes
+    const isXLarge = useMediaQuery(theme.breakpoints.up('xl'));
+    const isLarge = useMediaQuery(theme.breakpoints.up('lg'));
+    const isMedium = useMediaQuery(theme.breakpoints.up('md'));
+
+    const [eastAfricaList, setEastAfricalList] = React.useState<Category[]>([]);
+    const [climbingList, setClimbingList] = React.useState<Category[]>([]);
+
+    const getVisibleLinksCount = () => {
+        if (isXLarge) return NavLinks.length;
+        if (isLarge) return 6;
+        if (isMedium) return 4;
+        return 0;
+    };
+
+    const visibleLinks = NavLinks.slice(0, getVisibleLinksCount());
 
     React.useEffect(() => {
         getCategoryList("eastAfricaAreaList")
@@ -69,7 +143,6 @@ const TopNavBar: React.FC = () => {
 
     React.useEffect(() => {
         setIsSidebarOpen(false);
-
     }, [location]);
 
     const getCategoryList = async (category: string) => {
@@ -95,6 +168,10 @@ const TopNavBar: React.FC = () => {
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     }
+    const hasHiddenLinks = () => {
+        const visibleCount = getVisibleLinksCount();
+        return visibleCount < NavLinks.length;
+    };
 
     const handleDropdownOpen = (dropdownName: string) => {
         if (closeTimeoutRef.current) {
@@ -112,7 +189,7 @@ const TopNavBar: React.FC = () => {
         } else {
             closeTimeoutRef.current = setTimeout(() => {
                 setOpenDropdown(null);
-            }, 400); // 300ms delay, adjust as needed
+            }, 300);
         }
     };
 
@@ -156,7 +233,7 @@ const TopNavBar: React.FC = () => {
                         <Typography variant="subtitle1"
                                     sx={{
                                         fontWeight: "bold",
-                                        fontSize: "1.5rem",
+                                        fontSize: "1.2rem",
                                     }}>
                             {category.name}
                         </Typography>
@@ -172,118 +249,126 @@ const TopNavBar: React.FC = () => {
             <AppBar position="fixed" sx={(theme: Theme) => ({
                 backgroundColor: theme.palette.customBackgroundColor.main,
                 boxShadow: 'none',
-                height: '9vh',
-                minHeight:'3.5rem'
+                height: '4rem',
+                // minHeight: '3.5rem'
             })}>
                 <Toolbar sx={{ height: '100%', padding: 0 }}>
                     <Grid container alignItems="center" sx={{ height: '100%' }}>
-                        <Grid item xs={3} md={1} sx={{ display: 'flex', justifyContent: 'flex-start', paddingLeft: 1 }}>
+                        {/* Logo */}
+                        <Grid item xs={3} md={2} lg={1} sx={{ display: 'flex', justifyContent: 'flex-start', paddingLeft: 1 }}>
                             <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
                                 <Logo src={logoImage} alt="Logo" />
                             </Link>
                         </Grid>
 
-                        <Grid item xs={6} md={10} sx={{ display: { xs: 'none', sm: 'none', md: 'flex' }, justifyContent: 'center' }}>
-                            <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
-                                <ClickAwayListener onClickAway={() => handleDropdownClose(true)}>
+                        {/* Navigation Links */}
+                        <Grid item xs={6} md={8} lg={9} sx={{
+                            display: { xs: 'none', md: 'flex' },
+                            justifyContent: 'center',
+                            overflow: 'hidden'
+                        }}>
+                            <Box sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                gap: { md: 1, lg: 2 },
+                                flexWrap: 'nowrap'
+                            }}>
+                                {visibleLinks.map((link, index) => (
                                     <Box
-                                        onMouseEnter={() => handleNavLinkHover('eastAfrica')}
-                                        onMouseLeave={() => handleDropdownClose()}
+                                        key={index}
+                                        onMouseEnter={() =>
+                                            link.hasDropdown
+                                                ? handleNavLinkHover(link.dropdownKey)
+                                                : handleNavLinkHover(null)
+                                        }
+                                        onMouseLeave={() =>
+                                            link.hasDropdown
+                                                ? handleDropdownClose()
+                                                : null
+                                        }
+                                        sx={{ whiteSpace: 'nowrap' }}
                                     >
-                                        <NavBarLink to="#" text="East Africa▾" />
-                                        <Popper
-                                            open={openDropdown === 'eastAfrica'}
-                                            placement="bottom-start"
-                                            transition
-                                            sx={{mt:'9vh'}}
-                                        >
-                                            {({ TransitionProps }) => (
-                                                <Box
-                                                    {...TransitionProps}
-                                                    onMouseEnter={() => handleDropdownOpen('eastAfrica')}
-                                                    onMouseLeave={() => handleDropdownClose()}
-                                                >
-                                                    {renderDropdownContent("eastAfrica", eastAfricaList)}
-                                                </Box>
-                                            )}
-                                        </Popper>
+                                        <NavBarLink to={link.path} text={link.text} />
+                                        {link.hasDropdown && link.dropdownKey === 'eastAfrica' && (
+                                            <Popper
+                                                open={openDropdown === 'eastAfrica'}
+                                                placement="bottom-start"
+                                                transition
+                                                sx={{mt:'9vh'}}
+                                            >
+                                                {({ TransitionProps }) => (
+                                                    <Box
+                                                        {...TransitionProps}
+                                                        onMouseEnter={() => handleDropdownOpen('eastAfrica')}
+                                                        onMouseLeave={() => handleDropdownClose()}
+                                                    >
+                                                        {renderDropdownContent("eastAfrica", eastAfricaList)}
+                                                    </Box>
+                                                )}
+                                            </Popper>
+                                        )}
+                                        {link.hasDropdown && link.dropdownKey === 'climbing' && (
+                                            <Popper
+                                                open={openDropdown === 'climbing'}
+                                                placement="bottom-start"
+                                                transition
+                                                sx={{mt:'9vh'}}
+                                            >
+                                                {({ TransitionProps }) => (
+                                                    <Box
+                                                        {...TransitionProps}
+                                                        onMouseEnter={() => handleDropdownOpen('climbing')}
+                                                        onMouseLeave={() => handleDropdownClose()}
+                                                    >
+                                                        {renderDropdownContent("climbing", climbingList)}
+                                                    </Box>
+                                                )}
+                                            </Popper>
+                                        )}
                                     </Box>
-                                </ClickAwayListener>
-                                <Box onMouseEnter={() => handleNavLinkHover(null)}>
-                                    <NavBarLink to="/trips" text="Safari" />
-                                </Box>
-                                <Box onMouseEnter={() => handleNavLinkHover(null)}>
-                                    <NavBarLink to="/trips" text="Kilimanjaro" />
-                                </Box>
-                                <ClickAwayListener onClickAway={() => handleDropdownClose(true)}>
-                                    <Box
-                                        onMouseEnter={() => handleNavLinkHover('climbing')}
-                                        onMouseLeave={() => handleDropdownClose()}
-                                    >
-                                        <NavBarLink to="#" text="Climbing▾" />
-                                        <Popper
-                                            open={openDropdown === 'climbing'}
-                                            placement="bottom"
-                                            transition
-                                            sx={{mt:'9vh'}}
-                                        >
-                                            {({ TransitionProps }) => (
-                                                <Box
-                                                    {...TransitionProps}
-                                                    onMouseEnter={() => handleDropdownOpen('climbing')}
-                                                    onMouseLeave={() => handleDropdownClose()}
-                                                >
-                                                    {renderDropdownContent("climbing", climbingList)}
-                                                </Box>
-                                            )}
-                                        </Popper>
-                                    </Box>
-                                </ClickAwayListener>
-                                <Box onMouseEnter={() => handleNavLinkHover(null)}>
-                                    <NavBarLink to="/trips" text="Zanzibar" />
-                                </Box>
-                                <Box onMouseEnter={() => handleNavLinkHover(null)}>
-                                    <NavBarLink to="/trips" text="Day Trips" />
-                                </Box>
-                                <Box onMouseEnter={() => handleNavLinkHover(null)}>
-                                    <NavBarLink to="/trips" text="Photographic Safari" />
-                                </Box>
-                                {/*<Box onMouseEnter={() => handleNavLinkHover(null)}>*/}
-                                {/*    <NavBarLink to="/contact" text="Contact" />*/}
-                                {/*</Box>*/}
+                                ))}
                             </Box>
                         </Grid>
 
 
-                        <Grid item xs={9} md={1} sx={{ display: 'flex', justifyContent: 'flex-end', paddingRight: 2 }}>
-                            <Box sx={{ backgroundColor:"ffd700"}}>
-                                <Button
-                                    color="warning"
-                                    onClick={()=> navigate('/request')}
-                                    style={{
-                                        backgroundColor: theme.palette.customButtonColor.main,
-                                        color: theme.palette.customButtonFontColor.main,
-                                        border: 'none',
-                                        padding: '10px 30px',
-                                        fontSize: '1.1rem',
-                                        fontWeight: 'bold',
-                                        textTransform: 'uppercase',
-                                        cursor: 'pointer',
-                                        transition: 'background-color 0.3s ease',
-                                        borderRadius:"15px"
-                                    }}
-                                    className="custom-button"
-                                >
-                                    Request
-                                </Button>
+                        <Grid item xs={9} md={2} sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            paddingRight: 2,
+                            gap: 1
+                        }}>
+                            <Button
+                                color="warning"
+                                onClick={() => navigate('/request')}
+                                style={{
+                                    backgroundColor: theme.palette.customButtonColor.main,
+                                    color: theme.palette.customButtonFontColor.main,
+                                    border: 'none',
+                                    padding: '10px 20px',
+                                    fontSize: '1rem',
+                                    fontWeight: 'bold',
+                                    textTransform: 'uppercase',
+                                    cursor: 'pointer',
+                                    transition: 'background-color 0.3s ease',
+                                    borderRadius: "15px",
+                                    whiteSpace: 'nowrap'
+                                }}
+                                className="custom-button"
+                            >
+                                Request
+                            </Button>
 
-                            </Box>
                             <IconButton
                                 size="large"
                                 edge="end"
                                 color="inherit"
                                 aria-label="open drawer"
-                                sx={{ display: { xs: 'flex', md: 'none' } }}
+                                sx={{
+                                    display: {
+                                        xs: 'flex',
+                                        md: hasHiddenLinks() ? 'flex' : 'none',
+                                    }
+                                }}
                                 onClick={toggleSidebar}
                             >
                                 <MenuIcon />
@@ -295,6 +380,6 @@ const TopNavBar: React.FC = () => {
             <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
         </Box>
     );
-}
+};
 
 export default TopNavBar;
