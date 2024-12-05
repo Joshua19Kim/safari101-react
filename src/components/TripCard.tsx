@@ -235,7 +235,7 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
                      alignSelf: 'center',
                      alignContent: 'center',
                      height: 'auto',
-                     maxHeight: isMobile ? 'auto' : '14rem',
+                     maxHeight: isMobile ? 'auto' : '16rem',
                      width: '95%',
                      maxWidth: '55rem',
                      backgroundColor: 'white',
@@ -306,7 +306,8 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
                                         justifyContent: 'center',
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        padding: '15px 30px',
+                                        paddingTop: '5px',
+                                        paddingBottom: '5px'
                                     }}>
                                         <Typography variant="h6" component="div" sx={{
                                             color:theme.palette.priceColor.main,
