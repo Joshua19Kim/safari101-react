@@ -17,28 +17,11 @@ export function getImage(source) {
     return imageBuilder.image(source);
 }
 
-
-export async function getAllTrips() {
-    return await client.fetch('*[_type == "trip"]')
-}
-
 export async function getDocumentsByCategory(docType, category) {
-    // First, let's check all documents of this type to see what we have
-    console.log('Checking query parameters:', { docType, category });
-
-    // First query to see all documents and their tripCategories
-    const allDocs = await client.fetch(`
-        *[_type == $docType] {
-            _id,
-            name,
-            tripCategory
-        }
-    `, { docType });
-    console.log('All documents:', allDocs);
-
-    // Then try the filtered query
     const result = await client.fetch(`
-        *[_type == $docType && tripCategory == $category] {
+        *[
+          (_type == $docType && tripCategory == $category) || $category in tripType
+        ] {
             _id,
             name,
             cost,

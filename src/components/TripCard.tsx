@@ -637,15 +637,11 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
                             </Box>
                         )}
 
-
-
-
-
                     </Box>
 
                     {/* Modal Footer */}
                     <Box sx={{
-                        p: 2,
+                        p: '4px 30px 5px 10px',
                         borderTop: 1,
                         borderColor: 'grey.200',
                         display: 'flex',

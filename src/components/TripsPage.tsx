@@ -14,7 +14,6 @@ import FilterSection from "./sections/FilterSection";
 const TripsPage = () => {
     const {category } = useParams<{ category: string }>();
     const {activity } = useParams<{ activity: string }>();
-    const [currentCategory, setCurrentCategory] = useState("trip")
     const [currentTopic, setCurrentTopic] = useState<ActivityTopic | undefined>();
     const [tripsList, setTripsList] = useState<Trip[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -27,7 +26,7 @@ const TripsPage = () => {
         const decodedCategory = decodeURIComponent(category || '');
         const decodedActivity = decodeURIComponent(activity || '');
         let foundActivity;
-        let newCategory = "trip";  // Define category here instead of using state
+        let newCategory = "trip";
 
         if (decodedCategory === "eastAfrica") {
             newCategory = "eastAfrica";
@@ -38,8 +37,6 @@ const TripsPage = () => {
         } else {
             foundActivity = generalActivities.find(activity => activity.id === decodedActivity);
         }
-
-        setCurrentCategory(newCategory);
         setCurrentTopic(foundActivity);
 
         if (foundActivity) {
@@ -88,10 +85,10 @@ const TripsPage = () => {
         setFilteredTrips(filtered);
     };
 
-    const fetchTrips = async (category: string, activity: string) => {
+    const fetchTrips = async (categoryNameForDocType: string, activity: string) => {
         setIsLoading(true);
         try {
-            const response = await getDocumentsByCategory(category, activity);
+            const response = await getDocumentsByCategory(categoryNameForDocType, activity);
             setTripsList(response);
         } catch (error) {
             console.error('Error fetching trips', error);
