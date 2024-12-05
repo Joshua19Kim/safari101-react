@@ -54,4 +54,8 @@ type RequestInputInteraction = {
 
 type NavLink = DropdownNavLink | SimpleNavLink;
 
-
+type SortOption = {
+    label: string;
+    field: 'duration' | 'cost';
+    order: 'asc' | 'desc';
+};
