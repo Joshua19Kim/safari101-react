@@ -5,16 +5,16 @@ import {
     ListItem,
     ListItemText,
     Collapse,
-    Box,
     styled, ListItemIcon,
 } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import {Link, useNavigate} from 'react-router-dom';
-import { getCategories } from '../api/sanityApi';
 import HomeIcon from "@mui/icons-material/Home";
-import SendIcon from "@mui/icons-material/Send";
 import GradingIcon from "@mui/icons-material/Grading";
 import InfoIcon from "@mui/icons-material/Info";
+import Box from "@mui/material/Box";
+import { eastAfricaCategories, climbingCategories } from './constants/constants';
+
 
 interface SidebarProps {
     isOpen: boolean;
@@ -29,44 +29,9 @@ const SidebarDrawer = styled(Drawer)(({ theme }) => ({
     },
 }));
 
-const SidebarListItem = styled(ListItem)(({ theme }) => ({
-    padding: '12px 16px',
-    '&:hover': {
-        backgroundColor: theme.palette.action.hover,
-    },
-    cursor: 'pointer',
-}));
-
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const navigate = useNavigate();
     const [openDropdown, setOpenDropdown] = React.useState<string | null>(null);
-    const [eastAfricaList, setEastAfricaList] = React.useState<Category[]>([]);
-    const [climbingList, setClimbingList] = React.useState<Category[]>([]);
-
-    React.useEffect(() => {
-        if (isOpen) {
-            getCategoryList("eastAfricaAreaList");
-            getCategoryList("climbingAreaList");
-        }
-    }, [isOpen]);
-
-    const getCategoryList = async (category: string) => {
-        try {
-            const response = await getCategories(category);
-            if (category === "eastAfricaAreaList") {
-                setEastAfricaList(response);
-            } else if (category === "climbingAreaList") {
-                setClimbingList(response);
-            }
-        } catch (error) {
-            console.error('Error fetching items', error);
-            if (category === "eastAfricaAreaList") {
-                setEastAfricaList([]);
-            } else if (category === "climbingAreaList") {
-                setClimbingList([]);
-            }
-        }
-    };
 
     const handleNavigation = (path: string) => {
         navigate(path);
@@ -77,8 +42,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         setOpenDropdown(openDropdown === key ? null : key);
     };
 
-    const handleCategoryClick = (categorySlug: string) => {
-        navigate(`/category/${categorySlug}`);
+    const handleCategoryClick = (category: string, categoryName: string) => {
+        navigate(`/trips/${categoryName}/${category}`);
         onClose();
     };
 
@@ -87,90 +52,192 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             anchor="right"
             open={isOpen}
             onClose={onClose}
+            sx={{
+                '& .MuiDrawer-paper': {
+                    width: '80%',
+                    maxWidth: '300px',
+                    backgroundColor: theme => theme.palette.customBackgroundColor.main,
+                }
+            }}
         >
             <List component="nav">
-                <List>
-                    <ListItem button component={Link} to="/">
-                        <ListItemIcon>
-                            <HomeIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Home" primaryTypographyProps={{ fontFamily: 'roboto' }} />
-                    </ListItem>
-                    <ListItem button component={Link} to="/request">
-                        <ListItemIcon>
-                            <GradingIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Make A Request" primaryTypographyProps={{ fontFamily: 'roboto' }} />
-                    </ListItem>
-                </List>
+                <ListItem button
+                          onClick={() => handleNavigation('/')}
+                >
+                    <ListItemIcon>
+                        <HomeIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Home" primaryTypographyProps={{ fontFamily: 'roboto' }} />
+                </ListItem>
+                <ListItem button
+                          onClick={() => handleNavigation('/request')}
+                >
+                    <ListItemIcon>
+                        <GradingIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Make A Request" primaryTypographyProps={{ fontFamily: 'roboto' }} />
+                </ListItem>
                 {/* East Africa Dropdown */}
-                <SidebarListItem onClick={() => handleDropdownToggle('eastAfrica')}>
+                <ListItem
+                    button
+                    onClick={() => handleDropdownToggle('eastAfrica')}
+                    sx={{
+                        padding: '12px 16px',
+                        '&:hover': {
+                            backgroundColor: theme => theme.palette.action.hover,
+                        }
+                    }}
+                >
+                    <ListItemIcon>
+                        <Box sx={{ width: 24 }} />
+                    </ListItemIcon>
                     <ListItemText primary="East Africa" />
                     {openDropdown === 'eastAfrica' ? <ExpandLess /> : <ExpandMore />}
-                </SidebarListItem>
+                </ListItem>
                 <Collapse in={openDropdown === 'eastAfrica'} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                        {eastAfricaList.map((category) => (
-                            <SidebarListItem
-                                key={category._id}
-                                onClick={() => handleCategoryClick(category.slug.current)}
+                        {eastAfricaCategories.map((category) => (
+                            <ListItem
+                                button
+                                key={category.id}
+                                onClick={() => handleCategoryClick('eastAfrica', category.id)}
                                 sx={{ pl: 4 }}
                             >
-                                <ListItemText primary={category.name} />
-                            </SidebarListItem>
+                                <ListItemIcon>
+                                    <Box sx={{ width: 50 }} />
+                                </ListItemIcon>
+                                <ListItemText primary={category.id} />
+                            </ListItem>
                         ))}
                     </List>
                 </Collapse>
 
                 {/* Safari */}
-                <SidebarListItem onClick={() => handleNavigation('/trips/Safari')}>
+                <ListItem
+                    button
+                    onClick={() => handleNavigation('/trips/Safari')}
+                    sx={{
+                        padding: '12px 16px',
+                        '&:hover': {
+                            backgroundColor: theme => theme.palette.action.hover,
+                        }
+                    }}
+                >
+                    <ListItemIcon>
+                        <Box sx={{ width: 24 }} />
+                    </ListItemIcon>
                     <ListItemText primary="Safari" />
-                </SidebarListItem>
+                </ListItem>
 
                 {/* Kilimanjaro */}
-                <SidebarListItem onClick={() => handleNavigation('/trips/Kilimanjaro')}>
+                <ListItem
+                    button
+                    onClick={() => handleNavigation('/trips/Kilimanjaro')}
+                    sx={{
+                        padding: '12px 16px',
+                        '&:hover': {
+                            backgroundColor: theme => theme.palette.action.hover,
+                        }
+                    }}
+                >
+                    <ListItemIcon>
+                        <Box sx={{ width: 24 }} />
+                    </ListItemIcon>
                     <ListItemText primary="Kilimanjaro" />
-                </SidebarListItem>
+                </ListItem>
 
                 {/* Climbing Dropdown */}
-                <SidebarListItem onClick={() => handleDropdownToggle('climbing')}>
+                <ListItem
+                    button
+                    onClick={() => handleDropdownToggle('climbing')}
+                    sx={{
+                        padding: '12px 16px',
+                        '&:hover': {
+                            backgroundColor: theme => theme.palette.action.hover,
+                        }
+                    }}
+                >
+                    <ListItemIcon>
+                        <Box sx={{ width: 24 }} />
+                    </ListItemIcon>
                     <ListItemText primary="Climbing" />
                     {openDropdown === 'climbing' ? <ExpandLess /> : <ExpandMore />}
-                </SidebarListItem>
+                </ListItem>
                 <Collapse in={openDropdown === 'climbing'} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                        {climbingList.map((category) => (
-                            <SidebarListItem
-                                key={category._id}
-                                onClick={() => handleCategoryClick(category.slug.current)}
+                        {climbingCategories.map((category) => (
+                            <ListItem
+                                button
+                                key={category.id}
+                                onClick={() => handleCategoryClick('climbing', category.id)}
                                 sx={{ pl: 4 }}
                             >
-                                <ListItemText primary={category.name} />
-                            </SidebarListItem>
+                                <ListItemIcon>
+                                    <Box sx={{ width: 50 }} />
+                                </ListItemIcon>
+                                <ListItemText primary={category.id} />
+                            </ListItem>
                         ))}
                     </List>
                 </Collapse>
 
                 {/* Zanzibar */}
-                <SidebarListItem onClick={() => handleNavigation('/trips/Zanzibar')}>
+                <ListItem
+                    button
+                    onClick={() => handleNavigation('/trips/Zanzibar')}
+                    sx={{
+                        padding: '12px 16px',
+                        '&:hover': {
+                            backgroundColor: theme => theme.palette.action.hover,
+                        }
+                    }}
+                >
+                    <ListItemIcon>
+                        <Box sx={{ width: 24 }} />
+                    </ListItemIcon>
                     <ListItemText primary="Zanzibar" />
-                </SidebarListItem>
+                </ListItem>
 
                 {/* Day Trips */}
-                <SidebarListItem onClick={() => handleNavigation('/trips/Day Trips')}>
+                <ListItem
+                    button
+                    onClick={() => handleNavigation('/trips/Day Trips')}
+                    sx={{
+                        padding: '12px 16px',
+                        '&:hover': {
+                            backgroundColor: theme => theme.palette.action.hover,
+                        }
+                    }}
+                >
+                    <ListItemIcon>
+                        <Box sx={{ width: 24 }} />
+                    </ListItemIcon>
                     <ListItemText primary="Day Trips" />
-                </SidebarListItem>
+                </ListItem>
 
                 {/* Photographic Safari */}
-                <SidebarListItem onClick={() => handleNavigation('/trips/Photographic Safari')}>
+                <ListItem
+                    button
+                    onClick={() => handleNavigation('/trips/Photographic Safari')}
+                    sx={{
+                        padding: '12px 16px',
+                        '&:hover': {
+                            backgroundColor: theme => theme.palette.action.hover,
+                        }
+                    }}
+                >
+                    <ListItemIcon>
+                        <Box sx={{ width: 24 }} />
+                    </ListItemIcon>
                     <ListItemText primary="Photographic Safari" />
-                </SidebarListItem>
-                {/*<ListItem button component={Link} to="/aboutus">*/}
-                {/*    <ListItemIcon>*/}
-                {/*        <InfoIcon />*/}
-                {/*    </ListItemIcon>*/}
-                {/*    <ListItemText primary="About Us" primaryTypographyProps={{ fontFamily: 'roboto' }} />*/}
-                {/*</ListItem>*/}
+                </ListItem>
+
+                <ListItem button component={Link} to="/aboutus">
+                    <ListItemIcon>
+                        <InfoIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="About Us" primaryTypographyProps={{ fontFamily: 'roboto' }} />
+                </ListItem>
             </List>
         </SidebarDrawer>
     );

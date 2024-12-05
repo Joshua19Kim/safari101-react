@@ -7,7 +7,7 @@ export const client = createClient({
     projectId: process.env.REACT_APP_SANITY_PROJECT_ID,
     dataset: process.env.REACT_APP_SANITY_DATASET,
     useCdn: true, // set to `false` to bypass the edge cache
-    apiVersion: process.env.REACT_APP_SANITY_API_VERSION, // use current date (YYYY-MM-DD) to target the latest API version
+    apiVersion: process.env.REACT_APP_SANITY_API_VERSION,
     token: process.env.REACT_APP_SANITY_TOKEN
 });
 
@@ -21,64 +21,39 @@ export function getImage(source) {
 export async function getAllTrips() {
     return await client.fetch('*[_type == "trip"]')
 }
-export async function getCategories(category){
-    return await client.fetch(`*[_type == $category]`, { category });
+
+export async function getDocumentsByCategory(docType, category) {
+    // First, let's check all documents of this type to see what we have
+    console.log('Checking query parameters:', { docType, category });
+
+    // First query to see all documents and their tripCategories
+    const allDocs = await client.fetch(`
+        *[_type == $docType] {
+            _id,
+            name,
+            tripCategory
+        }
+    `, { docType });
+    console.log('All documents:', allDocs);
+
+    // Then try the filtered query
+    const result = await client.fetch(`
+        *[_type == $docType && tripCategory == $category] {
+            _id,
+            name,
+            cost,
+            tripCategory,
+            duration,
+            tripType,
+            shortDescription,
+            longDescription,
+            mainImage
+        }
+    `, { docType, category });
+
+    console.log('Filtered results:', result);
+    return result;
 }
-
-export async function getTripWithActivity(activity) {
-    return client.fetch(`
-    *[_type == "trip" && references(*[_type == "activityList" && name == $activity]._id)]{
-      _id,
-      name,
-      cost,
-      shortDescription,
-      longDescription,
-      mainImage,
-      slug,
-      areaReference->,
-      activityReference->,
-      climbingAreaReference->
-    }
-  `, { activity });
-}
-
-export async function getTripWithEastAfricaArea(eastAfricaArea) {
-    return client.fetch(`
-    *[_type == "trip" && references(*[_type == "eastAfricaAreaList" && name == $eastAfricaArea]._id)]{
-      _id,
-      name,
-      cost,
-      shortDescription,
-      longDescription,
-      mainImage,
-      slug,
-      areaReference->,
-      activityReference->,
-      climbingAreaReference->
-    }
-  `, { eastAfricaArea });
-}
-
-
-export async function getTripWithClimbingArea(climbingArea) {
-    return client.fetch(`
-    *[_type == "trip" && references(*[_type == "climbingAreaList" && name == $climbingArea]._id)]{
-      _id,
-      name,
-      cost,
-      shortDescription,
-      longDescription,
-      mainImage,
-      slug,
-      areaReference->,
-      activityReference->,
-      climbingAreaReference->
-    }
-  `, { climbingArea });
-}
-
-
-
 
 export const sendEmail = async (tripInfo) => {
     try {

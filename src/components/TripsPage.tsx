@@ -3,47 +3,48 @@ import Box from "@mui/material/Box";
 import RequestBox from "./RequestBox";
 import { Container } from "reactstrap";
 import { useParams } from "react-router-dom";
-import { getTripWithActivity } from "../api/sanityApi";
+import {getDocumentsByCategory} from "../api/sanityApi";
 import CircularProgress from '@mui/material/CircularProgress';
 import { Typography } from "@mui/material";
 import TripCard from "./TripCard";
 import theme from "../assets/style/theme";
-
-const contentsBackgroundImage = "brightBackground.jpg";
-
-const activityTopics: ActivityTopic[] = [
-    { id: 'Safari', image: 'safariLion.jpg' },
-    { id: 'Kilimanjaro',  image: 'elephant.jpg' },
-    { id: 'Zanzibar', image: 'cryingLion.jpg' },
-    { id: 'Climbing', image: 'griff.jpg' },
-    { id: 'Photographic Safari', image: 'photoSafari.jpg' },
-    { id: 'Day Trips', image: 'trip.jpg' },
-
-
-
-];
+import { generalActivities, eastAfricaCategories, climbingCategories } from './constants/constants';
 
 const TripsPage = () => {
+    const {category } = useParams<{ category: string }>();
     const {activity } = useParams<{ activity: string }>();
+    const [currentCategory, setCurrentCategory] = useState("trip")
     const [currentTopic, setCurrentTopic] = useState<ActivityTopic | undefined>();
     const [tripsList, setTripsList] = useState<Trip[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        const decodedCategory = decodeURIComponent(category || '');
         const decodedActivity = decodeURIComponent(activity || '');
-        const foundActivity = activityTopics.find(activity => activity.id === decodedActivity);
+        let foundActivity;
+
+        if (decodedCategory === "eastAfrica") {
+            setCurrentCategory("eastAfrica");
+            foundActivity = eastAfricaCategories.find(activity => activity.id === decodedActivity);
+        } else if (decodedCategory === "climbing") {
+            setCurrentCategory("climbing");
+            foundActivity = climbingCategories.find(activity => activity.id === decodedActivity);
+        } else {
+            setCurrentCategory("trip");
+            foundActivity = generalActivities.find(activity => activity.id === decodedActivity);
+        }
         setCurrentTopic(foundActivity);
         if (foundActivity) {
-            fetchTrips(foundActivity.id);
+            fetchTrips(currentCategory, foundActivity.value);
         } else {
             setIsLoading(false);
         }
     }, [activity]);
 
-    const fetchTrips = async (activity: string) => {
+    const fetchTrips = async (category: string, activity: string) => {
         setIsLoading(true);
         try {
-            const response = await getTripWithActivity(activity);
+            const response = await getDocumentsByCategory(category, activity);
             setTripsList(response);
         } catch (error) {
             console.error('Error fetching trips', error);

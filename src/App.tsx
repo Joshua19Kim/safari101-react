@@ -10,8 +10,8 @@ import Contact from "./components/Contact";
 import AboutUs from "./components/AboutUs";
 import Request from "./components/Request";
 import TripsPage from "./components/TripsPage";
-import CategoryPage from "./components/CategoryPage";
 import TopNavBar from "./components/TopNavBar";
+import Layout from './components/Layout';
 
 
 
@@ -20,20 +20,22 @@ function App() {
       <ThemeProvider theme={theme}>
           <CssBaseline />
               <div className="App">
-                <Router>
-                    <TopNavBar />
-                  <div>
-                    <Routes>
-                      <Route path="/" element={<LandingPage/>}/>
-                        <Route path="/category/:categoryName" element={<CategoryPage/>}/>
-                        <Route path="/trips/:activity" element={<TripsPage/>}/>
-                        <Route path="/contact" element={<Contact/>}/>
-                        <Route path="/aboutus" element={<AboutUs/>}/>
-                        <Route path="/request" element={<Request/>}/>
-                        <Route path="/*" element={<NotFound/>}/>
-                    </Routes>
-                  </div>
-                </Router>
+                  <Layout>
+                      <Router>
+                          <TopNavBar />
+                          <div>
+                              <Routes>
+                                  <Route path="/" element={<LandingPage/>}/>
+                                  <Route path="/trips/:activity/:category?" element={<TripsPage/>}/>
+                                  <Route path="/contact" element={<Contact/>}/>
+                                  <Route path="/aboutus" element={<AboutUs/>}/>
+                                  <Route path="/request" element={<Request/>}/>
+                                  <Route path="/*" element={<NotFound/>}/>
+                              </Routes>
+                          </div>
+                      </Router>
+                  </Layout>
+
               </div>
       </ThemeProvider>
   );

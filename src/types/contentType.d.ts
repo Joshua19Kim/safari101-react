@@ -1,6 +1,7 @@
 
 type ActivityTopic = {
     id: string,
+    value: string,
     image: string,
 }
 
@@ -14,27 +15,12 @@ type Trip = {
     _id: string;
     name: string;
     cost: number;
+    tripCategory: string;
+    duration: number;
+    tripType: string[];
     shortDescription: any[];
     longDescription: any[];
     mainImage: any;
-    slug: {
-        current: string;
-    };
-    AreaReference: any;
-    ActivityReference: any;
-    ClimbingAreaReference: any;
-}
-
-type Category = {
-    _id: number;
-    name: string;
-    shortDescription: any[];
-    mainImage: any;
-    slug: {
-        current: string;
-    };
-    link: string;
-
 }
 
 
@@ -66,5 +52,6 @@ type RequestInputInteraction = {
     selectedTripDescription: boolean;
 }
 
+type NavLink = DropdownNavLink | SimpleNavLink;
 
 

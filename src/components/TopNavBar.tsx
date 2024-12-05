@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Theme, styled } from '@mui/material/styles';
+import { Theme } from '@mui/material/styles';
 import {
     AppBar,
     Box,
@@ -7,125 +7,30 @@ import {
     IconButton,
     Typography,
     Grid,
-    Paper,
     Popper,
-    ClickAwayListener,
     useMediaQuery, useTheme
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import {Link, useLocation, useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import NavBarLink from "../assets/style/NavBarTextWithLink";
 import logoImage from '../assets/img/logo/LOGO-Main.png';
 import Sidebar from './Sidebar';
-import CircularProgress from "@mui/material/CircularProgress";
-import {getCategories, getImage} from "../api/sanityApi";
 import {Button} from "reactstrap";
-
-interface BaseNavLink {
-    text: string;
-    path: string;
-    hasDropdown: boolean;
-}
-
-interface DropdownNavLink extends BaseNavLink {
-    hasDropdown: true;
-    dropdownKey: 'eastAfrica' | 'climbing';
-}
-
-interface SimpleNavLink extends BaseNavLink {
-    hasDropdown: false;
-    dropdownKey?: never;
-}
-
-interface SidebarProps {
-    isOpen: boolean;
-    onClose: () => void;
-}
-
-type NavLink = DropdownNavLink | SimpleNavLink;
-
-const Logo = styled('img')({
-    height: '3rem',
-    width: '8rem',
-})
-const DropdownContent = styled(Paper)<{category: string}>(({ theme, category }) => ({
-    padding: theme.spacing(1),
-    backgroundColor: theme.palette.customBackgroundColor.main,
-    width: "auto",
-    marginLeft: category ==="eastAfrica" ? "5rem" : category === "climbing" ? "20vw" : "auto",
-    display: 'flex',
-    flexDirection: 'row',
-
-}));
-
-const CategoryCard = styled(Box)(({ theme }) => ({
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'column',
-    padding: theme.spacing(1),
-    '&:hover': {
-        backgroundColor: theme.palette.action.hover,
-    },
-
-}));
-
-const NavLinks: NavLink[] = [
-    {
-        text: "East Africa▾",
-        path: "#",
-        hasDropdown: true,
-        dropdownKey: 'eastAfrica'
-    },
-    {
-        text: "Safari",
-        path: "/trips",
-        hasDropdown: false
-    },
-    {
-        text: "Kilimanjaro",
-        path: "/trips",
-        hasDropdown: false
-    },
-    {
-        text: "Climbing▾",
-        path: "#",
-        hasDropdown: true,
-        dropdownKey: 'climbing'
-    },
-    {
-        text: "Zanzibar",
-        path: "/trips",
-        hasDropdown: false
-    },
-    {
-        text: "Day Trips",
-        path: "/trips",
-        hasDropdown: false
-    },
-    {
-        text: "Photographic Safari",
-        path: "/trips",
-        hasDropdown: false
-    }
-];
+import { eastAfricaCategories, climbingCategories, Logo, NavLinks } from './constants/constants';
+import {CategoryCard, DropdownContent} from "../assets/style/styledComponents";
 
 
 const TopNavBar: React.FC = () => {
     const navigate = useNavigate();
-    const location = useLocation();
     const theme = useTheme();
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
     const [openDropdown, setOpenDropdown] = React.useState<string | null>(null);
     const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-    const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
     // Create breakpoints for different screen sizes
     const isXLarge = useMediaQuery(theme.breakpoints.up('xl'));
     const isLarge = useMediaQuery(theme.breakpoints.up('lg'));
     const isMedium = useMediaQuery(theme.breakpoints.up('md'));
-
-    const [eastAfricaList, setEastAfricalList] = React.useState<Category[]>([]);
-    const [climbingList, setClimbingList] = React.useState<Category[]>([]);
 
     const getVisibleLinksCount = () => {
         if (isXLarge) return NavLinks.length;
@@ -136,35 +41,6 @@ const TopNavBar: React.FC = () => {
 
     const visibleLinks = NavLinks.slice(0, getVisibleLinksCount());
 
-    React.useEffect(() => {
-        getCategoryList("eastAfricaAreaList")
-        getCategoryList("climbingAreaList")
-    },[])
-
-    React.useEffect(() => {
-        setIsSidebarOpen(false);
-    }, [location]);
-
-    const getCategoryList = async (category: string) => {
-        setIsLoading(true);
-        try {
-            const response = await getCategories(category);
-            if(category === "eastAfricaAreaList"){
-                setEastAfricalList(response)
-            } else if( category === "climbingAreaList") {
-                setClimbingList(response)
-            }
-        } catch (error) {
-            console.error('Error fetching items', error);
-            if(category === "eastAfricaAreaList"){
-                setEastAfricalList([])
-            } else if( category === "climbingAreaList") {
-                setClimbingList([])
-            }
-        } finally {
-            setIsLoading(false);
-        }
-    };
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     }
@@ -201,46 +77,33 @@ const TopNavBar: React.FC = () => {
         }
     };
 
-
-    const handleCategoryClick = (categoryName: string) => {
-        navigate(`/category/${categoryName}`);
+    const handleCategoryClick = (category: string, categoryName: string) => {
+        navigate(`/trips/${categoryName}/${category}`);
         handleDropdownClose();
     };
 
-
-    const renderDropdownContent = (category: string, categories: Category[]) => (
-        isLoading ? (
-            <DropdownContent category={category}>
-                <CircularProgress size={24} />
-                <Typography variant="body2" sx={{ ml: 1 }}>Data is loading...</Typography>
-            </DropdownContent>
-        ) : categories.length === 0 ? (
-            <DropdownContent category={category}>
-                <Typography variant="body2">No categories available</Typography>
-            </DropdownContent>
-        ) : (
-            <DropdownContent category={category}>
-                {categories.map((category) => (
-                    <CategoryCard
-                        key={category._id}
-                        onClick={() => handleCategoryClick(category.name)}
-                    >
-                        <img
-                            src={getImage(category.mainImage).width(400).url()}
-                            alt={category.name}
-                            style={{ width: "15vw", height: "15vh", objectFit: 'cover', marginRight: 8 }}
-                        />
-                        <Typography variant="subtitle1"
-                                    sx={{
-                                        fontWeight: "bold",
-                                        fontSize: "1.2rem",
-                                    }}>
-                            {category.name}
-                        </Typography>
-                    </CategoryCard>
-                ))}
-            </DropdownContent>
-        )
+    const renderDropdownContent = (categoryTitle: string, categories: CategoryTopic[]) => (
+        <DropdownContent category={categoryTitle}>
+            {categories.map((category) => (
+                <CategoryCard
+                    key={category.id}
+                    onClick={() => handleCategoryClick(categoryTitle, category.id)}
+                >
+                    <img
+                        src={require(`../assets/img/${category.image}`)}
+                        alt={category.id}
+                        style={{ width: "15vw", height: "15vh", objectFit: 'cover', marginRight: 8 }}
+                    />
+                    <Typography variant="subtitle1"
+                                sx={{
+                                    fontWeight: "bold",
+                                    fontSize: "1.2rem",
+                                }}>
+                        {category.id}
+                    </Typography>
+                </CategoryCard>
+            ))}
+        </DropdownContent>
     );
 
 
@@ -250,7 +113,6 @@ const TopNavBar: React.FC = () => {
                 backgroundColor: theme.palette.customBackgroundColor.main,
                 boxShadow: 'none',
                 height: '4rem',
-                // minHeight: '3.5rem'
             })}>
                 <Toolbar sx={{ height: '100%', padding: 0 }}>
                     <Grid container alignItems="center" sx={{ height: '100%' }}>
@@ -294,7 +156,7 @@ const TopNavBar: React.FC = () => {
                                                 open={openDropdown === 'eastAfrica'}
                                                 placement="bottom-start"
                                                 transition
-                                                sx={{mt:'9vh'}}
+                                                sx={{mt:'4rem'}}
                                             >
                                                 {({ TransitionProps }) => (
                                                     <Box
@@ -302,7 +164,7 @@ const TopNavBar: React.FC = () => {
                                                         onMouseEnter={() => handleDropdownOpen('eastAfrica')}
                                                         onMouseLeave={() => handleDropdownClose()}
                                                     >
-                                                        {renderDropdownContent("eastAfrica", eastAfricaList)}
+                                                        {renderDropdownContent("eastAfrica", eastAfricaCategories)}
                                                     </Box>
                                                 )}
                                             </Popper>
@@ -312,7 +174,7 @@ const TopNavBar: React.FC = () => {
                                                 open={openDropdown === 'climbing'}
                                                 placement="bottom-start"
                                                 transition
-                                                sx={{mt:'9vh'}}
+                                                sx={{mt:'4rem'}}
                                             >
                                                 {({ TransitionProps }) => (
                                                     <Box
@@ -320,7 +182,7 @@ const TopNavBar: React.FC = () => {
                                                         onMouseEnter={() => handleDropdownOpen('climbing')}
                                                         onMouseLeave={() => handleDropdownClose()}
                                                     >
-                                                        {renderDropdownContent("climbing", climbingList)}
+                                                        {renderDropdownContent("climbing", climbingCategories)}
                                                     </Box>
                                                 )}
                                             </Popper>
