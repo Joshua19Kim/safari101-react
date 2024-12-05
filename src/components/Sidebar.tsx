@@ -232,12 +232,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     <ListItemText primary="Photographic Safari" />
                 </ListItem>
 
-                <ListItem button component={Link} to="/aboutus">
-                    <ListItemIcon>
-                        <InfoIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="About Us" primaryTypographyProps={{ fontFamily: 'roboto' }} />
-                </ListItem>
+                {/*<ListItem button component={Link} to="/aboutus">*/}
+                {/*    <ListItemIcon>*/}
+                {/*        <InfoIcon />*/}
+                {/*    </ListItemIcon>*/}
+                {/*    <ListItemText primary="About Us" primaryTypographyProps={{ fontFamily: 'roboto' }} />*/}
+                {/*</ListItem>*/}
             </List>
         </SidebarDrawer>
     );
