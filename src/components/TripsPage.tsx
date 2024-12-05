@@ -18,7 +18,6 @@ const TripsPage = () => {
     const [currentTopic, setCurrentTopic] = useState<ActivityTopic | undefined>();
     const [tripsList, setTripsList] = useState<Trip[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     const [filteredTrips, setFilteredTrips] = useState<Trip[]>([]);
     const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
@@ -28,24 +27,27 @@ const TripsPage = () => {
         const decodedCategory = decodeURIComponent(category || '');
         const decodedActivity = decodeURIComponent(activity || '');
         let foundActivity;
+        let newCategory = "trip";  // Define category here instead of using state
 
         if (decodedCategory === "eastAfrica") {
-            setCurrentCategory("eastAfrica");
+            newCategory = "eastAfrica";
             foundActivity = eastAfricaCategories.find(activity => activity.id === decodedActivity);
         } else if (decodedCategory === "climbing") {
-            setCurrentCategory("climbing");
+            newCategory = "climbing";
             foundActivity = climbingCategories.find(activity => activity.id === decodedActivity);
         } else {
-            setCurrentCategory("trip");
             foundActivity = generalActivities.find(activity => activity.id === decodedActivity);
         }
+
+        setCurrentCategory(newCategory);
         setCurrentTopic(foundActivity);
+
         if (foundActivity) {
-            fetchTrips(currentCategory, foundActivity.value);
+            fetchTrips(newCategory, foundActivity.value);
         } else {
             setIsLoading(false);
         }
-    }, [activity]);
+    }, [activity, category]);
 
     useEffect(() => {
         if (tripsList.length > 0) {
