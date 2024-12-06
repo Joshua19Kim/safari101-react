@@ -42,6 +42,7 @@ export const CategoryCard = styled(Box)(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     flexDirection: 'column',
+    cursor: 'pointer',
     padding: theme.spacing(1),
     '&:hover': {
         backgroundColor: theme.palette.action.hover,

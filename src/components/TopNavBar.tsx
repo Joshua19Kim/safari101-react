@@ -15,7 +15,7 @@ import {Link, useNavigate} from "react-router-dom";
 import NavBarLink from "../assets/style/NavBarTextWithLink";
 import logoImage from '../assets/img/logo/LOGO-Main.png';
 import Sidebar from './Sidebar';
-import {Button} from "reactstrap";
+import { Button } from '@mui/material';
 import { eastAfricaCategories, climbingCategories, Logo, NavLinks } from './constants/constants';
 import {CategoryCard, DropdownContent} from "../assets/style/styledComponents";
 
@@ -202,7 +202,7 @@ const TopNavBar: React.FC = () => {
                             <Button
                                 color="warning"
                                 onClick={() => navigate('/request')}
-                                style={{
+                                sx={{
                                     backgroundColor: theme.palette.customButtonColor.main,
                                     color: theme.palette.customButtonFontColor.main,
                                     border: 'none',
@@ -213,7 +213,10 @@ const TopNavBar: React.FC = () => {
                                     cursor: 'pointer',
                                     transition: 'background-color 0.3s ease',
                                     borderRadius: "15px",
-                                    whiteSpace: 'nowrap'
+                                    whiteSpace: 'nowrap',
+                                    '&:hover': {
+                                        backgroundColor: theme.palette.customButtonColor.dark,
+                                    },
                                 }}
                                 className="custom-button"
                             >

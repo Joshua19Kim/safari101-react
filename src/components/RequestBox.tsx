@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import { Grid, TextField, useMediaQuery, useTheme } from "@mui/material";
 import { TbMoodKid } from "react-icons/tb";
 import PersonIcon from "@mui/icons-material/Person";
-import { Button } from "reactstrap";
+import { Button } from '@mui/material';
 import { useNavigate, useLocation } from "react-router-dom";
 
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -299,21 +299,22 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
                     }}
                 >
                     <Button
-                        color="warning"
+                        variant="contained"
+                        disableElevation
                         onClick={handleSubmit}
-                        style={{
+                        sx={{
                             backgroundColor: theme.palette.customButtonColor.main,
                             color: theme.palette.customButtonFontColor.main,
-                            border: 'none',
                             padding: '15px 30px',
                             fontSize: '1.1rem',
                             fontWeight: 'bold',
                             textTransform: 'uppercase',
-                            cursor: 'pointer',
-                            transition: 'background-color 0.3s ease',
-                            borderRadius:'20px',
+                            borderRadius: '20px',
+                            '&:hover': {
+                                backgroundColor: theme.palette.customButtonColor.dark,
+                            },
+
                         }}
-                        className="custom-button"
                     >
                         Start Planning
                     </Button>

@@ -30,7 +30,8 @@ const themeOptions: ThemeOptions = {
         },
         customButtonColor: {
             main: '#4a6c98',
-            dark: '#314865'
+            dark: '#314865',
+            light: '#c9dffc'
         },
         customButtonFontColor: {
             main: '#ffff24',

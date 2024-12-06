@@ -147,7 +147,7 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
         let descriptionError = '';
 
         // Adult validation
-        if (parseInt(tripInfo.adults) <= 0 || tripInfo.adults == '') {
+        if (parseInt(tripInfo.adults) <= 0 || tripInfo.adults === '') {
             fieldErrors.push('There should be at least one adult');
             isValid = false;
         }
@@ -445,6 +445,9 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
                                     borderRadius: "20px",
                                     mt: 3,
                                     width: '100%',
+                                    '&:hover': {
+                                        backgroundColor: theme.palette.customButtonColor.dark,
+                                    },
                                 }}
                             >
                                 Send a Request for This Trip
@@ -650,9 +653,13 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
                         <Button
                             variant="outlined"
                             onClick={handleModalClose}
-                            style={{
+                            sx={{
                                 color: theme.palette.customButtonColor.main,
-                                borderColor: theme.palette.customButtonColor.main
+                                borderColor: theme.palette.customButtonColor.main,
+                                '&:hover': {
+                                    backgroundColor: theme.palette.customButtonColor.light,
+                                    borderColor: theme.palette.customButtonColor.main,
+                                },
                             }}
                         >
                             Close
