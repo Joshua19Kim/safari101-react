@@ -113,7 +113,10 @@ const TripsPage = () => {
     return (
         <>
             <Container>
-                <RequestBox image={currentTopic.image} />
+                <RequestBox
+                    image={currentTopic.image}
+                    pageTitle={currentTopic?.id}
+                />
                 <Box sx={{
                     backgroundColor: theme.palette.customBackgroundColor.main,
                     minHeight: '100vh',

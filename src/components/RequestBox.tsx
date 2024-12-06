@@ -17,14 +17,16 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 interface BackGroundImage {
     image: string;
+    pageTitle?: string;
 }
 
 
-export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
+export const RequestBox: React.FC<BackGroundImage> = ({ image, pageTitle }) => {
     const navigate = useNavigate();
     const theme = useTheme();
     const location = useLocation();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
     const isMainLanding = !isMobile && location.pathname === '/';
     const [isScrolledDown, setIsScrolledDown] = useState(false);
 
@@ -146,6 +148,41 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
             padding: isMobile ? '0' : '2rem',
             position: 'relative'
         }}>
+            {(!isMainLanding && isLargeScreen && pageTitle) && (
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        bottom: '10%',
+                        right: '5%',
+                        textAlign: 'right',
+                        color: 'white',
+                        textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+                    }}
+                >
+                    <Typography
+                        variant="h2"
+                        sx={{
+                            fontWeight: 'bold',
+                            fontFamily: 'serif',
+                            marginBottom: '1rem',
+                            opacity: 0,
+                            animation: 'fadeIn 1s ease-out forwards',
+                            '@keyframes fadeIn': {
+                                from: {
+                                    opacity: 0,
+                                    transform: 'translateY(20px)'
+                                },
+                                to: {
+                                    opacity: 1,
+                                    transform: 'translateY(0)'
+                                }
+                            },
+                        }}
+                    >
+                        {pageTitle}
+                    </Typography>
+                </Box>
+            )}
             {isMainLanding && isScrolledDown && (
                 <Box
                     sx={{
@@ -163,12 +200,12 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image }) => {
                             fontWeight: 'bold',
                             fontFamily: 'serif',
                             marginBottom: '1rem',
-                            opacity: 0,  // Start with opacity 0
-                            animation: 'fadeIn 1s ease-out forwards',  // Add fade-in animation
+                            opacity: 0,
+                            animation: 'fadeIn 1s ease-out forwards',
                             '@keyframes fadeIn': {
                                 from: {
                                     opacity: 0,
-                                    transform: 'translateY(20px)'  // Optional: add slight upward movement
+                                    transform: 'translateY(20px)'
                                 },
                                 to: {
                                     opacity: 1,
