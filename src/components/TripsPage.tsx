@@ -131,12 +131,12 @@ const TripsPage = () => {
                     }}>
                         {/* Filter Section */}
                         <Box sx={{
-                            width: { xs: '100%', md: '20rem' },
+                            width: { xs: '93%', md: '20rem' },
                             position: { xs: 'static', md: 'sticky' },
                             top: '2rem',
                             alignSelf: 'flex-start',
                             height: 'fit-content',
-                            mb: { xs: 3, md: 0 },
+                            mb: { xs: 2, md: 0 },
                         }}>
                             {!isLoading && tripsList.length > 0 && (
                                 <FilterSection

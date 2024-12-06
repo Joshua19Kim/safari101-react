@@ -87,8 +87,10 @@ const FilterSection: React.FC<FilterSectionProps> = ({
             width: '100%',
             p: 3,
             bgcolor: 'background.paper',
-            borderRadius: 1,
+            borderRadius: 2,
             boxShadow: 1,
+            ml: '1rem',
+            mr: '1rem',
         }}>
             <Box sx={{mb:'1rem',}}>
                 <FormControl fullWidth size="small">
@@ -128,8 +130,15 @@ const FilterSection: React.FC<FilterSectionProps> = ({
             </Box>
             {/* Duration Slider */}
             <Box>
-                <Typography variant="h5" gutterBottom>
-                    Duration (days)
+                <Typography
+                    gutterBottom
+                    sx={{
+                        fontFamily: 'monospace',
+                        fontWeight: 700,
+                        fontSize: '1.3rem'
+                    }}
+                >
+                    Travel Duration
                 </Typography>
                 <Box sx={{ px: 1, width: '90%', margin: '0 auto' }}>
                     <Slider
@@ -150,16 +159,20 @@ const FilterSection: React.FC<FilterSectionProps> = ({
             {/* Trip Type Checkboxes */}
             {showTripTypes && (
                 <Box>
-                    <Typography variant="h5" gutterBottom>
-                        Trip Types
+                    <Typography
+                        gutterBottom
+                        sx={{
+                            fontFamily: 'monospace',
+                            fontWeight: 700,
+                            fontSize: '1.3rem'
+                        }}
+                    >
+                        Type
                     </Typography>
                     <FormGroup sx={{
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: 0.5,
-                        '& .MuiFormControlLabel-root': {
-                            margin: 0
-                        }
+                        gap: 1,
                     }}>
                         {allTripTypes.map((type) => (
                             <FormControlLabel
@@ -169,13 +182,56 @@ const FilterSection: React.FC<FilterSectionProps> = ({
                                         checked={selectedTypes.includes(type)}
                                         onChange={handleTripTypeChange(type)}
                                         sx={{
+                                            '&:hover': {
+                                                backgroundColor: 'transparent',
+                                            },
+                                            '& .MuiSvgIcon-root': {
+                                                fontSize: 28,
+                                                transition: 'all 0.2s',
+                                            },
                                             '&.Mui-checked': {
-                                                color: theme.palette.customButtonColor.main
+                                                '& .MuiSvgIcon-root': {
+                                                    color: theme.palette.customButtonColor.main,
+                                                }
+                                            },
+                                            '&:hover .MuiSvgIcon-root': {
+                                                transform: 'scale(1.1)'
                                             }
                                         }}
                                     />
                                 }
-                                label={type.charAt(0).toUpperCase() + type.slice(1)}
+                                label={
+                                    <Box sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        padding: '8px 12px',
+                                        borderRadius: '8px',
+                                        transition: 'all 0.2s',
+                                        backgroundColor: selectedTypes.includes(type)
+                                            ? `${theme.palette.customButtonColor.light}20`
+                                            : 'transparent',
+                                        '&:hover': {
+                                            backgroundColor: `${theme.palette.customButtonColor.light}10`,
+                                        }
+                                    }}>
+                                        <Typography sx={{
+                                            fontWeight: selectedTypes.includes(type) ? 600 : 400,
+                                            transition: 'all 0.2s',
+                                            color: selectedTypes.includes(type)
+                                                ? theme.palette.customButtonColor.main
+                                                : 'inherit'
+                                        }}>
+                                            {type.charAt(0).toUpperCase() + type.slice(1)}
+                                        </Typography>
+                                    </Box>
+                                }
+                                sx={{
+                                    margin: 0,
+                                    width: '100%',
+                                    '&:hover': {
+                                        cursor: 'pointer',
+                                    }
+                                }}
                             />
                         ))}
                     </FormGroup>
