@@ -1,5 +1,3 @@
-import {styled} from "@mui/material/styles";
-
 
 export const generalActivities: ActivityTopic[] = [
     { id: 'Safari', value: 'safari', image: 'safariLion.jpg' },
@@ -23,10 +21,7 @@ export const climbingCategories = [
     { id: 'Meru', value: 'meru', image: 'climbingMeru.png' },
 ];
 
-export const Logo = styled('img')({
-    height: '3rem',
-    width: '8rem',
-})
+
 
 export const NavLinks: NavLink[] = [
     {

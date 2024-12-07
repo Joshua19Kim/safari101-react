@@ -12,12 +12,12 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import {Link, useNavigate} from "react-router-dom";
-import NavBarLink from "../../assets/style/NavBarTextWithLink";
+import NavBarLink from "./NavBarTextWithLink";
 import logoImage from '../../assets/img/logo/LOGO-Main.png';
 import Sidebar from './Sidebar';
 import { Button } from '@mui/material';
-import { eastAfricaCategories, climbingCategories, Logo, NavLinks } from '../constants/constants';
-import {CategoryCard, DropdownContent} from "../../assets/style/styledComponents";
+import { eastAfricaCategories, climbingCategories, NavLinks } from '../constants/constants';
+import {CategoryCard, DropdownContent, Logo} from "../../assets/style/styledComponents";
 
 
 const TopNavBar: React.FC = () => {

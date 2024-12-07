@@ -49,3 +49,8 @@ export const CategoryCard = styled(Box)(({ theme }) => ({
     },
 
 }));
+
+export const Logo = styled('img')({
+    height: '3rem',
+    width: '8rem',
+})

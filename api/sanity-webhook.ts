@@ -3,7 +3,9 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import formData from 'form-data';
 import Mailgun from 'mailgun.js';
 
-// Initialize Mailgun
+
+// This is a Vercel Serverless function to send an email through Mail gun
+
 const mailgun = new Mailgun(formData);
 const mg = mailgun.client({
     username: 'api',
