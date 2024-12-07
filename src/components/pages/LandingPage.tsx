@@ -1,8 +1,8 @@
 import {Container} from "reactstrap";
 import Box from "@mui/material/Box";
-import RequestBox from "./RequestBox";
+import RequestBox from "../sections/RequestBox";
 import React, {useEffect, useRef, useState} from "react";
-import '../assets/css/Main.css';
+import '../../assets/css/Main.css';
 import { useMediaQuery, useTheme as useMuiTheme, Button, Typography } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 
@@ -279,7 +279,7 @@ const LandingPage = () => {
                     ref={secondImageRef}
                     sx={{
                         position: 'relative',
-                        backgroundImage: `url(${require(`../assets/img/landingBackground/${secondBackImage}`)})`,
+                        backgroundImage: `url(${require(`../../assets/img/landingBackground/${secondBackImage}`)})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         backgroundColor: theme.palette.customBackgroundColor.main,
@@ -302,7 +302,7 @@ const LandingPage = () => {
                     ref={thirdImageRef}
                     sx={{
                         position: 'relative',
-                        backgroundImage: `url(${require(`../assets/img/landingBackground/${thirdBackImage}`)})`,
+                        backgroundImage: `url(${require(`../../assets/img/landingBackground/${thirdBackImage}`)})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         backgroundColor: theme.palette.customBackgroundColor.main,
@@ -325,7 +325,7 @@ const LandingPage = () => {
                     ref={fourthImageRef}
                     sx={{
                         position: 'relative',
-                        backgroundImage: `url(${require(`../assets/img/landingBackground/${fourthBackImage}`)})`,
+                        backgroundImage: `url(${require(`../../assets/img/landingBackground/${fourthBackImage}`)})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         backgroundColor: theme.palette.customBackgroundColor.main,

@@ -12,12 +12,12 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import {Link, useNavigate} from "react-router-dom";
-import NavBarLink from "../assets/style/NavBarTextWithLink";
-import logoImage from '../assets/img/logo/LOGO-Main.png';
+import NavBarLink from "../../assets/style/NavBarTextWithLink";
+import logoImage from '../../assets/img/logo/LOGO-Main.png';
 import Sidebar from './Sidebar';
 import { Button } from '@mui/material';
-import { eastAfricaCategories, climbingCategories, Logo, NavLinks } from './constants/constants';
-import {CategoryCard, DropdownContent} from "../assets/style/styledComponents";
+import { eastAfricaCategories, climbingCategories, Logo, NavLinks } from '../constants/constants';
+import {CategoryCard, DropdownContent} from "../../assets/style/styledComponents";
 
 
 const TopNavBar: React.FC = () => {
@@ -90,7 +90,7 @@ const TopNavBar: React.FC = () => {
                     onClick={() => handleCategoryClick(categoryTitle, category.id)}
                 >
                     <img
-                        src={require(`../assets/img/${category.image}`)}
+                        src={require(`../../assets/img/${category.image}`)}
                         alt={category.id}
                         style={{ width: "15vw", height: "15vh", objectFit: 'cover', marginRight: 8 }}
                     />

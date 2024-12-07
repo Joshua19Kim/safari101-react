@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import '../assets/css/Main.css';
+import '../../assets/css/Main.css';
 import Box from "@mui/material/Box";
 import { Theme } from '@mui/material/styles';
 import Typography from "@mui/material/Typography";
@@ -138,7 +138,7 @@ export const RequestBox: React.FC<BackGroundImage> = ({ image, pageTitle }) => {
             marginTop: '4rem',
             minWidth: '23rem',
             backgroundColor: theme.palette.customBackgroundColor.main,
-            backgroundImage: isMobile ? 'none' : `url(${require(`../assets/img/${image}`)})`,
+            backgroundImage: isMobile ? 'none' : `url(${require(`../../assets/img/${image}`)})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',

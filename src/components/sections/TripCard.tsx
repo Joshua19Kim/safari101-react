@@ -4,7 +4,7 @@ import {Typography, useMediaQuery, useTheme, Button, Grid, TextField} from "@mui
 import Modal from '@mui/material/Modal';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import {getImage, sendEmail} from "../api/sanityApi";
+import {getImage, sendEmail} from "../../api/sanityApi";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import {TbMoodKid} from "react-icons/tb";
 import PersonIcon from "@mui/icons-material/Person";

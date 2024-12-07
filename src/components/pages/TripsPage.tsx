@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import RequestBox from "./RequestBox";
+import RequestBox from "../sections/RequestBox";
 import { Container } from "reactstrap";
 import { useParams } from "react-router-dom";
-import {getDocumentsByCategory} from "../api/sanityApi";
+import {getDocumentsByCategory} from "../../api/sanityApi";
 import CircularProgress from '@mui/material/CircularProgress';
-import {Typography, useMediaQuery} from "@mui/material";
-import TripCard from "./TripCard";
-import theme from "../assets/style/theme";
-import { generalActivities, eastAfricaCategories, climbingCategories } from './constants/constants';
-import FilterSection from "./sections/FilterSection";
+import {Typography} from "@mui/material";
+import TripCard from "../sections/TripCard";
+import theme from "../../assets/style/theme";
+import { generalActivities, eastAfricaCategories, climbingCategories } from '../constants/constants';
+import FilterSection from "../sections/FilterSection";
 
 const TripsPage = () => {
     const {category } = useParams<{ category: string }>();

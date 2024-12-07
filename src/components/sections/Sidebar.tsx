@@ -8,12 +8,11 @@ import {
     styled, ListItemIcon,
 } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import HomeIcon from "@mui/icons-material/Home";
 import GradingIcon from "@mui/icons-material/Grading";
-import InfoIcon from "@mui/icons-material/Info";
 import Box from "@mui/material/Box";
-import { eastAfricaCategories, climbingCategories } from './constants/constants';
+import { eastAfricaCategories, climbingCategories } from '../constants/constants';
 
 
 interface SidebarProps {

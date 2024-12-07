@@ -1,5 +1,5 @@
 import React from "react";
-import {Background} from "../assets/style/styledComponents";
+import {Background} from "../../assets/style/styledComponents";
 import Box from "@mui/material/Box";
 
 
@@ -8,7 +8,7 @@ const backgroundImage = "safariBackground.jpg"
 const Contact = () => {
     return (
         <>
-            <Background bgImage={require(`../assets/img/${backgroundImage}`)} />
+            <Background bgImage={require(`../../assets/img/${backgroundImage}`)} />
 
             <Box sx={{marginTop:'10rem'}}>
                 <h1>Contact page</h1>

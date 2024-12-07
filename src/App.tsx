@@ -4,14 +4,15 @@ import theme from './assets/style/theme'
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
-import NotFound from "./components/NotFound"
-import LandingPage from "./components/LandingPage"
-import Contact from "./components/Contact";
-import AboutUs from "./components/AboutUs";
-import Request from "./components/Request";
-import TripsPage from "./components/TripsPage";
-import TopNavBar from "./components/TopNavBar";
-import Layout from './components/Layout';
+import NotFound from "./components/pages/NotFound"
+import LandingPage from "./components/pages/LandingPage"
+import Contact from "./components/pages/Contact";
+import AboutUs from "./components/pages/AboutUs";
+import Request from "./components/pages/Request";
+import TripsPage from "./components/pages/TripsPage";
+import TopNavBar from "./components/sections/TopNavBar";
+import Layout from './components/layouts/Layout';
+import ScrollToTop from "./components/layouts/ScrollToTop";
 
 
 
@@ -22,6 +23,7 @@ function App() {
               <div className="App">
                   <Layout>
                       <Router>
+                          <ScrollToTop />
                           <TopNavBar />
                           <div>
                               <Routes>

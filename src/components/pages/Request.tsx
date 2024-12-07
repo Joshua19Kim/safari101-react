@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import '../assets/css/Main.css';
+import '../../assets/css/Main.css';
 import Box from "@mui/material/Box";
 import {useLocation, useNavigate} from 'react-router-dom';
 import {Button} from "reactstrap";
@@ -9,8 +9,8 @@ import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from '@mui/icons-material/Email';
 import {TbMoodKid} from "react-icons/tb";
 import {Theme} from "@mui/material/styles";
-import theme from "../assets/style/theme";
-import {sendEmail} from "../api/sanityApi";
+import theme from "../../assets/style/theme";
+import {sendEmail} from "../../api/sanityApi";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
@@ -228,7 +228,7 @@ const Request = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 minWidth: '20rem',
-                backgroundImage: `url(${require(`../assets/img/${backgroundImage}`)})`,
+                backgroundImage: `url(${require(`../../assets/img/${backgroundImage}`)})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 minHeight: '100vh',
