@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 const backgroundImage = "mainLandingImage.jpg"
 const secondBackImage = "elephantMountainImage.jpg"
-const thirdBackImage = "mulsoImage.jpg"
+const thirdBackImage = "KilimanjaroImagewebp.webp"
 const fourthBackImage = "tripImage.jpg"
 
 interface ContentVisibility {
@@ -293,7 +293,7 @@ const LandingPage = () => {
                         title="SAFARI ADVENTURE"
                         description="Discover the majestic wildlife of Africa in their natural habitat. Our safari experiences bring you up close with nature's most magnificent creatures while ensuring their preservation and protection."
                         position="right"
-                        route="/trips/safari"
+                        route="/trips/Safari"
                         styleVariant="first"
                     />
                 </Box>
