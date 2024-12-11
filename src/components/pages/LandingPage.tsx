@@ -290,10 +290,10 @@ const LandingPage = () => {
                 >
                     <ContentOverlay
                         isVisible={contentVisibility.second}
-                        title="KILIMANJARO"
+                        title="SAFARI ADVENTURE"
                         description="Discover the majestic wildlife of Africa in their natural habitat. Our safari experiences bring you up close with nature's most magnificent creatures while ensuring their preservation and protection."
                         position="right"
-                        route="/trips/Kilimanjaro"
+                        route="/trips/safari"
                         styleVariant="first"
                     />
                 </Box>
@@ -313,10 +313,10 @@ const LandingPage = () => {
                 >
                     <ContentOverlay
                         isVisible={contentVisibility.third}
-                        title="SAFARI ADVENTURE"
+                        title="KILIMANJARO"
                         description="Experience the breathtaking beauty of Mount Kilimanjaro. Challenge yourself to reach Africa's highest peak while enjoying stunning views and diverse ecosystems along the way."
                         position="left"
-                        route="/trips/Safari"
+                        route="/trips/Kilimanjaro/climbing"
                         styleVariant="second"
                     />
                 </Box>
