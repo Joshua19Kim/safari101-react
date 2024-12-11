@@ -28,18 +28,12 @@ const TopNavBar: React.FC = () => {
     const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
     // Create breakpoints for different screen sizes
-    const isXLarge = useMediaQuery(theme.breakpoints.up('xl'));
-    const isLarge = useMediaQuery(theme.breakpoints.up('lg'));
     const isMedium = useMediaQuery(theme.breakpoints.up('md'));
+    const [visibleLinksCount, setVisibleLinksCount] = React.useState(NavLinks.length);
 
-    const getVisibleLinksCount = () => {
-        if (isXLarge) return NavLinks.length;
-        if (isLarge) return 6;
-        if (isMedium) return 4;
-        return 0;
-    };
+    const navContainerRef = React.useRef<HTMLDivElement>(null);
+    const [availableWidth, setAvailableWidth] = React.useState(0);
 
-    const visibleLinks = NavLinks.slice(0, getVisibleLinksCount());
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -81,6 +75,46 @@ const TopNavBar: React.FC = () => {
         navigate(`/trips/${categoryName}/${category}`);
         handleDropdownClose();
     };
+
+
+    const updateVisibleLinks = React.useCallback(() => {
+        if (navContainerRef.current) {
+            const containerWidth = navContainerRef.current.offsetWidth;
+            const linkWidth = 200;
+            const maxVisibleLinks = Math.floor(containerWidth / linkWidth);
+            setAvailableWidth(containerWidth);
+            setVisibleLinksCount(Math.min(maxVisibleLinks, NavLinks.length)); // Update state
+            return maxVisibleLinks;
+        }
+        return 0;
+    }, []);
+
+    const getVisibleLinksCount = () => {
+        if (!isMedium) return 0;
+        return visibleLinksCount;
+    };
+
+
+    const visibleLinks = React.useMemo(() => {
+        return NavLinks.slice(0, getVisibleLinksCount());
+    }, [visibleLinksCount]);
+
+    React.useEffect(() => {
+        updateVisibleLinks();
+        const container = navContainerRef.current;
+        if (container) {
+            const resizeObserver = new ResizeObserver(() => {
+                updateVisibleLinks();
+            });
+
+            resizeObserver.observe(container);
+
+            return () => {
+                resizeObserver.disconnect();
+            };
+        }
+    }, [updateVisibleLinks]);
+
 
     const renderDropdownContent = (categoryTitle: string, categories: CategoryTopic[]) => (
         <DropdownContent category={categoryTitle}>
@@ -124,11 +158,14 @@ const TopNavBar: React.FC = () => {
                         </Grid>
 
                         {/* Navigation Links */}
-                        <Grid item xs={6} md={8} lg={9} sx={{
-                            display: { xs: 'none', md: 'flex' },
-                            justifyContent: 'center',
-                            overflow: 'hidden'
-                        }}>
+                        <Grid item xs={6} md={8} lg={9}
+                              ref={navContainerRef}
+                              sx={{
+                                  display: { xs: 'none', md: 'flex' },
+                                  justifyContent: 'center',
+                                  overflow: 'hidden'
+                              }}
+                        >
                             <Box sx={{
                                 display: 'flex',
                                 justifyContent: 'center',

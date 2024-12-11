@@ -132,57 +132,63 @@ const TripsPage = () => {
                         flexDirection: { xs: 'column', md: 'row' },
                         gap: 4,
                     }}>
-                        {/* Filter Section */}
-                        <Box sx={{
-                            width: { xs: '93%', md: '20rem' },
-                            position: { xs: 'static', md: 'sticky' },
-                            top: '2rem',
-                            alignSelf: 'flex-start',
-                            height: 'fit-content',
-                            mb: { xs: 2, md: 0 },
-                        }}>
-                            {!isLoading && tripsList.length > 0 && (
+                        {isLoading ? (
+                            <Box sx={{
+                                width: '100%',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                mt: 8
+                            }}>
+                                <CircularProgress />
+                            </Box>
+                        ) : tripsList.length > 0 ? (
+                            <><Box sx={{
+                                width: {xs: '93%', md: '20rem'},
+                                position: {xs: 'static', md: 'sticky'},
+                                top: '2rem',
+                                alignSelf: 'flex-start',
+                                height: 'fit-content',
+                                mb: {xs: 2, md: 0}
+                            }}>
                                 <FilterSection
                                     trips={tripsList}
                                     selectedTypes={selectedTypes}
                                     durationRange={durationRange}
                                     onDurationChange={handleDurationFilter}
                                     onTripTypeChange={handleTripTypeFilter}
-                                    onSortChange={handleSort}
-                                />
-                            )}
-                        </Box>
-
-                        {/* Trip Cards Section */}
-                        <Box sx={{
-                            flex: 1,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 3,
-                            alignItems: 'center',
-                        }}>
-                            {isLoading ? (
-                                <Box sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    height: '50vh'
-                                }}>
-                                    <CircularProgress />
-                                </Box>
-                            ) : filteredTrips.length > 0 ? (
-                                filteredTrips.map((trip) => (
-                                    <Box key={trip._id} sx={{
-                                        width: '100%',
-                                        display: 'flex',
-                                        justifyContent: 'center'
-                                    }}>
-                                        <TripCard trip={trip} />
+                                    onSortChange={handleSort}/>
+                            </Box><Box sx={{
+                                flex: 1,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 3,
+                                alignItems: 'center'
+                            }}>
+                                {filteredTrips.map((trip) => (
+                                    <Box
+                                        key={trip._id}
+                                        sx={{
+                                            width: '100%',
+                                            display: 'flex',
+                                            justifyContent: 'center'
+                                        }}
+                                    >
+                                        <TripCard trip={trip}/>
                                     </Box>
-                                ))
+                                ))}
+                            </Box></>
                             ) : (
+                            <Box sx={{
+                                width: '100%',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                mt: 8  // Adds margin top
+                            }}>
                                 <Typography>No trips available.</Typography>
-                            )}
-                        </Box>
+                            </Box>
+
+                        ) }
+
                     </Box>
                 </Box>
             </Container>
