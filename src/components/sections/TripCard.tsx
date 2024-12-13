@@ -268,7 +268,7 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
                         mb: 1,
                     }}>
                         <Box sx={{
-                            backgroundColor: theme.palette.customFontColor.main,
+                            backgroundColor: theme.palette.tripTitleBackgroundColor.main,
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'space-between',
